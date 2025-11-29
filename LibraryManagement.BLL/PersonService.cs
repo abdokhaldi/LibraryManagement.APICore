@@ -1,12 +1,12 @@
-﻿using DAL_LibraryManagement;
-using DTO_LibraryManagement;
+﻿using LibraryManagement.DAL;
+using LibraryManagement.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
-namespace BLL_LibraryManagement
+namespace LibraryManagement.BLL
 {
     
     public class PersonService

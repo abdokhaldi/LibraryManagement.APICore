@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLL_LibraryManagement
+namespace LibraryManagement.BLL
 {
     public class ActivityService
     {

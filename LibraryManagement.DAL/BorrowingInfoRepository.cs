@@ -1,4 +1,4 @@
-﻿using DTO_LibraryManagement;
+﻿using LibraryManagement.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Runtime.Remoting.Messaging;
-namespace DAL_LibraryManagement
+namespace LibraryManagement.DAL
 {
     public class BorrowingInfoRepository
     {

@@ -1,4 +1,4 @@
-﻿using DTO_LibraryManagement;
+﻿using LibraryManagement.DTO;
 using System;
 using System.Data;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL_LibraryManagement
+namespace LibraryManagement.DAL
 {
     public class CategoryRepository
     {

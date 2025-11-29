@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DAL_LibraryManagement;
-using DTO_LibraryManagement;
-namespace BLL_LibraryManagement
+using LibraryManagement.DAL;
+using LibraryManagement.DTO;
+namespace LibraryManagement.BLL
 {
     public class MemberService
     {

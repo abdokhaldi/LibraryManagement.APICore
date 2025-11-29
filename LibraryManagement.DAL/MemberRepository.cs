@@ -1,5 +1,5 @@
 ﻿
-using DTO_LibraryManagement;
+using LibraryManagement.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +11,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL_LibraryManagement
+namespace LibraryManagement.DAL
 {
     public class MemberRepository
     {

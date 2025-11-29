@@ -1,10 +1,10 @@
-﻿using DAL_LibraryManagement;
-using DTO_LibraryManagement;
+﻿using LibraryManagement.DAL;
+using LibraryManagement.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-namespace BLL_LibraryManagement
+namespace LibraryManagement.BLL
 {
     public class BorrowingService
     {

@@ -7,8 +7,8 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
-using DTO_LibraryManagement;
-namespace DAL_LibraryManagement
+using LibraryManagement.DTO;
+namespace LibraryManagement.DAL
 {
     public class PersonRepository
     {

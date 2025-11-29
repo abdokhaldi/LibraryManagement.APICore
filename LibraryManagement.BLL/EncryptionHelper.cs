@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BLL_LibraryManagement
+namespace LibraryManagement.BLL
 {
     public static class EncryptionHelper
     {
