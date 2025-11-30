@@ -1,155 +1,178 @@
-﻿using LibraryManagement.DTO;
-
+﻿using LibraryManagement.DAL.Context;
+using LibraryManagement.DTO;
+using LibraryManagement.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 
 namespace LibraryManagement.DAL
 {
     public class UserRepository
     {
-        public static UserDTO GetUserByID(int ID)
+        private readonly LibraryDbContext _context;
+        public UserRepository(LibraryDbContext context)
         {
-            string query = @"SELECT * FROM Users WHERE UserID=@ID;";
-
-            var parameters = new Dictionary<string, (SqlDbType, object, int?)>()
-            {
-                ["@ID"] = (SqlDbType.Int,ID,null)
-            };
-
-           using var reader = SqlHelper.ExecuteReader(query,CommandType.Text,parameters);
-            if (!reader.Read())
-                return null;
-
-            return new UserDTO
-            {
-                UserID = Convert.ToInt32(reader["UserID"]),
-                PersonID = Convert.ToInt32(reader["PersonID"]),
-                Username = reader["Username"].ToString(),
-                RoleID = Convert.ToInt32(reader["RoleID"]),
-                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
-            };
+            _context = context;
         }
-        public static UserDTO GetUserByUsername(string username)
+
+        public async Task<User?> GetUserByIDAsync(int userID)
         {
-            string query = @"SELECT * FROM Users WHERE Username=@username;";
-
-            var parameters = new Dictionary<string, (SqlDbType, object, int?)>()
+            try
             {
-                ["@username"] = (SqlDbType.NVarChar, username, 50),
-            };
-
-           using  var reader = SqlHelper.ExecuteReader(query, CommandType.Text, parameters);
-            if (reader.Read())
-            {
-
-                return new UserDTO
-                  {
-                      UserID = (int)reader["UserID"],
-                      PersonID = (int)reader["PersonID"],
-                      Username = (string)reader["Username"],
-                      Password = (string)reader["Password"],
-                      RoleID = (int)reader["RoleID"],
-                      IsActive = (bool)reader["IsActive"],
-                      CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
-                };
+            var user = await _context.Users.FindAsync(userID);
+                return user;
             }
-            return null;
-        }
-
-        public static List<UserDTO> GetAllUsers()
-        {
-            var users = new List<UserDTO>();
-
-            string query = @"SELECT * FROM Users;";
-
-          using var reader = SqlHelper.ExecuteReader(query,CommandType.Text);
-            while (reader.Read())
+            catch (DbException ex)
             {
-                users.Add(
-                    new UserDTO
-                    {
-                        UserID = (int)reader["UserID"],
-                        PersonID = (int)reader["PersonID"],
-                        Username = (string)reader["Username"],
-                        RoleID = (int)reader["RoleID"],
-                        IsActive = (bool)reader["IsActive"],
-                        CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
-                    }
-                    );
+                throw new Exception("Database Error occurred while retrieving user ." + ex);
             }
-            return users;
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
+        }
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            try
+            {
+                var user = await _context.Users.FindAsync(username);
+                return user;
+            }
+            catch (DbException ex)
+            {
+                throw new Exception("Database Error occurred while retrieving user ." + ex);
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
 
-        public static object IsUsernameExists(string username)
+        public async Task<List<User>> GetAllUsersAsync()
         {
-            string query = @"SELECT 1 FROM Users WHERE Username = @username;";
-            var parameters = new Dictionary<string, (SqlDbType, object, int?)>()
+            try
             {
-                ["@username"] = (SqlDbType.NVarChar,username,50)
-            };
-            var result = SqlHelper.ExecuteCommand(query,CommandType.Text, SqlHelper.ExecuteType.ExecuteScalar,parameters);
-            return result;
+                var usersList = await _context.Users.ToListAsync();
+                return usersList;
+            }
+            catch (DbException ex)
+            {
+                throw new Exception("Database Error occurred while retrieving users . " + ex);
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public static int AddNewUser(UserDTO data)
+        public async Task<bool>  IsUsernameExistsAsync(string username)
         {
-            string query = @"INSERT INTO Users (PersonID,Username,password,RoleID,IsActive,CreatedAt)
-                             VALUES(@personID,@username,@password,@roleID,@isActive,@createdAt);
-                             SELECT SCOPE_IDENTITY();";
-            var parameters = new Dictionary<string , (SqlDbType,object,int?)>()
+            try
             {
-                ["PersonID"]= (SqlDbType.Int,data.PersonID, null),
-                ["Username"]= (SqlDbType.NVarChar,data.Username, 50),
-                ["Password"]= (SqlDbType.NVarChar,data.Password, 200),
-                ["RoleID"]  = (SqlDbType.Int,data.RoleID, null),
-                ["IsActive"] = (SqlDbType.Bit, data.IsActive, null),
-                ["CreatedAt"] = (SqlDbType.DateTime2, data.CreatedAt, null),
-
-            };
-
-            object newUserID = SqlHelper.ExecuteCommand(query,CommandType.Text, SqlHelper.ExecuteType.ExecuteScalar,parameters);
-            return Convert.ToInt32(newUserID);
-          }
-
-        public static int UpdateUser(UserDTO data)
-        {
-            string query = @"Update Users 
-                             SET PersonID = @personID ,
-                                  Username = @username,
-                                  Password = @password,
-                                  RoleID = @roleID,
-                                  IsActive = @isActive 
-                                  WHERE UserID=@userID;";
-
-            var parameters = new Dictionary<string, (SqlDbType, object, int?)>()
+                var exists = await _context.Users.Where(u => u.Username == username)
+                                           .Select(u => u.Username)
+                                           .FirstOrDefaultAsync();
+                return (exists != null);
+            }
+            catch (DbException ex)
             {
-                ["UserID"] = (SqlDbType.Int, data.UserID, null),
-                ["PersonID"] = (SqlDbType.Int, data.PersonID, null),
-                ["Username"] = (SqlDbType.NVarChar, data.Username, 50),
-                ["Password"] = (SqlDbType.NVarChar, data.Password, 150),
-                ["RoleID"] = (SqlDbType.Int, data.RoleID, null),
-                ["IsActive"] = (SqlDbType.Bit, data.IsActive, null),
-            };
-            int rowsAffected = (int)SqlHelper.ExecuteCommand(query,CommandType.Text,SqlHelper.ExecuteType.ExecuteNonQuery,parameters);
-            return rowsAffected;
+                throw new Exception("Database Error occurred while retrieving users . " + ex);
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public static int SetUserActiveStatus(int userID,bool isActive)
+        public async Task<int> AddNewUser(User userEntity)
         {
-            string query = @"Update Users 
-                           SET IsActive = @isActive
-                           WHERE UserID=@userID;";
-            var parameters = new Dictionary<string, (SqlDbType, object, int?)>()
+            try {
+                _context.Users.Add(userEntity);
+                await _context.SaveChangesAsync();
+                return userEntity.UserID;
+            }
+            catch (Exception ex)
             {
-                ["UserID"] = (SqlDbType.Int, userID, null),
-                ["IsActive"] = (SqlDbType.Bit, isActive, null),
-            };
-
-            int rowsAffected = (int)SqlHelper.ExecuteCommand(query,CommandType.Text,SqlHelper.ExecuteType.ExecuteNonQuery,parameters);
-            return rowsAffected;
+                throw;
+            }
         }
+
+        public async Task<int> UpdateUserAsync(User userEntity)
+        {
+            try
+            {
+                _context.Users.Update(userEntity);
+                return await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<int> SetUserActiveStatusAsync(int userID,bool isActive)
+        {
+            try
+            {
+                var userToChangeStatus = await _context.Users.FindAsync(userID);
+                if (userToChangeStatus == null)
+                {
+                    return 0;
+                }
+                if (userToChangeStatus.IsActive == isActive)
+                {
+                    return 1;
+                }
+                userToChangeStatus.IsActive = isActive;
+                return await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<int> SetUserBlockStatusAsync(int userID,bool isBlocked)
+        {
+            try
+            {
+                var userToChangeStatus = await _context.Users.FindAsync(userID);
+                if (userToChangeStatus == null)
+                {
+                    return 0;
+                }
+                if (userToChangeStatus.IsBlocked == isBlocked)
+                {
+
+                }
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

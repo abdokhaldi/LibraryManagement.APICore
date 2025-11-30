@@ -182,7 +182,7 @@ namespace LibraryManagement.BLL
        
         public static bool DeactivateUser(int userID)
         {
-            int rowsAffected = UserRepository.SetUserActiveStatus(userID,false);
+            int rowsAffected = UserRepository.SetUserStatus(userID,false);
             if (rowsAffected > 0){
                 ActivityRepository.AddActivity("Deactivate", $"Deactivate User: {userID}", DateTime.Now, CurrentUser.GetCurrentUserInfo().Username, "User", userID);
                 return true;
@@ -191,7 +191,7 @@ namespace LibraryManagement.BLL
         }
         public static bool ActivateUser(int userID)
         {
-            int rowsAffected = UserRepository.SetUserActiveStatus(userID, true);
+            int rowsAffected = UserRepository.SetUserStatus(userID, true);
             if (rowsAffected > 0)
             {
                 ActivityRepository.AddActivity("Activate", $"Activate User: {userID}", DateTime.Now, CurrentUser.GetCurrentUserInfo().Username, "User", userID);

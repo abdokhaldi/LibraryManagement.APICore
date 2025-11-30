@@ -1,12 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using  System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryManagement.DAL.Entities
 {
-    internal class BorrowingInfoView
+    public class BorrowingInfoView
     {
+        [Key]
+        public int BorrowingID { get; set; }
+        public int BookID { get; set; }
+        public string Title { get; set; } = null!;
+        public string FullName { get; set; } = null!;
+        public DateTime BorrowingDate { get; set; }
+        public DateTime DueDate { get; set; }
+        public DateTime? ReturnDate { get; set; }
+        public string Status { get; set; } = null!;
     }
 }

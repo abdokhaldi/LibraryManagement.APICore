@@ -106,7 +106,7 @@ namespace LibraryManagement.BLL
         private bool _UpdatePersonByID()
         {
             PersonDTO personData = _FillDTOToTransferData();// fill the tdo object with current object values
-            int rowsEffected = PersonRepository.UpdatePersonByID(personData);
+            int rowsEffected = PersonRepository.UpdatePerson(personData);
            
             if (rowsEffected > 0)
             {
