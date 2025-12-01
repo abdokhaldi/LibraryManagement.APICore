@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.DTO;
+using LibraryManagement.DAL.Entities;
 using System;
 using System.Data;
 using System.Collections.Generic;
@@ -6,48 +7,52 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Common;
+using LibraryManagement.DAL.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.DAL
 {
     public class CategoryRepository
     {
-        public static List<CategoryDTO> GetAllCategories()
+        private readonly LibraryDbContext _context;
+        public CategoryRepository(LibraryDbContext context)
         {
-            string query = @"SELECT * FROM Categories;";
-            List<CategoryDTO> categories = new();
-            using var reader = SqlHelper.ExecuteReader(query,CommandType.Text,null);
-            while (reader.Read())
-            {
-                categories.Add(
-                    new CategoryDTO
-                    {
-                        CategoryID = Convert.ToInt32(reader["CategoryID"]),
-                        CategoryName = reader["CategoryName"].ToString(),
-                        Description = reader["Description"].ToString(),
-                    }
-                    );
-            }
-            return categories;
+            _context = context;
         }
 
-        public static CategoryDTO GetCategoryByID(int categoryID)
+        public async Task<List<Category>> GetAllCategoriesAsync()
         {
-            string query = @"SELECT * FROM Categories WHERE CategoryID=@categoryID;";
-            var parameters = new Dictionary<string, (SqlDbType, object, int?)>()
+            try
             {
-                ["CategoryID"] = (SqlDbType.Int, categoryID, null),
-            };
-            using var reader = SqlHelper.ExecuteReader(query,CommandType.Text,parameters);
-             if (reader!=null && reader.Read())
-            {
-                return new CategoryDTO
-                {
-                    CategoryID = Convert.ToInt32(reader["CategoryID"]),
-                    CategoryName = reader["CategoryName"].ToString(),
-                    Description = reader["Description"] == DBNull.Value ? "" : reader["Description"].ToString(),
-                };
+                var categoriesList = await _context.Categories.ToListAsync();
+                return categoriesList;
             }
-             return null;
+            catch(DbException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Category?> GetCategoryByIDAsync(int categoryID)
+        {
+            try
+            {
+                var category = await _context.Categories.FindAsync(categoryID);
+                return category;
+            }
+            catch (DbException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
     }

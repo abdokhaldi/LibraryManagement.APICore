@@ -23,7 +23,10 @@ namespace LibraryManagement.DAL
         {
             try
             {
-            var user = await _context.Users.FindAsync(userID);
+            var user = await _context.Users
+                                         .Include(u => u.Person)
+                                         .Include(u => u.Role)
+                                         .FirstOrDefaultAsync(u=>u.UserID==userID);
                 return user;
             }
             catch (DbException ex)
@@ -40,7 +43,10 @@ namespace LibraryManagement.DAL
         {
             try
             {
-                var user = await _context.Users.FindAsync(username);
+                var user = await _context.Users 
+                                             .Include(u=>u.Person)
+                                             .Include(u => u.Role)
+                                             .FirstOrDefaultAsync(u =>u.Username==username);
                 return user;
             }
             catch (DbException ex)
@@ -59,12 +65,15 @@ namespace LibraryManagement.DAL
         {
             try
             {
-                var usersList = await _context.Users.ToListAsync();
+                var usersList = await _context.Users
+                                 .Include(u=>u.Person)
+                                 .Include(u=>u.Role)
+                                 .ToListAsync();
                 return usersList;
             }
             catch (DbException ex)
             {
-                throw new Exception("Database Error occurred while retrieving users . " + ex);
+                throw ;
 
             }
             catch (Exception ex)
@@ -84,7 +93,7 @@ namespace LibraryManagement.DAL
             }
             catch (DbException ex)
             {
-                throw new Exception("Database Error occurred while retrieving users . " + ex);
+                throw;
 
             }
             catch (Exception ex)
@@ -160,8 +169,10 @@ namespace LibraryManagement.DAL
                 }
                 if (userToChangeStatus.IsBlocked == isBlocked)
                 {
-
+                    return 1;
                 }
+                userToChangeStatus.IsBlocked = isBlocked;
+                return await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {

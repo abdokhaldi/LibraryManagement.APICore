@@ -10,7 +10,7 @@ namespace LibraryManagement.DAL.Context
 
         }
 
-        // DbSets for real tables
+        // DbSets for tables
         public DbSet<Person> People { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Borrowing> Borrowings { get; set; }
@@ -18,6 +18,7 @@ namespace LibraryManagement.DAL.Context
         public DbSet<Category> Categories { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Activity> Activities { get; set; }
+        public DbSet<Member> Members { get; set; }
 
         // DbSets for views
         public DbSet<BorrowingInfoView> FullBorrowingsInfo { get; set; }
@@ -27,6 +28,7 @@ namespace LibraryManagement.DAL.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Book>().Property(b => b.RowVersion).IsRowVersion();
             modelBuilder.Entity<BorrowingInfoView>().HasNoKey().ToView("FullBorrowingsInfo");
             modelBuilder.Entity<SmallBookEntity>().HasNoKey().ToView("SmallBooks");
             modelBuilder.Entity<SmallPersonEntity>().HasNoKey().ToView("SmallPeople");

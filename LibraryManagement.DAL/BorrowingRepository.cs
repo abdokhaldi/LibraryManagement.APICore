@@ -1,122 +1,90 @@
 ﻿using LibraryManagement.DTO;
+using LibraryManagement.DAL.Entities;
+using LibraryManagement.DAL.Context;
+
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
-using System.Runtime.Remoting.Messaging;
+
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace LibraryManagement.DAL
 {
     public class BorrowingRepository
     {
-
-        public static object IsActiveBorrowing(int bookID,int personID)
+        private readonly LibraryDbContext _context;
+        public BorrowingRepository(LibraryDbContext context)
         {
-            string query = @"SELECT 1 FROM Borrowings WHERE 
-                           BookID=@bookID AND MemberID=@personID AND ReturnDate IS NULL;";
-          
-            var parameters = new Dictionary<string, (SqlDbType, object,int?)>()
-            {
-                ["@bookID"] = (SqlDbType.Int,bookID,null),
-                ["@personID"] = (SqlDbType.Int, personID,null)
-            };
-
-            object result = SqlHelper.ExecuteCommand(query,CommandType.Text,SqlHelper.ExecuteType.ExecuteScalar,parameters);
-            return result;
+            _context = context;
         }
 
-        public static int AddBorrowingAndUpdateBook(BorrowingDTO borrowingData)
+        public async Task<bool> IsBookCurrentlyUnavailableAsync(int bookID,int personID)
         {
-            int borrowingID = 0;
-            var commands = new List<(string,Dictionary<string,(SqlDbType,object,int?)>,bool)>();
-
-            string query1 = @"INSERT INTO Borrowings(BookID,MemberID,BorrowingDate,DueDate,ReturnDate,Status,IsCanceled)
-                          VALUES(@bookID,@personID,@borrowingDate,@dueDate,@returnDate,@status,@isCanceled);
-                          SELECT CAST(SCOPE_IDENTITY() AS int);";
-
-            string query2 = @"UPDATE Books 
-                               SET Quantity = Quantity - 1
-                               WHERE BookID = @bookID;";
-
-
-            var parameters1 = new Dictionary<string, (SqlDbType, object, int?)>() {
-
-                ["@bookID"] = (SqlDbType.Int, borrowingData.BookID, null),
-                ["@personID"] = (SqlDbType.Int, borrowingData.PersonID, null),
-                ["@borrowingDate"] = (SqlDbType.DateTime, borrowingData.BorrowingDate, null),
-                ["@dueDate"] = (SqlDbType.DateTime, borrowingData.DueDate, null),
-                ["@returnDate"] = (SqlDbType.DateTime, borrowingData.ReturnDate, null),
-                ["@status"] = (SqlDbType.NVarChar, borrowingData.Status, 20),
-                ["@isCanceled"] = (SqlDbType.Bit, borrowingData.IsCanceled, null),
-
-            };
-            var parameters2 = new Dictionary<string, (SqlDbType, object, int?)>()
+            try
             {
-                ["@bookID"] = (SqlDbType.Int, borrowingData.BookID, null),
-            };
-
-                commands.Add((query1,parameters1,true));
-               commands.Add((query2,parameters2,false));
-
-            var result = SqlHelper.ExecuteTransaction(commands);
-
-            if (result.Success)
-            {
-                borrowingID = Convert.ToInt32(result.ReturnedValue);
+                bool IsBookCurrentlyUnavailable = await _context.Borrowings.AnyAsync(
+                                             b => b.BookID == bookID
+                                             && b.PersonID == personID
+                                             && b.ReturnDate == null
+                                             && b.IsCanceled == false
+                                            );
+                return IsBookCurrentlyUnavailable;
             }
-            return borrowingID;
-          }
-        
-        public static int AddNewBorrowing(BorrowingDTO borrowingData)
-        {
-            object borrowingID = null;
-
-            string query = @"INSERT INTO Borrowings(BookID,PersonID,BorrowingDate,DueDate,ReturnDate,Status)
-                          VALUES(@bookID,@personID,@borrowingData,@dueDate,@returnDate,@status);
-                          SELECT CAST(SCOPE_IDENTITY() AS int);";
-            var parameters = new Dictionary<string, (SqlDbType, object, int?)>
+            catch (DbException ex)
             {
-                
-                ["@bookID"] = (SqlDbType.Int, borrowingData.BookID, null),
-                ["@personID"] = (SqlDbType.Int, borrowingData.PersonID, null),
-                ["@borrowingData"]= (SqlDbType.DateTime, borrowingData.BorrowingDate, null),
-                ["@dueDate"]= (SqlDbType.DateTime, borrowingData.DueDate, null),
-                ["@returnDate"]= (SqlDbType.DateTime, borrowingData.ReturnDate, null),
-                ["@status"]= (SqlDbType.NVarChar, borrowingData.Status, 20)
-            };
-             borrowingID = SqlHelper.ExecuteCommand(query,CommandType.Text,SqlHelper.ExecuteType.ExecuteScalar,parameters);
-            return Convert.ToInt32(borrowingID);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
-        public static int UpdateBorrowing(BorrowingDTO borrowingData)
+
+        public async Task<int> RecordNewBorrowingAsync(Borrowing borrowingEntity)
         {
-            string query = @"UPDATE Borrowings
-                             
-                            SET BookID=@bookID,
-                                MemberID = @personID,
-                                BorrowingDate = @borrowingData,
-                                DueDate = @dueDate,
-                                ReturnDate = @returnDate ,
-                                Status = @status
-                            WHERE BorrowingID=@borrowingID;";
-
-            var parameters = new Dictionary<string,(SqlDbType, object,int?)>()
+            try
             {
-                ["@borrowingID"] = (SqlDbType.Int, borrowingData.BorrowingID, null),
-                ["@bookID"] = (SqlDbType.Int, borrowingData.BookID, null),
-                ["@personID"] = (SqlDbType.Int, borrowingData.PersonID, null),
-                ["@borrowingData"] = (SqlDbType.DateTime, borrowingData.BorrowingDate, null),
-                ["@dueDate"] = (SqlDbType.DateTime, borrowingData.DueDate, null),
-                ["@returnDate"] = (SqlDbType.DateTime, borrowingData.ReturnDate, null),
-                ["@status"] = (SqlDbType.NVarChar, borrowingData.Status, 20)
+                var bookToBorrow = await _context.Books.FindAsync(borrowingEntity.BookID);
+                
+                if (bookToBorrow == null || bookToBorrow.IsActive == false || bookToBorrow.Quantity<=0)
+                {
+                    throw new InvalidOperationException("Book is unavailable or not found.");
+                }
+                
+                bookToBorrow.Quantity--;
 
-            };
-            int rowsAffected = (int)SqlHelper.ExecuteCommand(query,CommandType.Text,SqlHelper.ExecuteType.ExecuteNonQuery,parameters);
-            return rowsAffected;
+               _context.Borrowings.Add(borrowingEntity);
+                await _context.SaveChangesAsync();
+                return borrowingEntity.BorrowingID;
+            }
+            catch (DbException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        
+        public async Task<int> UpdateBorrowingAsync(Borrowing borrowingEntity)
+        {
+            try{
+                
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw;
+            }
+            catch(DbException ex) { throw; }
+            catch (Exception ex) { throw; }
         }
         
         public static int EditDueDate(int borrowingID,DateTime dueDate)

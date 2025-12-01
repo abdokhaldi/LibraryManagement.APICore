@@ -1,4 +1,5 @@
-﻿using LibraryManagement.DTO;
+﻿using LibraryManagement.DAL.Context;
+using LibraryManagement.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,32 +9,11 @@ namespace LibraryManagement.DAL
 {
     public class SmallBookRepository
     {
-        public static List<SmallBookDTO> GetSmallBookAutoSearch(string searchTerm)
+        private readonly LibraryDbContext _context;
+        public SmallBookRepository(LibraryDbContext context)
         {
-            List<SmallBookDTO> books = new();
-            string query = @"SELECT * FROM SmallBooks WHERE Title LIKE @title;";
-            var paramerers = new Dictionary<string, (SqlDbType, object, int?)>
-            {
-                ["@title"] = (SqlDbType.NVarChar,searchTerm,null),
-            };
-            using var reader = SqlHelper.ExecuteReaderWildCard(query,CommandType.Text,paramerers);
-            if (reader == null)
-            {
-                books = null;
-                return books;
-            }
-            while (reader != null&& reader.Read())
-            {
-                books.Add
-                (
-                    new SmallBookDTO
-                    {
-                        BookID = Convert.ToInt32(reader["BookID"]),
-                        Title = reader["Title"].ToString()
-                    }
-                );
-            }
-            return books;
+            _context = context;
         }
+        
     }
 }

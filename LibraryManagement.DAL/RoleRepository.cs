@@ -1,7 +1,11 @@
-﻿using LibraryManagement.DTO;
+﻿using LibraryManagement.DAL.Context;
+using LibraryManagement.DAL.Entities;
+using LibraryManagement.DTO;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,44 +14,46 @@ namespace LibraryManagement.DAL
 {
     public class RoleRepository
     {
-        public static List<RoleDTO> GetAllRoles()
+        private readonly LibraryDbContext _context;
+        public RoleRepository(LibraryDbContext context)
         {
-            List<RoleDTO> roles = null;
-            string query = @"SELECT * FROM Roles;";
-            using var reader = SqlHelper.ExecuteReader(query,CommandType.Text,null);
-            if (reader != null)
-                roles = new List<RoleDTO>();
-            while (reader.Read())
-            {
-                roles.Add(
-                    new RoleDTO
-                    {
-                        RoleID = (int)reader["RoleID"],
-                        RoleName = reader["RoleName"].ToString(),
-                    }
-                    );
-            }
-            return roles;
+            _context = context;
         }
-        public static RoleDTO GetRoleByID(int ID)
+        public async Task<List<Role>> GetAllRolesAsync()
         {
-            string query = @"SELECT * FROM Roles WHERE RoleID=@ID;";
-            var parameters =
-                new Dictionary<string, (SqlDbType, object, int?)>()
-                {
-                    ["@ID"] = (SqlDbType.Int,ID,null),
-                };
-            var reader = SqlHelper.ExecuteReader(query,CommandType.Text,parameters);
-            if (reader.Read())
+            try
             {
-                return new RoleDTO
-                {
-                    RoleID = Convert.ToInt32(reader["RoleID"]),
-                    RoleName = reader["RoleName"].ToString()
-                };
-                
+var            rolesList = await _context.Roles.ToListAsync();
+                return rolesList;
             }
-            return null;
+            catch (DbException ex)
+            {
+                throw;
+            }
+           catch( Exception ex)
+            {
+                throw;
+            }
+
+
+
+        }
+        public async Task<Role?> GetRoleByIDAsync(int roleID)
+        {
+            try
+            {
+                var role = await _context.Roles.FindAsync(roleID);
+                return role;
+            }
+            catch (DbException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
     }
 }

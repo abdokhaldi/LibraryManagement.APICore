@@ -1,7 +1,11 @@
 ﻿using LibraryManagement.DAL;
+using LibraryManagement.DAL.Context;
+using LibraryManagement.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,46 +14,41 @@ namespace LibraryManagement.DAL
 {
     public class ActivityRepository
     {
-        public static int AddActivity(string activityType, string description,DateTime createdAt,string username,string entityName,int entityID)
+        private readonly LibraryDbContext _context;
+        public ActivityRepository(LibraryDbContext context)
         {
-            string query = @"INSERT INTO Activities (ActivityType, Description,  CreatedAt, Username, EntityName, EntityID)
-                               VALUES(@activityType, @description,  @createdAt, @username, @entityName, @entityID);
-                               SELECT SCOPE_IDENTITY();";
-            var parameters = new Dictionary<string, (SqlDbType, object, int?)>()
+            _context = context;
+        }
+        public async Task<int> AddActivityAsync(Activity activityEntity)
+        {
+            try
             {
-                ["@activityType"] = (SqlDbType.NVarChar, activityType, 50),
-                ["@description"] = (SqlDbType.NVarChar, description , 200),
-                ["@createdAt"] = (SqlDbType.DateTime, createdAt, null),
-                ["@username"] = (SqlDbType.NVarChar, username, 50),
-                ["@entityName"] = (SqlDbType.NVarChar, entityName, 50),
-                ["@entityID"] = (SqlDbType.Int, entityID, null),
-            };
-            object activityID = SqlHelper.ExecuteCommand(query,CommandType.Text,SqlHelper.ExecuteType.ExecuteScalar,parameters);
-            return Convert.ToInt32(activityID);
+                _context.Activities.Add(activityEntity);
+                await _context.SaveChangesAsync();
+                return activityEntity.ActivityID;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
   
-        public static List<ActivityDTO> GetAllActivities()
+        public async Task<List<Activity>> GetAllActivitiesAsync()
         {
-            string query = @"SELECT Top 8 * FROM Activities Order by CreatedAt DESC;";
-            List<ActivityDTO> activities = new();
-            using var reader = SqlHelper.ExecuteReader(query,CommandType.Text,null);
-            while (reader != null && reader.Read())
+            try
             {
-                activities.Add(
-
-                    new ActivityDTO
-                    {
-                        Id = Convert.ToInt32(reader["Id"]),
-                        ActivityType = reader["ActivityType"].ToString(),
-                        Description = reader["Description"].ToString(),
-                        CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
-                        Username = reader["Username"].ToString(),
-                        EntityName = reader["EntityName"].ToString(),
-                        EntityID = Convert.ToInt32(reader["EntityID"]),
-                    }
-                    );
+                var activitiesList = await _context.Activities.Take(8)
+                                                              .ToListAsync();
+                return activitiesList;
             }
-            return activities;
+            catch (DbException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     
     }

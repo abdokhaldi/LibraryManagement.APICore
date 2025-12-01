@@ -1,5 +1,6 @@
 ﻿
 using LibraryManagement.DTO;
+using LibraryManagement.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,138 +11,149 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using LibraryManagement.DAL.Context;
 
 namespace LibraryManagement.DAL
 {
     public class MemberRepository
     {
-        public static List<MemberDTO> GetAllMembers()
+        private readonly LibraryDbContext _context;
+        public MemberRepository(LibraryDbContext context)
         {
-            var members = new List<MemberDTO>() ;
-            MemberDTO data = null;
-            string query = @"SELECT * FROM Members;";
-            using var reader = SqlHelper.ExecuteReader(query,CommandType.Text);
-           while (reader.Read())
-            {
-               data = new MemberDTO
-                {
-                    MemberID = Convert.ToInt32(reader["PersonID"]),
-                    PersonID = Convert.ToInt32(reader["PersonID"]),
-                    JoinDate = Convert.ToDateTime(reader["JoinDate"]),
-                    IsActive = Convert.ToBoolean(reader["IsActive"]),
-               };
-                members.Add(data);
-            }
-            return members;
-            }
-       
-        public static int AddNewMember(int personID,DateTime joinDate,bool isActive)
+            _context = context;
+        }
+
+        public async Task<List<Member>> GetAllMembersAsync()
         {
-
-            string query = @"INSERT INTO Members(PersonID,JoinDate,IsActive)
-                             VALUES(@personID,@joinDate,@isActive);
-                             SELECT CAST(SCOPE_IDENTITY() AS int);";
-            try
+            try{
+                var membersList = await _context.Members.Include(m => m.Person)
+                                                        .ToListAsync();
+                return membersList;
+            }
+            catch (DbException ex)
             {
-                var parameters = new Dictionary<string, (SqlDbType, object, int?)>()
-                {
-                    ["@personID"] = (SqlDbType.Int,personID,null) ,
-                    ["@joinDate"] = (SqlDbType.DateTime,joinDate,null),
-                    ["@isActive"] = (SqlDbType.Bit, isActive, null)
-                };
-
-                object newMemberID = SqlHelper.ExecuteCommand(query,CommandType.Text,SqlHelper.ExecuteType.ExecuteScalar,parameters);
-                return Convert.ToInt32(newMemberID);
+                throw;
             }
-            catch (Exception ex){
-                throw new Exception($"Error : {ex.Message}");
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw;
             }
-            
         }
        
-        public static MemberDTO FindMemberByID(int id)
+       
+        public async Task<Member?> GetMemberByIDAsync(int memberID)
         {
-           
-            string query = @"SELECT * FROM Members WHERE PersonID=@id;";
-            var parameters = new Dictionary<string, (SqlDbType, object,int?)>
-            {
-                ["@id"] = (SqlDbType.Int,id,null)
-            };
-           
-           using var reader = SqlHelper.ExecuteReader(query,CommandType.Text,parameters);
-            if (!reader.Read()) return null;
-            
-                return new MemberDTO
-                {
-                    MemberID = Convert.ToInt32(reader["PersonID"]),
-                    PersonID = Convert.ToInt32(reader["PersonID"]),
-                    JoinDate = Convert.ToDateTime(reader["JoinDate"]),
-                    IsActive = Convert.ToBoolean(reader["IsActive"]),
-                };
-            }
-    
-        public static bool UpdateMember(MemberDTO data)
-        {
-            int rowsAffected = 0;
-            string query = @"UPDATE Members
-                             SET PersonID = @personID,
-                                 JoinDate = @joinDate
-                             WHERE PersonID = @memberID;";
-
-            var parameters = new Dictionary<string, (SqlDbType, object, int?)>()
-            {
-                ["@memberID"] = (SqlDbType.Int, data.MemberID, null),
-                ["@personID"] = (SqlDbType.Int, data.PersonID, null),
-                ["@joinDate"] = (SqlDbType.DateTime, data.JoinDate, null),
-                ["@isActive"] = (SqlDbType.Bit, data.IsActive, null)
-            };
-          
             try
             {
-             rowsAffected = (int)SqlHelper.ExecuteCommand(query,CommandType.Text,SqlHelper.ExecuteType.ExecuteNonQuery,parameters);
-
+                var member = await _context.Members
+                    .Include(m => m.Person)
+                    .Where(m => m.MemberID == memberID)
+                    .FirstOrDefaultAsync();
+                return member;
+            }
+            catch (DbException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error : {ex.Message}"); 
+                throw;
             }
-            return rowsAffected > 0;
+        }
+        public async Task<int> AddNewMemberAsync(Member memberEntity)
+        {
+            try {
+                _context.Members.Add(memberEntity);
+                await _context.SaveChangesAsync();
+                return memberEntity.MemberID;
+
+        }catch (DbException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        public async Task<int> UpdateMemberAsync(Member memberEntity)
+        {
+            try
+            {
+                _context.Members.Update(memberEntity);
+                return await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw;
+            }
+            catch (DbException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
         }
     
-        public static MemberDTO FindMemberByPersonID(int id)
+        public async Task<Member?> FindMemberByPersonIDAsync(int personID)
         {
-            string query = @"SELECT * FROM Members WHERE PersonID=@id;";
-            var parameters = new Dictionary<string,(SqlDbType,object,int?)>()
+            try
             {
-                ["@id"] = (SqlDbType.Int,id,null)
-            };
+              var member = await _context.Members
+                .Include(m => m.Person)
+                .Where(m => m.PersonID == personID)
+                .FirstOrDefaultAsync();
 
-            using var reader = SqlHelper.ExecuteReader(query,CommandType.Text,parameters);
-            if (!reader.Read()) return null;
+                return member;
+            }
+            catch (DbException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
             
-                return new MemberDTO
-                {
-                    MemberID = Convert.ToInt32(reader["PersonID"]),
-                    PersonID = Convert.ToInt32(reader["PersonID"]),
-                    JoinDate = Convert.ToDateTime(reader["JoinDate"]),
-                    IsActive = Convert.ToBoolean(reader["IsActive"]),
+        }
 
-                };
+        public async Task<int> SetMemberStatusAsync(int memberID,bool isActive)
+        {
+            try
+            {
+                var memberToChangeStatus = await _context.Members
+                                  .FindAsync(memberID);
+                if (memberToChangeStatus == null)
+                {
+                    return 0;
+                }
+                if (memberToChangeStatus.IsActive == isActive)
+                {
+                    return 1;
+                }
+                memberToChangeStatus.IsActive = isActive;
+                _context.Members.Update(memberToChangeStatus);
+                return await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw;
+            }
+            catch (DbException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
-        public static int SetMemberActiveStatus(int memberID,bool isActive)
-        {
-            string query = @"UPDATE Members 
-                       SET IsActive=@isActive 
-                           WHERE PersonID=@memberID;";
-
-            var parameters = new Dictionary<string,(SqlDbType,object,int?)> {
-
-                ["@memberID"] = (SqlDbType.Int,memberID,null),
-                ["@isActive"] = (SqlDbType.Bit, isActive, null)
-            };
-            int rowsAffected = (int)SqlHelper.ExecuteCommand(query,CommandType.Text,SqlHelper.ExecuteType.ExecuteNonQuery,parameters);
-            return rowsAffected ;
         }
 
 

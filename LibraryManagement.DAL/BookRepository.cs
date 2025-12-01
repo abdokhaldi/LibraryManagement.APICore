@@ -34,11 +34,14 @@ namespace LibraryManagement.DAL
         }
 
 
-        public async Task<Book?> FindBookByIDAsync(int bookID)
+        public async Task<Book?> GetBookByIDAsync(int bookID)
         {
             try
             {
-                var book = await _context.Books.FindAsync(bookID);
+                var book = await _context.Books
+                    .Include(b=>b.Category)
+                    .Where(b => b.BookID == bookID)
+                    .FirstOrDefaultAsync();
                 return book;
             }
             catch (Exception ex)
@@ -47,9 +50,6 @@ namespace LibraryManagement.DAL
             }
         }
            
-        
-
-
         public async Task<int> AddNewBookAsync(Book bookEntity)
         {
             try
@@ -102,19 +102,31 @@ namespace LibraryManagement.DAL
             }
         }
 
-        public static int SetBookStatusAsync(int bookID, bool isActive)
+        public async Task<int> SetBookStatusAsync(int bookID, bool isActive)
         {
-            string query = @"UPDATE Books 
-                             SET IsActive = @isActive WHERE BookID=@bookID;";
-
-            var parameters = new Dictionary<string, (SqlDbType, object, int?)>()
+            try
             {
-                ["@bookID"] = (SqlDbType.Int, bookID, null),
-                ["@isActive"] = (SqlDbType.Bit, isActive, null),
-            };
+            var bookToChangeStatus = await _context.Books.FirstOrDefaultAsync(b => b.BookID == bookID);
+                if (bookToChangeStatus == null)
+                {
+                    return 0;
+                }
+                if (bookToChangeStatus.IsActive == isActive)
+                {
+                    return 1;
+                }
+                bookToChangeStatus.IsActive = isActive;
+                return await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
-            int rowsAffected = (int)SqlHelper.ExecuteCommand(query, CommandType.Text, SqlHelper.ExecuteType.ExecuteNonQuery, parameters);
-            return rowsAffected;
         }
 
 
