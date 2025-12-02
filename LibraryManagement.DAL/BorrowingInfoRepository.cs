@@ -1,38 +1,27 @@
-﻿using LibraryManagement.DTO;
-using System;
-using System.Collections.Generic;
+﻿using LibraryManagement.DAL.Context;
+using LibraryManagement.DAL.Interfaces;
+using LibraryManagement.DTO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Data;
+using Microsoft.EntityFrameworkCore;
+using LibraryManagement.DAL.Entities;
 
 namespace LibraryManagement.DAL
 {
-    public class BorrowingInfoRepository
+    public class BorrowingInfoRepository : IBorrowingInfoRepository
     {
-        public static List<BorrowingInfoDTO> GetAllBorrowings()
+        private readonly LibraryDbContext _context;
+
+        public BorrowingInfoRepository(LibraryDbContext context)
         {
-            List<BorrowingInfoDTO> borrowings = new();
-            string query = @"SELECT * FROM FullBorrowingsInfo;";
-            using var reader = SqlHelper.ExecuteReader(query,CommandType.Text,null);
-            if (reader == null) return null;
-            while (reader.Read())
-            {
-                borrowings.Add(
-                    new BorrowingInfoDTO
-                    {
-                        BorrowingID = (int)reader["BorrowingID"],
-                        Title = Convert.ToString(reader["Title"]),
-                        FullName = reader["FullName"].ToString(),
-                        BorrowingDate = (DateTime)reader["BorrowingDate"],
-                        DueDate = (DateTime)reader["DueDate"],
-                        ReturnDate = reader["ReturnDate"]==DBNull.Value?null: Convert.ToDateTime(reader["ReturnDate"]),
-                        Status = (string)reader["Status"],
-                        BookID = (int)reader["BookID"],
-                    }
-                    );
-            }
-            return borrowings;
+            _context = context;
+        }
+
+        public  Task<IQueryable<BorrowingInfoView>> GetQueryableFullBorrowingsInfoAsync()
+        {
+            var query = _context.FullBorrowingsInfo.AsQueryable();
+
+            return Task.FromResult(query); 
         }
     }
 }

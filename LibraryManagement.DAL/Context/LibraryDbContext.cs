@@ -28,7 +28,6 @@ namespace LibraryManagement.DAL.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Book>().Property(b => b.RowVersion).IsRowVersion();
             modelBuilder.Entity<BorrowingInfoView>().HasNoKey().ToView("FullBorrowingsInfo");
             modelBuilder.Entity<SmallBookEntity>().HasNoKey().ToView("SmallBooks");
             modelBuilder.Entity<SmallPersonEntity>().HasNoKey().ToView("SmallPeople");

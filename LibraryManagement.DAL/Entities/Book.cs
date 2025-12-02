@@ -10,7 +10,6 @@ namespace LibraryManagement.DAL.Entities
         [Key]
         public int BookID { get; set; }
         
-        public byte[]? RowVersion { get; set; }
         [Required]
         [MaxLength(200)]
         public string Title { get; set; } = null!;
