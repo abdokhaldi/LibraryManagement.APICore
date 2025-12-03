@@ -6,7 +6,8 @@ namespace LibraryManagement.DAL.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User?> GetUserByIDAsync(int userID);
+        Task<User?> GetUserForUpdateAsync(int userID);
+        Task<User?> GetUserForReadOnlyAsync(int userID);
 
         Task<User?> GetUserByUsernameAsync(string username);
 

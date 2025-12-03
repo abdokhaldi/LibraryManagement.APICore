@@ -9,14 +9,14 @@ namespace LibraryManagement.DAL.Interfaces
     {
         Task<IQueryable<Book>> GetQueryableBooksAsync();
 
-        Task<Book?> GetBookByIDAsync(int bookID);
+        Task<Book?> GetBookForUpdateAsync(int bookID);
+        Task<Book?> GetBookForReadOnlyAsync(int bookID);
 
-        Task<int> AddNewBookAsync(Book bookEntity);
+        Task AddNewBookAsync(Book bookEntity);
 
-        Task<int> UpdateBookAsync(Book bookEntity);
+        Task UpdateBookAsync(Book bookEntity);
 
         Task<int?> GetBookQuantityAsync(int bookID);
 
-        Task<int> SetBookStatusAsync(int bookID, bool isActive);
     }
 }

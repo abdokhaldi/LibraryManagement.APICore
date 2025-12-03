@@ -17,8 +17,7 @@ namespace LibraryManagement.DAL
 
         public async Task<bool> IsBookCurrentlyUnavailableAsync(int bookID,int personID)
         {
-            try
-            {
+           
                 bool IsBookCurrentlyUnavailable = await _context.Borrowings.AnyAsync(
                                              b => b.BookID == bookID
                                              && b.PersonID == personID
@@ -27,72 +26,45 @@ namespace LibraryManagement.DAL
                                             );
                 return IsBookCurrentlyUnavailable;
             }
-            catch (DbException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public async Task<int> RecordNewBorrowingAsync(Borrowing borrowingEntity)
+            
+        public Task RecordNewBorrowingAsync(Borrowing borrowingEntity)
         {
-            try
-            {
-                var bookToBorrow = await _context.Books.FindAsync(borrowingEntity.BookID);
-                
-                if (bookToBorrow == null || bookToBorrow.IsActive == false || bookToBorrow.Quantity<=0)
-                {
-                    throw new InvalidOperationException("Book is unavailable or not found.");
-                }
-                
-                bookToBorrow.Quantity--;
-
-               _context.Borrowings.Add(borrowingEntity);
-                await _context.SaveChangesAsync();
-                return borrowingEntity.BorrowingID;
-            }
-            catch (DbException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            _context.Borrowings.Add(borrowingEntity);
+            return Task.CompletedTask;
         }
+            
         
-        public async Task<int> UpdateBorrowingAsync(Borrowing borrowingEntity)
+        public  Task UpdateBorrowingAsync(Borrowing borrowingEntity)
         {
           
                 _context.Borrowings.Update(borrowingEntity);
-                return await _context.SaveChangesAsync();
+                return Task.CompletedTask;
             
         }
         
 
-        public  async Task<Borrowing?> FindBorrowingByIDAsync(int borrowingID)
+        public  async Task<Borrowing?> GetBorrowingForUpdateAsync(int borrowingID)
         {
-            try
-            {
-                var borrowing = await _context.Borrowings.Include(b => b.Person)
+           
+                var borrowing = await _context.Borrowings
+                                        .Include(b => b.Person)
                                         .Include(b => b.Book)
                                         .FirstOrDefaultAsync(b=>b.BorrowingID == borrowingID);
                 return borrowing;
             }
-            catch (DbException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            
+
+        public async Task<Borrowing?> FindBorrowingForReadOnlyAsync(int borrowingID)
+        {
+
+            var borrowing = await _context.Borrowings.AsNoTracking()
+                                    .Include(b => b.Person)
+                                    .Include(b => b.Book)
+                                    .FirstOrDefaultAsync(b => b.BorrowingID == borrowingID);
+            return borrowing;
         }
-           
+
+
+
         public  Task<IQueryable<Borrowing>> GetQueryableBorrowingsAsync()
         {
             var query =  _context.Borrowings.AsQueryable();

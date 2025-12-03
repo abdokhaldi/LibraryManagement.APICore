@@ -12,11 +12,12 @@ namespace LibraryManagement.DAL.Interfaces
 
         Task<bool> IsBookCurrentlyUnavailableAsync(int bookID, int personID);
 
-        Task<int> RecordNewBorrowingAsync(Borrowing borrowingEntity);
+        Task RecordNewBorrowingAsync(Borrowing borrowingEntity);
 
-        Task<int> UpdateBorrowingAsync(Borrowing borrowingEntity);
+        Task UpdateBorrowingAsync(Borrowing borrowingEntity);
 
-        Task<Borrowing?> FindBorrowingByIDAsync(int borrowingID);
+        Task<Borrowing?> GetBorrowingForUpdateAsync(int borrowingID);
+        Task<Borrowing?> FindBorrowingForReadOnlyAsync(int borrowingID);
 
 
     }

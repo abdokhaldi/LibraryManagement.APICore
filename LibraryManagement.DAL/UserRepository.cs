@@ -7,11 +7,12 @@ using System.Data;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using LibraryManagement.DAL.Interfaces;
 
 
 namespace LibraryManagement.DAL
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly LibraryDbContext _context;
         public UserRepository(LibraryDbContext context)
@@ -19,171 +20,71 @@ namespace LibraryManagement.DAL
             _context = context;
         }
 
-        public async Task<User?> GetUserByIDAsync(int userID)
+        public async Task<User?> GetUserForUpdateAsync(int userID)
         {
-            try
-            {
+            
             var user = await _context.Users
                                          .Include(u => u.Person)
                                          .Include(u => u.Role)
                                          .FirstOrDefaultAsync(u=>u.UserID==userID);
                 return user;
             }
-            catch (DbException ex)
-            {
-                throw new Exception("Database Error occurred while retrieving user ." + ex);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            
+
+        public async Task<User?> GetUserForReadOnlyAsync(int userID)
+        {
+
+            var user = await _context.Users.AsNoTracking()
+                                         .Include(u => u.Person)
+                                         .Include(u => u.Role)
+                                         .FirstOrDefaultAsync(u => u.UserID == userID);
+            return user;
         }
+
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            try
-            {
-                var user = await _context.Users 
+           
+                var user = await _context.Users.AsNoTracking() 
                                              .Include(u=>u.Person)
                                              .Include(u => u.Role)
                                              .FirstOrDefaultAsync(u =>u.Username==username);
                 return user;
-            }
-            catch (DbException ex)
-            {
-                throw new Exception("Database Error occurred while retrieving user ." + ex);
+         }
+           
 
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
-        }
-
-        public async Task<List<User>> GetAllUsersAsync()
+        public  Task<IQueryable<User>> GetQueryableUsersAsync()
         {
-            try
-            {
-                var usersList = await _context.Users
-                                 .Include(u=>u.Person)
-                                 .Include(u=>u.Role)
-                                 .ToListAsync();
-                return usersList;
+           
+                var query = _context.Users
+                                 .Include(u => u.Person)
+                                 .Include(u => u.Role).AsNoTracking();
+                                 
+                return Task.FromResult(query);
             }
-            catch (DbException ex)
-            {
-                throw ;
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+           
 
         public async Task<bool>  IsUsernameExistsAsync(string username)
         {
-            try
-            {
-                var exists = await _context.Users.Where(u => u.Username == username)
+            
+                var exists = await _context.Users.Where(u => u.Username == username).AsNoTracking()
                                            .Select(u => u.Username)
                                            .FirstOrDefaultAsync();
                 return (exists != null);
             }
-            catch (DbException ex)
-            {
-                throw;
+            
 
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public async Task<int> AddNewUser(User userEntity)
+        public Task AddNewUser(User userEntity)
         {
-            try {
-                _context.Users.Add(userEntity);
-                await _context.SaveChangesAsync();
-                return userEntity.UserID;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+               _context.Users.Add(userEntity);
+                return Task.CompletedTask;
         }
+            
 
-        public async Task<int> UpdateUserAsync(User userEntity)
+        public Task UpdateUserAsync(User userEntity)
         {
-            try
-            {
+            
                 _context.Users.Update(userEntity);
-                return await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+               return Task.CompletedTask;
         }
-
-        public async Task<int> SetUserActiveStatusAsync(int userID,bool isActive)
-        {
-            try
-            {
-                var userToChangeStatus = await _context.Users.FindAsync(userID);
-                if (userToChangeStatus == null)
-                {
-                    return 0;
-                }
-                if (userToChangeStatus.IsActive == isActive)
-                {
-                    return 1;
-                }
-                userToChangeStatus.IsActive = isActive;
-                return await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public async Task<int> SetUserBlockStatusAsync(int userID,bool isBlocked)
-        {
-            try
-            {
-                var userToChangeStatus = await _context.Users.FindAsync(userID);
-                if (userToChangeStatus == null)
-                {
-                    return 0;
-                }
-                if (userToChangeStatus.IsBlocked == isBlocked)
-                {
-                    return 1;
-                }
-                userToChangeStatus.IsBlocked = isBlocked;
-                return await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-
+           
     }
 }

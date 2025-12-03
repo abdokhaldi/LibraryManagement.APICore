@@ -1,19 +1,13 @@
 ﻿using LibraryManagement.DTO;
 using LibraryManagement.DAL.Entities;
-using System;
-using System.Data;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LibraryManagement.DAL.Interfaces;
 using System.Data.Common;
 using LibraryManagement.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.DAL
 {
-    public class CategoryRepository
+    public class CategoryRepository : ICategoryRepository
     {
         private readonly LibraryDbContext _context;
         public CategoryRepository(LibraryDbContext context)
@@ -21,38 +15,25 @@ namespace LibraryManagement.DAL
             _context = context;
         }
 
-        public async Task<List<Category>> GetAllCategoriesAsync()
+        public  Task<IQueryable<Category>> GetCategoriesAsync()
         {
-            try
-            {
-                var categoriesList = await _context.Categories.ToListAsync();
-                return categoriesList;
-            }
-            catch(DbException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            
+                var categoriesList =  _context.Categories.AsNoTracking();
+                return Task.FromResult(categoriesList);
+            
         }
 
-        public async Task<Category?> GetCategoryByIDAsync(int categoryID)
+        public async Task<Category?> GetCategoryForReadOnlyAsync(int categoryID)
         {
-            try
-            {
-                var category = await _context.Categories.FindAsync(categoryID);
+            
+                var category = await _context.Categories.AsNoTracking().FirstOrDefaultAsync(c=>c.CategoryID == categoryID);
                 return category;
-            }
-            catch (DbException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+        }
+        public async Task<Category?> GetCategoryForUpdateAsync(int categoryID)
+        {
+
+            var category = await _context.Categories.FindAsync(categoryID);
+            return category;
         }
 
     }

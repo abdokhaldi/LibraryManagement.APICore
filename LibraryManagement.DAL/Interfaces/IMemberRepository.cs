@@ -8,14 +8,14 @@ namespace LibraryManagement.DAL.Interfaces
     {
         Task<IQueryable<Member>> GetQueryableMembersAsync();
 
-        Task<Member?> GetMemberByIDAsync(int memberID);
+        Task<Member?> GetMemberForUpdateAsync(int memberID);
+        Task<Member?> GetMemberForReadOnlyAsync(int memberID);
 
-        Task<Member?> FindMemberByPersonIDAsync(int personID);
+        Task<Member?> GetMemberByPersonIDForReadOnlyAsync(int personID);
 
-        Task<int> AddNewMemberAsync(Member memberEntity);
+        Task AddNewMemberAsync(Member memberEntity);
 
-        Task<int> UpdateMemberAsync(Member memberEntity);
+        Task UpdateMemberAsync(Member memberEntity);
 
-        Task<int> SetMemberStatusAsync(int memberID, bool isActive);
     }
 }

@@ -19,7 +19,7 @@ namespace LibraryManagement.DAL
 
         public  Task<IQueryable<BorrowingInfoView>> GetQueryableFullBorrowingsInfoAsync()
         {
-            var query = _context.FullBorrowingsInfo.AsQueryable();
+            var query = _context.FullBorrowingsInfo.AsNoTracking();
 
             return Task.FromResult(query); 
         }

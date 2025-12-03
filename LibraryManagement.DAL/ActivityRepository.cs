@@ -1,6 +1,8 @@
 ﻿using LibraryManagement.DAL;
 using LibraryManagement.DAL.Context;
 using LibraryManagement.DAL.Entities;
+using LibraryManagement.DAL.Interfaces;
+
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,44 +14,29 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DAL
 {
-    public class ActivityRepository
+    public class ActivityRepository : IActivityRepository
     {
         private readonly LibraryDbContext _context;
         public ActivityRepository(LibraryDbContext context)
         {
             _context = context;
         }
-        public async Task<int> AddActivityAsync(Activity activityEntity)
+        public Task AddActivityAsync(Activity activityEntity)
         {
-            try
-            {
-                _context.Activities.Add(activityEntity);
-                await _context.SaveChangesAsync();
-                return activityEntity.ActivityID;
+            
+               _context.Activities.Add(activityEntity);
+            return Task.CompletedTask;
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+            
   
-        public async Task<List<Activity>> GetAllActivitiesAsync()
+        public  Task<IQueryable<Activity>> GetQueryableAllActivitiesAsync()
         {
-            try
-            {
-                var activitiesList = await _context.Activities.Take(8)
-                                                              .ToListAsync();
-                return activitiesList;
+            
+                var query = _context.Activities.AsNoTracking();
+                                                             
+                return Task.FromResult(query);
             }
-            catch (DbException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+            
     
     }
 }

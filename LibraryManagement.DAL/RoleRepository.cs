@@ -1,5 +1,6 @@
 ﻿using LibraryManagement.DAL.Context;
 using LibraryManagement.DAL.Entities;
+using LibraryManagement.DAL.Interfaces;
 using LibraryManagement.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,48 +13,32 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DAL
 {
-    public class RoleRepository
+    public class RoleRepository : IRoleRepository
     {
         private readonly LibraryDbContext _context;
         public RoleRepository(LibraryDbContext context)
         {
             _context = context;
         }
-        public async Task<List<Role>> GetAllRolesAsync()
+        public Task<IQueryable<Role>> GetQueryableRolesAsync()
         {
-            try
-            {
-var            rolesList = await _context.Roles.ToListAsync();
-                return rolesList;
+           
+var            query = _context.Roles.AsQueryable();
+                return Task.FromResult(query);
             }
-            catch (DbException ex)
-            {
-                throw;
-            }
-           catch( Exception ex)
-            {
-                throw;
-            }
+           
 
-
-
-        }
-        public async Task<Role?> GetRoleByIDAsync(int roleID)
+        public async Task<Role?> GetRoleForReadOnlyAsync(int roleID)
         {
-            try
-            {
+            
                 var role = await _context.Roles.FindAsync(roleID);
                 return role;
             }
-            catch (DbException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+        public async Task<Role?> GetRoleForUpdateAsync(int roleID)
+        {
 
+            var role = await _context.Roles.FindAsync(roleID);
+            return role;
         }
     }
 }

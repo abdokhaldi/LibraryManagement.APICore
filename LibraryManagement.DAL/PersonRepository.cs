@@ -1,5 +1,6 @@
 ﻿using System;
 using LibraryManagement.DAL.Entities;
+using LibraryManagement.DAL.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
 using System.Data;
@@ -14,7 +15,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Data.Common;
 namespace LibraryManagement.DAL
 {
-    public class PersonRepository
+    public class PersonRepository : IPersonRepository
     {
         private readonly LibraryDbContext _context; 
         public PersonRepository(LibraryDbContext context)
@@ -23,92 +24,38 @@ namespace LibraryManagement.DAL
         }
 
 
-         public async Task<List<Person>> GetAllPeopleAsync()
+         public Task<IQueryable<Person>> GetQueryablePeopleAsync()
           {
-            try
-            {
-                var peopleList = await _context.People.ToListAsync();
-                return peopleList;
-            }
-            catch (DbException ex)
-            {
-                throw new Exception("Database error occurred while retrieving all people.", ex);
-            }
-         }
-        public async Task<Person?> FindPersonByIDAsync(int personID)
-        {
-
-            try
-            {
-                var person = await _context.People.FindAsync(personID);
-                return person;
-            }
-            catch (DbException ex)
-            {
-                throw new Exception("Database error occurred while retrieving person.", ex);
-            }
-            catch (Exception ex) 
-            {
-
-                throw;
-                
-            }
-           
-        }
-        public async Task<int> AddNewPersonAsync(Person personEntity)
-        {
-            try
-            {
-                _context.People.Add(personEntity);
-                await _context.SaveChangesAsync();
-                return personEntity.PersonID;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-           
-        }
-
-        public async Task<int> UpdatePersonAsync(Person personEntity)
-        {
-           
-            try
-            {
-                _context.People.Update(personEntity);
-               int rowsAffected =  await _context.SaveChangesAsync();
-                return rowsAffected;
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                throw;
+            
+                var query = _context.People.AsNoTracking();
+                return Task.FromResult(query);
             }
             
-        }
-        
-        public async Task<int> SetPersonStatusAsync(int personID,bool isActive)
+        public async Task<Person?> GetPersonForReadOnlyAsync(int personID)
         {
-            try
-            {
-                var personToChangeStatus = await _context.People.FirstOrDefaultAsync(p => p.PersonID == personID);
-                if (personToChangeStatus == null)
-                {
-                    return 0;
-                }
-                if(personToChangeStatus.IsActive == isActive)
-                {
-                    return 1;
-                }
-
-                personToChangeStatus.IsActive = isActive;
-                return await _context.SaveChangesAsync();
+               var person = await _context.People.AsNoTracking().FirstOrDefaultAsync(p=>p.PersonID == personID);
+                return person;
             }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                throw;
-            }
+        public async Task<Person?> GetPersonForUpdateAsync(int personID)
+        {
+            var person = await _context.People.FindAsync(personID);
+            return person;
         }
+        public Task AddNewPersonAsync(Person personEntity)
+        {
+           
+            _context.People.Add(personEntity);
+            return Task.CompletedTask;
+        }
+            
 
+        public Task UpdatePersonAsync(Person personEntity)
+        {
+            _context.People.Update(personEntity);
+            return Task.CompletedTask;
+        }
+         
+        
         
     }
 }

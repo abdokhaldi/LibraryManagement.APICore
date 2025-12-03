@@ -10,6 +10,6 @@ namespace LibraryManagement.DAL.Interfaces
     public interface ISmallBookRepository
     {
         Task<IQueryable<SmallBookEntity>> GetQueryableSmallBooksAsync();
-        
+       
     }
 }

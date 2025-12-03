@@ -20,8 +20,8 @@ namespace LibraryManagement.DAL
 
         public  Task<IQueryable<SmallBookEntity>> GetQueryableSmallBooksAsync()
         {
-            var smallBooksList =  _context.SmallBooks.AsQueryable();
-            return Task.FromResult(smallBooksList);
+            var query =  _context.SmallBooks.AsQueryable();
+            return Task.FromResult(query);
         }
         
     }

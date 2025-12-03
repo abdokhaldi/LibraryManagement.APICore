@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryManagement.DTO
+namespace LibraryManagement.DTO.BookDTOs
 {
-    public class BookDTO
+    public class BookForDisplayDTO
     {
-        public int BookID { get; set; }
         public required string Title { get; set; }
         public required string Author { get; set; }
         public required string Publisher { get; set; }
         public required string YearPublished { get; set; }
-        public  int Quantity { get; set; }
-        public int CategoryID { get; set; }
-        public string Image { get; set; }
-        public bool IsActive { get; set; }
+        public required int Quantity { get; set; }
+        public required int CategoryName { get; set; }
+        public string? ImagePath { get; set; }
+        public required bool IsActive { get; set; }
+
     }
 }
