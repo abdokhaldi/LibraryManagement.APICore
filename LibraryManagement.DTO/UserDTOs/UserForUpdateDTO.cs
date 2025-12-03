@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.UserDTOs
 {
-    internal class UserForUpdateDTO
+    public class UserForUpdateDTO
     {
+        public required int UserID { get; set; }
+        public required int PersonID { get; set; }
+        public required string Username { get; set; }
+        public required string Password { get; set; }
+        public required int RoleID { get; set; }
+        public required bool IsActive { get; set; }
     }
 }

@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.BorrowingDTOs
 {
-    internal class BorrowingForCreationDTO
+    public class BorrowingForCreationDTO
     {
+        
+            public required int BookID { get; set; }
+            public required int PersonID { get; set; }
+            public required DateTime DueDate { get; set; }
+        }
+
     }
-}
+

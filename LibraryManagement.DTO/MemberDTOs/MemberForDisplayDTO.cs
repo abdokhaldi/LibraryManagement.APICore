@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryManagement.DTO.RoleDTOs
+namespace LibraryManagement.DTO.MemberDTOs
 {
-    internal class RoleForDisplayDTO
+    internal class MemberForDisplayDTO
     {
     }
 }

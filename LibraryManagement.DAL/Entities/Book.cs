@@ -24,7 +24,7 @@ namespace LibraryManagement.DAL.Entities
         public int CategoryID { get; set; }
         public Category Category { get; set; }
         [MaxLength(150)]
-        public string? Image { get; set; }
+        public string? ImagePath { get; set; }
         public bool IsActive { get; set; }
     }
 }

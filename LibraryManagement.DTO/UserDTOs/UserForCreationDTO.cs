@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.UserDTOs
 {
-    internal class UserForCreationDTO
+    public class UserForCreationDTO
     {
+        public required int PersonID { get; set; }
+        public required string Username { get; set; }
+        public required string Password { get; set; }
+        public required int RoleID { get; set; }
     }
 }

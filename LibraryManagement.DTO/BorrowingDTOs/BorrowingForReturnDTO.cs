@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.BorrowingDTOs
 {
-    internal class BorrowingForReturnDTO
+    public class BorrowingForReturnDTO
     {
+        public required int BorrowingID { get; set; }
     }
 }

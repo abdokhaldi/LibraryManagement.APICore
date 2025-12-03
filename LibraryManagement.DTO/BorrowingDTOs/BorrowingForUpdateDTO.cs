@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.BorrowingDTOs
 {
-    internal class BorrowingForUpdateDTO
+    public class BorrowingForUpdateDTO
     {
+        public required int BorrowingID { get; set; }
+        public required DateTime DueDate { get; set; }
+           
     }
 }
