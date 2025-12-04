@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.SmallBookDTO
 {
-    internal class SmallBookForDisplayDTO
+    public class SmallBookForDisplayDTO
     {
+        public required int BookID { get; set; }
+        public required string Title { get; set; }
     }
 }

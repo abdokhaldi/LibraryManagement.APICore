@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.MemberDTOs
 {
-    internal class MemberForUpdateDTO
+    public class MemberForUpdateDTO
     {
+        public required int MemberID { get; set; }
+        public required int PersonID { get; set; }
+        public required bool IsActive { get; set; }
     }
 }

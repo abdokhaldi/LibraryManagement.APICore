@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.MemberDTOs
 {
-    internal class MemberForDisplayDTO
+    public class MemberForDisplayDTO
     {
+        public required int MemberID { get; set; }
+        public required string FullName { get; set; }
+        public required DateTime JoinDate { get; set; }
+        public required bool IsActive { get; set; }
     }
 }

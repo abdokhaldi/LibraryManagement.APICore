@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.CategoryDTOs
 {
-    internal class CategoryForDisplayDTO
+    public class CategoryForDisplayDTO
     {
+        public required int CategoryID { get; set; }
+        public required string CategoryName { get; set; }
+
     }
 }

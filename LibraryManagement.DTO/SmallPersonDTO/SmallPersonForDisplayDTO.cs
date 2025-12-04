@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.SmallPersonDTO
 {
-    internal class SmallPersonForDisplayDTO
+    public class SmallPersonForDisplayDTO
     {
+      public required int PersonID { get; set; }
+        public required string FullName { get; set; }
     }
 }
