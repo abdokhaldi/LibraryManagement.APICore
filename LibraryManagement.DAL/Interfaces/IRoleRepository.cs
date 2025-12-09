@@ -10,7 +10,6 @@ namespace LibraryManagement.DAL.Interfaces
     public interface IRoleRepository
     {
         Task<Role?> GetRoleForReadOnlyAsync(int roleID);
-        Task<Role?> GetRoleForReadOnlyAsync(int roleID);
 
         Task<IQueryable<Role>> GetQueryableRolesAsync();
     }

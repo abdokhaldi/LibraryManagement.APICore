@@ -15,12 +15,10 @@ namespace LibraryManagement.DAL.Interfaces
 
         Task<bool> IsUsernameExistsAsync(string username);
 
-        Task<int> AddNewUser(User userEntity);
+        Task AddNewUserAsync(User userEntity);
 
-        Task<int> UpdateUserAsync(User userEntity);
+        Task UpdateUserAsync(User userEntity);
 
-        Task<int> SetUserActiveStatusAsync(int userID, bool isActive);
 
-        Task<int> SetUserBlockStatusAsync(int userID, bool isBlocked);
     }
 }

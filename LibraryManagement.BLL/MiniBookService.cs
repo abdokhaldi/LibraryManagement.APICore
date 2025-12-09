@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.BLL
 {
-    public class RoleService : IRoleService
+    public class MiniBookService : IMiniBookService
     {
-        private readonly IRoleRepository _roleRepository;
+        private readonly IMiniBookRepository _miniBookRepository;
 
-        public RoleService(IRoleRepository roleRepository)
+        public MiniBookService(IMiniBookRepository miniBookRepository)
         {
-            _roleRepository = roleRepository;
+            _miniBookRepository = miniBookRepository;
         }
     }
 }

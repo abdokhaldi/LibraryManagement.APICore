@@ -1,7 +1,6 @@
 ﻿using LibraryManagement.DAL.Context;
 using LibraryManagement.DAL.Entities;
 using LibraryManagement.DAL.Interfaces;
-using LibraryManagement.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 namespace LibraryManagement.DAL
 {
     
-    public class SmallPersonRepository : ISmallPersonRepository
+    public class SmallPersonRepository : IMiniPersonRepository
     {
         private readonly LibraryDbContext _context;
         public SmallPersonRepository(LibraryDbContext context)

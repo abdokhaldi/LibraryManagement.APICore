@@ -1,7 +1,6 @@
 ﻿using LibraryManagement.DAL.Context;
 using LibraryManagement.DAL.Entities;
 using LibraryManagement.DAL.Interfaces;
-using LibraryManagement.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,7 +24,6 @@ namespace LibraryManagement.DAL
             var listBooks = _context.Books.Include(c => c.Category)
                                            .AsNoTracking();
                 return Task.FromResult(listBooks);
-            
         }
 
 
@@ -33,7 +31,7 @@ namespace LibraryManagement.DAL
         {
             
                 var book = await _context.Books
-                    .Include(b=>b.Category)
+                    .Include(c=>c.Category)
                     .Where(b => b.BookID == bookID)
                     .FirstOrDefaultAsync();
                 return book;
@@ -43,7 +41,7 @@ namespace LibraryManagement.DAL
         {
 
             var book = await _context.Books.AsNoTracking()
-                .Include(b => b.Category)
+                .Include(c => c.Category)
                 .Where(b => b.BookID == bookID)
                 .FirstOrDefaultAsync();
             return book;
@@ -52,7 +50,8 @@ namespace LibraryManagement.DAL
         public Task AddNewBookAsync(Book bookEntity)
         {
            
-             _context.Books.Add(bookEntity);
+
+            _context.Books.Add(bookEntity);
             return Task.CompletedTask;
         }
            
@@ -76,7 +75,11 @@ namespace LibraryManagement.DAL
                               .FirstOrDefaultAsync();
                 return quantity;
             }
-           
 
+       public async Task<bool> IsTitleExistsAsync(string title)
+        {
+            return await _context.Books.AsNoTracking()
+                .AnyAsync(b=>b.Title.ToLower() == title.ToLower());
+        }
     }
 }

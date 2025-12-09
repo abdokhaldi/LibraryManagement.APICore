@@ -1,5 +1,4 @@
 ﻿using LibraryManagement.DAL.Context;
-using LibraryManagement.DTO;
 using LibraryManagement.DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -44,9 +43,9 @@ namespace LibraryManagement.DAL
         {
            
                 var user = await _context.Users.AsNoTracking() 
-                                             .Include(u=>u.Person)
-                                             .Include(u => u.Role)
-                                             .FirstOrDefaultAsync(u =>u.Username==username);
+                                .Include(u=>u.Person)
+                                .Include(u => u.Role)
+                                .FirstOrDefaultAsync(u =>u.Username==username);
                 return user;
          }
            
@@ -70,9 +69,10 @@ namespace LibraryManagement.DAL
                                            .FirstOrDefaultAsync();
                 return (exists != null);
             }
-            
 
-        public Task AddNewUser(User userEntity)
+
+        public Task AddNewUserAsync(User userEntity)
+
         {
                _context.Users.Add(userEntity);
                 return Task.CompletedTask;

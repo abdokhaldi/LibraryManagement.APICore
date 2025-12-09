@@ -3,33 +3,18 @@ using LibraryManagement.DAL;
 using LibraryManagement.DTO;
 using System.Collections.Generic;
 using System.Linq;
+using LibraryManagement.DAL.Interfaces;
+using LibraryManagement.BLL.Interfaces;
 
 namespace LibraryManagement.BLL
 {
-    public class CategoryService
+    public class CategoryService : ICategoryService
     {
-        public int CategoryID{get;set;}
-        public string CategoryName { get; set; }
-        public string Description { get; set; }
+        private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryService(CategoryDTO category)
+        public CategoryService(ICategoryRepository categoryRepository)
         {
-            CategoryID = category.CategoryID;
-            CategoryName = category.CategoryName;
-            Description = category.Description;
-        }
-
-        public static List<CategoryService> GetAllCategories()
-        {
-            List<CategoryDTO> categories = CategoryRepository.GetAllCategories();
-           return categories.Select(c => new CategoryService(c)).ToList();
-        }
-
-        public static CategoryService GetCategoryByID(int categoryID)
-        {
-            CategoryDTO category = CategoryRepository.GetCategoryByID(categoryID);
-
-            return new CategoryService(category);
+            _categoryRepository = categoryRepository;
         }
     }
 }

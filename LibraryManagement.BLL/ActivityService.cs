@@ -1,66 +1,26 @@
-﻿using DAL_LibraryManagement;
-using DTO_LibraryManagement;
+﻿using LibraryManagement.BLL.Interfaces;
+using LibraryManagement.DAL.Interfaces;
+using LibraryManagement.DTO;
+using LibraryManagement.DTO.ActivityDTOs;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LibraryManagement.BLL
 {
-    public class ActivityService
+    
+    public class ActivityService : IActivityService
     {
-        public int Id { get; set; }
-        public string ActivityType { get; set; }
-        public string Description { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string Username { get; set; }
-        public string EntityName { get; set; }
-        public int EntityID { get; set; }
 
-        public ActivityService(int id, string activityType, string description, DateTime createdAt, string username, string entityName, int entityID)
+        private readonly IActivityRepository _activityRepository;
+
+        public ActivityService(IActivityRepository activityRepository)
         {
-            Id = id;
-            ActivityType = activityType;
-            Description = description;
-            CreatedAt = createdAt;
-            Username = username;
-            EntityName = entityName;
-            EntityID = entityID;
+            _activityRepository = activityRepository;
         }
-
-        public ActivityService()
-        {
-            Id = 0;
-            ActivityType = "";
-            Description = "";
-            CreatedAt = DateTime.Now;
-            Username = "";
-            EntityName = "";
-            EntityID = 0;
-        }
-
-        public ActivityService(ActivityDTO activity)
-        {
-            Id = activity.Id;
-            ActivityType = activity.ActivityType;
-            Description = activity.Description;
-            CreatedAt = activity.CreatedAt;
-            Username = activity.Username;
-            EntityName = activity.EntityName;
-            EntityID = activity.EntityID;
-        }
-
-        public static List<ActivityService> GetAllActivities()
-        {
-            var list = ActivityRepository.GetAllActivities();
-           
-            return list.Select(
-                 a => new ActivityService(a)
-                ).ToList();
-        }
-
-
-
     }
 }

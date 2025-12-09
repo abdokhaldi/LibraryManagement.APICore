@@ -1,4 +1,6 @@
-﻿using LibraryManagement.DAL;
+﻿using LibraryManagement.BLL.Interfaces;
+using LibraryManagement.DAL;
+using LibraryManagement.DAL.Interfaces;
 using LibraryManagement.DTO;
 using System;
 using System.Collections.Generic;
@@ -8,26 +10,13 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.BLL
 {
-    public class MiniPersonService
+    public class MiniPersonService : IMiniPersonService
     {
-        public int PersonID { get; set; }
-        public string FullName { get; set; }
+        private readonly IMiniPersonRepository _miniPersonRepository;
 
-        public MiniPersonService(int personID,string fullName)
+        public MiniPersonService(IMiniPersonRepository miniPersonRepository)
         {
-            this.PersonID = personID;
-            FullName = fullName;
-        }
-
-
-        public static List<MiniPersonService> GetPersonAutoSearch(string searchTerm)
-        {
-            List<MiniPersonService> people = null;
-            var peopleList = SmallPersonRepository.GetPersonAutoSearch(searchTerm);
-            if (peopleList == null)
-                return null;
-            people = peopleList.Select(p => new MiniPersonService(p.PersonID, p.FullName)).ToList();
-            return people;
+            _miniPersonRepository = miniPersonRepository;
         }
     }
 }

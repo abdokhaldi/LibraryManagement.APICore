@@ -9,7 +9,7 @@ namespace LibraryManagement.DAL.Interfaces
 {
     public interface IActivityRepository
     {
-        Task<int> AddActivityAsync(Activity activityEntity);
+        Task AddActivityAsync(Activity activityEntity);
         Task<IQueryable<Activity>> GetQueryableAllActivitiesAsync();
     }
 }

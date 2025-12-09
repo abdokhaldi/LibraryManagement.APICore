@@ -1,12 +1,16 @@
-﻿using System;                   // لـ Guid و Exception
-using System.Drawing;           // المكتبة الجديدة
-using System.Drawing.Imaging;   // للتعامل مع تنسيقات الصور (JPEG)
-using System.IO;                // للتعامل مع MemoryStream والملفات
+﻿using System;
+using System.IO;
+using SixLabors.ImageSharp;           // 💡 المكتبة الجديدة
+using SixLabors.ImageSharp.Processing; // 💡 لإجراءات التعديل (Resizing)
+using SixLabors.ImageSharp.Formats.Jpeg;
 
- namespace LibraryManagement.BLL {
+namespace LibraryManagement.BLL
+{
     public static class ImageProcessorService
     {
         private const int TargetSize = 150;
+        // ملاحظة: يُفضل استخدام IWebHostEnvironment أو IHostingEnvironment لتحديد مسار التخزين
+        // لكن للحفاظ على الكلاس ثابتاً، سنترك Path.Combine مؤقتاً.
         private static string _ImageStorageRoot = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "BookImages");
 
         public static string SaveImageToFileSystem(byte[] originalImageBytes)
@@ -21,98 +25,37 @@ using System.IO;                // للتعامل مع MemoryStream والملف
                 Directory.CreateDirectory(_ImageStorageRoot);
             }
 
-            string uniqueFileName = $"{Guid.NewGuid().ToString()}.jpg";
+            string uniqueFileName = $"{Guid.NewGuid()}.jpg";
             string fullPath = Path.Combine(_ImageStorageRoot, uniqueFileName);
 
             try
             {
-                // 1. القراءة من البايت باستخدام MemoryStream (أسلوب System.Drawing)
-                using (var ms = new MemoryStream(originalImageBytes))
-                using (var originalImage = Image.FromStream(ms))
+                // 1. استخدام ImageSharp لقراءة وتعديل الصورة
+                using (var image = Image.Load(originalImageBytes))
                 {
-                    // 2. حساب الأبعاد الجديدة للحفاظ على النسبة
-                    int newWidth = TargetSize;
-                    int newHeight = (int)(originalImage.Height * TargetSize / originalImage.Width);
-
-                    // إذا كان الارتفاع كبيراً، نعيد ضبط العرض (لضمان ألا يتجاوز 150x150)
-                    if (newHeight > TargetSize)
+                    // 2. تطبيق التصغير مع الحفاظ على النسبة
+                    // هذا يضمن أن الصورة لن تتجاوز 150x150
+                    image.Mutate(x => x.Resize(new ResizeOptions
                     {
-                        newWidth = (int)(originalImage.Width * TargetSize / originalImage.Height);
-                        newHeight = TargetSize;
-                    }
+                        Size = new Size(TargetSize, TargetSize),
+                        Mode = ResizeMode.Max // يضمن أن أحد الأبعاد لن يتجاوز الهدف، ويحافظ على النسبة
+                    }));
 
-                    // 3. إنشاء نسخة مصغرة باستخدام Graphics
-                    using (var thumbnail = new Bitmap(newWidth, newHeight))
-                    using (var graphics = Graphics.FromImage(thumbnail))
-                    {
-                        // جودة رسم عالية
-                        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-
-                        // رسم الصورة الأصلية على الصورة المصغرة بالأبعاد الجديدة
-                        graphics.DrawImage(originalImage, 0, 0, newWidth, newHeight);
-
-                        // 4. حفظ الصورة المصغرة على القرص بصيغة JPEG
-                        thumbnail.Save(fullPath, ImageFormat.Jpeg);
-                    }
+                    // 3. حفظ الصورة المصغرة بصيغة JPEG
+                    // تحديد الجودة والحفظ مباشرة إلى الملف
+                    image.Save(fullPath, new JpegEncoder { Quality = 80 });
                 }
 
                 return uniqueFileName;
             }
             catch (Exception)
             {
-                // يلتقط أي خطأ (صورة تالفة، مشاكل في الصلاحيات، إلخ)
+                // التعامل مع أي خطأ أثناء معالجة الصورة
                 return string.Empty;
             }
         }
 
-        // ... الكود السابق لـ _ImageStorageRoot ...
-        // في كلاس ImageProcessorService (BLL)
-        public static void DeleteImageFile(string fileName)
-        {
-            if (string.IsNullOrEmpty(fileName))
-            {
-                return; // لا يوجد ملف لحذفه
-            }
-
-            // 1. بناء المسار الكامل للملف القديم
-            string fullPath = Path.Combine(_ImageStorageRoot, fileName);
-
-            // 2. الحذف الآمن للملف
-            try
-            {
-                if (File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                }
-            }
-            catch (Exception ex)
-            {
-                // 💡 المفهوم: يجب تسجيل هذا الخطأ في ملف Log. 
-                // قد يفشل الحذف إذا كان الملف مفتوحاً بواسطة برنامج آخر، لكن لا يجب أن يعطل التطبيق.
-                Console.WriteLine($"Error deleting file {fullPath}: {ex.Message}");
-            }
-        }
-        public static string GetFullImagePath(string fileName)
-        {
-            // 1. التحقق من أن اسم الملف موجود فعلاً
-            if (string.IsNullOrEmpty(fileName))
-            {
-                return string.Empty; // أو إرجاع مسار صورة افتراضية (No Image Available)
-            }
-
-            // 2. بناء المسار الكامل (ROOT + FileName)
-            string fullPath = Path.Combine(_ImageStorageRoot, fileName);
-
-            // 3. التحقق من وجود الملف على القرص
-            if (File.Exists(fullPath))
-            {
-                return fullPath;
-            }
-
-            // إرجاع مسار فارغ أو مسار "الصورة غير موجودة" إذا لم يتم العثور عليها
-            return string.Empty;
-        }
-
-
+        // ... دوال DeleteImageFile و GetFullImagePath لا تحتاج تعديل ...
+        // ملاحظة: يجب أيضاً تغيير BitMap إلى Bitmap
     }
 }

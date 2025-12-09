@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DAL.Interfaces
 {
-    public interface ISmallBookRepository
+    public interface IMiniPersonRepository
     {
-        Task<IQueryable<SmallBookEntity>> GetQueryableSmallBooksAsync();
-       
+        Task<IQueryable<SmallPersonEntity>> GetQueryableAllSmallPeopleAsync();
     }
 }

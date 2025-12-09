@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.BookDTOs
 {
-    internal class BookForUpdateDTO
+    public class BookForUpdateDTO
     {
         public required int BookID { get; set; }
         public required string Title { get; set; }

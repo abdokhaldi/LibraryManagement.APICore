@@ -14,7 +14,7 @@ namespace LibraryManagement.BLL
         public string Message { get; set; }
         public object ReturnedValue { get; set; }
 
-        public OperationResultBLL(string message, bool result)
+        public  OperationResultBLL(string message, bool result)
         {
             this.Message = message;
             this.Success = result;
