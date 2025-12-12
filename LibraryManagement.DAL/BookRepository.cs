@@ -56,12 +56,7 @@ namespace LibraryManagement.DAL
         }
            
 
-        public Task UpdateBookAsync(Book bookEntity)
-        {
-            
-                _context.Books.Update(bookEntity);
-            return Task.CompletedTask;
-        }
+      
            
         
 

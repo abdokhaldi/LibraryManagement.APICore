@@ -22,8 +22,10 @@ namespace LibraryManagement.DAL.Entities
         public string? YearPublished { get; set; }
         public int Quantity { get; set; }
         public int CategoryID { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
+        
         [MaxLength(150)]
+        [Column("Image")]
         public string? ImagePath { get; set; }
         public bool IsActive { get; set; }
     }

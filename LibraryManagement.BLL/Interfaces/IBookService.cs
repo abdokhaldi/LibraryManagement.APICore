@@ -11,11 +11,11 @@ namespace LibraryManagement.BLL.Interfaces
 {
     public interface IBookService
     {
-        Task<List<BookForDisplayDTO>> GetAllBooksInfoAsync();
+        Task<List<BookForDisplayDTO>> GetAllActiveBooksAsync();
 
         Task<BookForDisplayDTO?> GetBookDetailsAsync(int bookID);
 
-        Task<int> CreateNewBookAsync(BookForCreationDTO bookDTO)
+        Task<int?> CreateNewBookAsync(BookForCreationDTO bookDTO);
 
         Task UpdateBookAsync(BookForUpdateDTO bookDTO);
         Task ActivateBookAsync(int bookID);

@@ -22,5 +22,15 @@ namespace LibraryManagement.BLL
         {
             _activityRepository = activityRepository;
         }
+
+      public async Task AddActivityAsync(ActivityForCreationDTO activityDTO)
+        {
+
+        }
+        public async Task<List<ActivityForDisplayDTO>> GetQueryableAllActivitiesAsync()
+        {
+            return new List<ActivityForDisplayDTO>();
+        }
+
     }
 }

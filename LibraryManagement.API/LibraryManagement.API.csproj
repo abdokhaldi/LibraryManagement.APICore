@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="16.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LibraryManagement.BLL\LibraryManagement.BLL.csproj" />
     <ProjectReference Include="..\LibraryManagement.DAL\LibraryManagement.DAL.csproj" />
     <ProjectReference Include="..\LibraryManagement.DTO\LibraryManagement.DTO.csproj" />

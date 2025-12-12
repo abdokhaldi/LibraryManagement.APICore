@@ -1,52 +1,37 @@
 ﻿
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DAL.Interfaces;
-using LibraryManagement.DAL;
 using LibraryManagement.DTO.BookDTOs;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.IO;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using LibraryManagement.DAL.Entities;
-using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace LibraryManagement.BLL
 {
     public class BookService : IBookService
     {
+        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-       public BookService(IUnitOfWork unitOfWork)
+       public BookService(IUnitOfWork unitOfWork,IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
        
-       public async Task<int> CreateNewBookAsync(BookForCreationDTO bookDTO)
+       public async Task<int?> CreateNewBookAsync(BookForCreationDTO bookDTO)
         {
             
-                var exists = await _unitOfWork.BookRepository.IsTitleExistsAsync(bookDTO.Title);
-                if (exists)
-                {
-                    throw new ArgumentException("This title is already exists .");
-                }
+              var exists = await _unitOfWork.BookRepository.IsTitleExistsAsync(bookDTO.Title);
+              if (exists)
+              {
+                return null;
+              }
 
-                var bookToCreate = new Book
-                {
-                    Title = bookDTO.Title,
-                    Author = bookDTO.Author,
-                    Publisher = bookDTO.Publisher,
-                    YearPublished = bookDTO.YearPublished,
-                    CategoryID = bookDTO.CategoryID,
-                    Quantity = bookDTO.Quantity,
-                    ImagePath = bookDTO.ImagePath,
-                    IsActive = true
-                };
-               
-                await _unitOfWork.BookRepository.AddNewBookAsync(bookToCreate);
+            var bookToCreate = _mapper.Map<Book>(bookDTO);
+            bookToCreate.IsActive = true;
+            await _unitOfWork.BookRepository.AddNewBookAsync(bookToCreate);
                 await _unitOfWork.SaveChangesAsync();
            
             return bookToCreate.BookID;
@@ -57,17 +42,11 @@ namespace LibraryManagement.BLL
 
              if (bookToUpdate == null)
              {
-                 throw new ArgumentNullException("The book cannot be null");
-             }
+                throw new KeyNotFoundException("The book not exists");
 
-            bookToUpdate.Title = bookDTO.Title;
-            bookToUpdate.Author = bookDTO.Author;
-            bookToUpdate.Publisher = bookDTO.Publisher;
-            bookToUpdate.YearPublished = bookDTO.YearPublished;
-            bookToUpdate.Quantity = bookDTO.Quantity;
-            bookToUpdate.CategoryID = bookDTO.CategoryID;
-            bookToUpdate.IsActive = bookDTO.IsActive;
-           
+            }
+
+            _mapper.Map(bookDTO, bookToUpdate);
             await _unitOfWork.SaveChangesAsync();
           }
        public async Task ActivateBookAsync(int bookID)
@@ -103,26 +82,24 @@ namespace LibraryManagement.BLL
        public async Task<List<BookForDisplayDTO>> GetAllActiveBooksAsync()
         {
             var booksQuery = await _unitOfWork.BookRepository.GetQueryableBooksAsync();
-                booksQuery.Where(b => b.IsActive == true);
-            await booksQuery.ToListAsync();
 
-            
-
-            var listDTO = await booksQuery .Select(
-                b => new BookForDisplayDTO
-                {
-                    Title = b.Title,
-                    Author = b.Author,
-                    Publisher = b.Publisher,
-                    YearPublished = b.YearPublished,
-                    CategoryName = b.Category.CategoryName,
-                    Quantity = b.Quantity,
-                    IsActive = b.IsActive,
-                }
-                ).ToListAsync();
-            return listDTO;
+            var activeBooksDTO = await booksQuery
+                .Where(b => b.IsActive == true)
+                .ProjectTo<BookForDisplayDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+           
+            return activeBooksDTO;
         }
-
+       public async Task<BookForDisplayDTO?> GetBookDetailsAsync (int bookID) 
+        {
+            var bookEntity = await _unitOfWork.BookRepository.GetBookForReadOnlyAsync(bookID);
+            if (bookEntity == null)
+            {
+                return null;
+            }
+            var bookDTO = _mapper.Map<BookForDisplayDTO>(bookEntity);
+            return bookDTO;
+        }  
 
 
 
