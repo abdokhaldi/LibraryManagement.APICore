@@ -15,15 +15,51 @@ namespace LibraryManagement.BLL.Mapper
 
         public MappingProfile()
         {
+            // Auto mapping for Book
             CreateMap<BookForCreationDTO, Book>();
-            CreateMap<BookForUpdateDTO, Book>();
-          
+
+            var mapping = CreateMap<BookForUpdateDTO, Book>();
+            mapping.ForMember(d => d.IsActive,
+                  opt => {
+                      opt.PreCondition(
+                          s => s.IsActive.HasValue);
+                      opt.MapFrom(s => s.IsActive!.Value);
+                      opt.UseDestinationValue();
+                  });
+            mapping.ForMember(d => d.Quantity,
+                 opt => {
+                     opt.PreCondition(
+                         s => s.Quantity.HasValue);
+                     opt.MapFrom(s => s.Quantity!.Value);
+                     opt.UseDestinationValue();
+                 });
+            mapping.ForMember(
+                d => d.CategoryID,
+                opt => {
+                    opt.PreCondition(s =>
+                s.CategoryID.HasValue);
+                    opt.MapFrom(s=>s.CategoryID!.Value);
+                });
+
+            mapping.ForAllMembers(opts =>
+                opts.Condition(
+                    (src, dest, srcMember) =>
+                {
+                    return srcMember != null;
+                })
+            );
+
             CreateMap<Book, BookForDisplayDTO>()
              .ForMember(
                     dest => dest.CategoryName,
-                    opt => opt.MapFrom(src => src.Category.CategoryName)
+                    opt => opt.MapFrom(src => src.Category!.CategoryName)
                     );
-            
+
+            // Auto mapping for Borrowing
+            // Auto mapping for Member
+            // Auto mapping for Person
+
+
         }
     }
 }

@@ -9,8 +9,8 @@ namespace LibraryManagement.DTO.BookDTOs
 {
     public class BookForUpdateDTO
     {
-        [Required(ErrorMessage = "The ID cannot be null")]
-        public int BookID { get; set; }
+      //  [Required(ErrorMessage = "The ID cannot be null")]
+      //  public int BookID { get; set; }
         [StringLength(100,MinimumLength =3,ErrorMessage = "Title must be at lest 3 characters long")]
         public  string? Title { get; set; }
         public  string? Author { get; set; }
@@ -20,7 +20,7 @@ namespace LibraryManagement.DTO.BookDTOs
         public  int? Quantity { get; set; }
         public  int? CategoryID { get; set; }
         public string? ImagePath { get; set; }
-        public  bool? IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
     }
 }

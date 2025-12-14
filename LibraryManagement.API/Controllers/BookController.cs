@@ -53,7 +53,76 @@ namespace LibraryManagement.API.Controllers
             }
                 return Ok(book);
             }
-           
+
+        [HttpPut("{id}")]
+        [ProducesResponseType((int)StatusCodes.Status404NotFound)]
+        [ProducesResponseType((int) StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> UpdateBook(int id,[FromBody] BookForUpdateDTO bookDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            int updateResult = await _bookService.UpdateBookAsync(id, bookDTO);
+            if (updateResult == 0)
+            {
+                return NotFound($"The book with ID : {id} not found for update .");
+            }
+            if (updateResult == -1)
+            {
+               return BadRequest($"The book with title:{bookDTO.Title} is already exists.");
+            }
+            return NoContent();
         }
+
+        [HttpPatch("{id}/DeactivateBook")]
+        [ProducesResponseType((int) StatusCodes.Status204NoContent)]
+        [ProducesResponseType((int) StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeactivateBook(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            bool deactivationResult = await _bookService.DeactivateBookAsync(id);
+            if (deactivationResult == false)
+            {
+                return NotFound($"The book with ID:{id} not found for deactivate");
+            }
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/ActivateBook")]
+        [ProducesResponseType((int)StatusCodes.Status204NoContent)]
+        [ProducesResponseType((int)StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ActivateBook(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            bool deactivationResult = await _bookService.ActivateBookAsync(id);
+            if (deactivationResult == false)
+            {
+                return NotFound($"The book with ID:{id} not found for Activate");
+            }
+            return NoContent();
+        }
+
+        [HttpGet]
+        [ProducesResponseType((int)StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllBooks()
+        {
+            var books = await _bookService.GetAllActiveBooksAsync();
+           
+                return Ok(books);
+        }
+
+
+
+
     }
+}
 

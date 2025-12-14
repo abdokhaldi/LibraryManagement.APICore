@@ -36,48 +36,60 @@ namespace LibraryManagement.BLL
            
             return bookToCreate.BookID;
         }
-       public async Task UpdateBookAsync(BookForUpdateDTO bookDTO)
+       public async Task<int> UpdateBookAsync(int id,BookForUpdateDTO bookDTO)
         {
-              var bookToUpdate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(bookDTO.BookID);
+             var bookToUpdate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(id);
 
              if (bookToUpdate == null)
              {
-                throw new KeyNotFoundException("The book not exists");
-
+                return 0;
+             }
+            if (bookDTO.Title != null && bookDTO.Title !=bookToUpdate.Title)
+            {
+                bool titleExists = await _unitOfWork.BookRepository.IsTitleExistsAsync(bookDTO.Title);
+                if (titleExists == true)
+                {
+                    return -1;
+                }
             }
-
             _mapper.Map(bookDTO, bookToUpdate);
+            
             await _unitOfWork.SaveChangesAsync();
+
+            return 1;
           }
-       public async Task ActivateBookAsync(int bookID)
+
+       public async Task<bool> ActivateBookAsync(int bookID)
         {
             var bookToActivate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(bookID);
             if (bookToActivate == null)
             {
-                throw new KeyNotFoundException($"The book not found with Id:{bookID}");
+                return false;
             }
             if (bookToActivate.IsActive)
             {
-                return;
+                return true;
             }
             
             bookToActivate.IsActive = true;
             await _unitOfWork.SaveChangesAsync();
-         }
-       public async Task DeactivateBookAsync(int bookID)
+            return true;
+        }
+       public async Task<bool> DeactivateBookAsync(int bookID)
         {
             var bookToActivate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(bookID);
             if (bookToActivate == null)
             {
-                throw new KeyNotFoundException($"The book not found with Id:{bookID}");
+                return false;
             }
             if (!bookToActivate.IsActive)
             {
-                return;
+                return true;
             }
 
             bookToActivate.IsActive = false;
             await _unitOfWork.SaveChangesAsync();
+            return true;
         }
        public async Task<List<BookForDisplayDTO>> GetAllActiveBooksAsync()
         {
@@ -87,7 +99,7 @@ namespace LibraryManagement.BLL
                 .Where(b => b.IsActive == true)
                 .ProjectTo<BookForDisplayDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
-           
+            
             return activeBooksDTO;
         }
        public async Task<BookForDisplayDTO?> GetBookDetailsAsync (int bookID) 

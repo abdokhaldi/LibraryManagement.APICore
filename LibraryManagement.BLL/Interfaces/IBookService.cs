@@ -17,9 +17,9 @@ namespace LibraryManagement.BLL.Interfaces
 
         Task<int?> CreateNewBookAsync(BookForCreationDTO bookDTO);
 
-        Task UpdateBookAsync(BookForUpdateDTO bookDTO);
-        Task ActivateBookAsync(int bookID);
-        Task DeactivateBookAsync(int bookID);
+        Task<int> UpdateBookAsync(int id,BookForUpdateDTO bookDTO);
+        Task<bool> ActivateBookAsync(int bookID);
+        Task<bool> DeactivateBookAsync(int bookID);
 
     }
 }

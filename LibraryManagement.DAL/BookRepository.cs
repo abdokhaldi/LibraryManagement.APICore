@@ -49,8 +49,6 @@ namespace LibraryManagement.DAL
 
         public Task AddNewBookAsync(Book bookEntity)
         {
-           
-
             _context.Books.Add(bookEntity);
             return Task.CompletedTask;
         }
@@ -75,6 +73,11 @@ namespace LibraryManagement.DAL
         {
             return await _context.Books.AsNoTracking()
                 .AnyAsync(b=>b.Title.ToLower() == title.ToLower());
+        }
+        public async Task<bool> IsTitleExistsAsync(int id,string title)
+        {
+            return await _context.Books.AsNoTracking()
+                .AnyAsync(b =>b.BookID == id && b.Title.ToLower() == title.ToLower());
         }
     }
 }
