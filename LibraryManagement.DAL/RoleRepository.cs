@@ -30,7 +30,9 @@ var            query = _context.Roles.AsQueryable();
         public async Task<Role?> GetRoleForReadOnlyAsync(int roleID)
         {
             
-                var role = await _context.Roles.FindAsync(roleID);
+                var role = await _context.Roles
+                .AsNoTracking()
+                .Where(r=>r.RoleID ==roleID).FirstOrDefaultAsync();
                 return role;
             }
         public async Task<Role?> GetRoleForUpdateAsync(int roleID)

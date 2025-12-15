@@ -13,7 +13,6 @@ namespace LibraryManagement.DAL.Interfaces
 
         Task AddNewPersonAsync(Person personEntity);
 
-        Task UpdatePersonAsync(Person personEntity);
 
     }
 }

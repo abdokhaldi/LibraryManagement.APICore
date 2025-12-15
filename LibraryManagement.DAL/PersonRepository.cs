@@ -32,29 +32,25 @@ namespace LibraryManagement.DAL
             
         public async Task<Person?> GetPersonForReadOnlyAsync(int personID)
         {
-               var person = await _context.People.AsNoTracking().FirstOrDefaultAsync(p=>p.PersonID == personID);
+               var person = await _context.People
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                   p => p.PersonID == personID && p.IsActive==true );
                 return person;
             }
+
         public async Task<Person?> GetPersonForUpdateAsync(int personID)
         {
-            var person = await _context.People.FindAsync(personID);
+            var person = await _context.People
+                    .FindAsync(personID);
             return person;
         }
         public Task AddNewPersonAsync(Person personEntity)
         {
-           
             _context.People.Add(personEntity);
             return Task.CompletedTask;
         }
             
-
-        public Task UpdatePersonAsync(Person personEntity)
-        {
-            _context.People.Update(personEntity);
-            return Task.CompletedTask;
-        }
-         
-        
-        
+       
     }
 }

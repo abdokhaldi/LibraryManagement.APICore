@@ -19,6 +19,11 @@ builder.Services.AddDbContext<LibraryDbContext>
 builder.Services.AddScoped<IBookRepository,BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+
+builder.Services.AddScoped<IPersonService,PersonService>();
+
 //builder.Services.AddAutoMapper();
 builder.Services.AddAutoMapper(cfg =>
 {

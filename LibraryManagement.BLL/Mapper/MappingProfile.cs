@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LibraryManagement.DAL.Entities;
+using LibraryManagement.DTO.PersonDTOs;
 
 namespace LibraryManagement.BLL.Mapper
 {
@@ -58,8 +59,16 @@ namespace LibraryManagement.BLL.Mapper
             // Auto mapping for Borrowing
             // Auto mapping for Member
             // Auto mapping for Person
+            CreateMap<PersonForCreationDTO, Person>();
+          
+            var personMapping = CreateMap<Person, PersonForDisplayDTO>();
+                personMapping.ForMember(dst => dst.FullName,
+                opt => opt.MapFrom(src=>src.FirstName+" "+src.LastName)
+                );
 
-
+            personMapping.ForMember(dest => dest.Gender,
+                opt => opt.MapFrom(src => src.Gender=='M'?"Male":"Female")
+                );
         }
     }
 }

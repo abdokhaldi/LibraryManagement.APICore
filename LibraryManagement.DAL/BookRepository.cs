@@ -32,7 +32,7 @@ namespace LibraryManagement.DAL
             
                 var book = await _context.Books
                     .Include(c=>c.Category)
-                    .Where(b => b.BookID == bookID)
+                    .Where(b => b.BookID == bookID && b.IsActive == true)
                     .FirstOrDefaultAsync();
                 return book;
             }
@@ -42,23 +42,20 @@ namespace LibraryManagement.DAL
 
             var book = await _context.Books.AsNoTracking()
                 .Include(c => c.Category)
-                .Where(b => b.BookID == bookID)
+                .Where(b => b.BookID == bookID && b.IsActive==true)
                 .FirstOrDefaultAsync();
             return book;
         }
 
         public Task AddNewBookAsync(Book bookEntity)
         {
+            
             _context.Books.Add(bookEntity);
             return Task.CompletedTask;
         }
            
 
       
-           
-        
-
-
         public async Task<int?> GetBookQuantityAsync(int bookID)
         {
             
