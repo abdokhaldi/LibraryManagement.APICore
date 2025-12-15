@@ -61,14 +61,31 @@ namespace LibraryManagement.BLL.Mapper
             // Auto mapping for Person
             CreateMap<PersonForCreationDTO, Person>();
           
-            var personMapping = CreateMap<Person, PersonForDisplayDTO>();
-                personMapping.ForMember(dst => dst.FullName,
+            var personMappingForDisplay = CreateMap<Person, PersonForDisplayDTO>();
+                personMappingForDisplay.ForMember(dst => dst.FullName,
                 opt => opt.MapFrom(src=>src.FirstName+" "+src.LastName)
                 );
 
-            personMapping.ForMember(dest => dest.Gender,
+            personMappingForDisplay.ForMember(dest => dest.Gender,
                 opt => opt.MapFrom(src => src.Gender=='M'?"Male":"Female")
                 );
+
+            var mappingPersonForUpdate = CreateMap<PersonForUpdateDTO,Person>();
+            mappingPersonForUpdate.ForAllMembers(
+                opts=> opts.Condition(
+                    (src, dst, srcMember) =>
+                    {
+                        return srcMember != null;
+                    })
+                );
+            mappingPersonForUpdate.ForMember(d => d.IsActive,
+                  opt => {
+                      opt.PreCondition(
+                          s => s.IsActive.HasValue);
+                      opt.MapFrom(s => s.IsActive!.Value);
+                      opt.UseDestinationValue();
+                  });
         }
+        
     }
 }

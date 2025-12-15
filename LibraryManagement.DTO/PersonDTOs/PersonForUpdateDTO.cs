@@ -8,15 +8,14 @@ namespace LibraryManagement.DTO.PersonDTOs
 {
     public class PersonForUpdateDTO
     {
-        public required int PersonID { get; set; }
-        public required string FirstName { get; set; }
-        public required string LastName { get; set; }
-        public required string Phone { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Phone { get; set; }
         public string? Email { get; set; }
-        public required string Address { get; set; }
-        public required string City { get; set; }
-        public required char Gender { get; set; }
-        public required bool IsActive { get; set; }
+        public string? Address { get; set; }
+        public string? City { get; set; }
+        public char? Gender { get; set; }
+        public bool? IsActive { get; set; }
 
     }
 }

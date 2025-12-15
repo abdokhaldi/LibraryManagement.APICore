@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DAL;
 using LibraryManagement.DAL.Entities;
@@ -6,6 +7,7 @@ using LibraryManagement.DAL.Entities;
 using LibraryManagement.DAL.Interfaces;
 using LibraryManagement.DTO;
 using LibraryManagement.DTO.PersonDTOs;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -44,25 +46,61 @@ namespace LibraryManagement.BLL
             var personDTO = _mapper.Map<PersonForDisplayDTO>(person);
             return personDTO;
         }
-        public async Task<int> UpdatePersonAsync(int id, PersonForUpdateDTO personDTO)
+        public async Task<bool> UpdatePersonAsync(int id, PersonForUpdateDTO personDTO)
         {
-            return 0;
+            var personForUpdate = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(id);
+            if (personForUpdate == null || personForUpdate.IsActive==false)
+            {
+                return false;
+            }
+            
+             _mapper.Map(personDTO,personForUpdate);
+            
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
 
        public async Task<bool> ActivatePersonAsync(int id)
         {
-            return false;
+            var personForActivate = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(id);
+            if (personForActivate == null)
+            {
+                return false;
+            }
+            if (personForActivate.IsActive == true)
+            {
+                return true;
+            }
+            personForActivate.IsActive = true;
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeactivatePersonAsync(int id)
         {
-            return false;
+            var personForActivate = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(id);
+            if (personForActivate == null)
+            {
+                return false;
+            }
+            if (personForActivate.IsActive == false)
+            {
+                return false;
+            }
+            personForActivate.IsActive = false;
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
 
-      public async Task<List<Person>> GetAllPeopleAsync()
+      public async Task<List<PersonForDisplayDTO>> GetAllPeopleAsync()
         {
-            return new List<Person>();
-        }
+            var personsQuery = await _unitOfWork.PersonRepository.GetQueryablePeopleAsync();
+            var activePersons = await personsQuery
+                                     .Where(p => p.IsActive == true)
+                                     .ProjectTo<PersonForDisplayDTO>(_mapper.ConfigurationProvider)
+                                     .ToListAsync();
+            return activePersons;                                                  
+         }
 
     }
 }
