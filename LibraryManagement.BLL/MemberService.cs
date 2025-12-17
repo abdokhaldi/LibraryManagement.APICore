@@ -1,15 +1,8 @@
 ﻿using AutoMapper;
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DAL.Entities;
-
-using LibraryManagement.DAL;
-
 using LibraryManagement.DAL.Interfaces;
-using LibraryManagement.DTO;
 using LibraryManagement.DTO.MemberDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 namespace LibraryManagement.BLL
@@ -24,17 +17,18 @@ namespace LibraryManagement.BLL
             _mapper = mapper;
         }
 
-      public async Task<int> CreateMemberAsync(MemberForCreationDTO memberDTO)
+      public async Task<Member> CreateMemberAsync(MemberForCreationDTO memberDTO)
         {
-            bool exist = await _unitOfWork.MemberRepository.IsMemberExists(memberDTO.PersonID);
-            if (exist)
+            var existingMember = await _unitOfWork.MemberRepository.GetMemberByPersonIDForReadOnlyAsync(memberDTO.PersonID);
+
+            if (existingMember != null)
             {
-                return 0;
+                return existingMember;
             }
             var memberEntity = _mapper.Map<Member>(memberDTO);
             await _unitOfWork.MemberRepository.AddNewMemberAsync(memberEntity);
-            await _unitOfWork.SaveChangesAsync();
-            return 1;
+             
+            return memberEntity;
         }
 
       public async Task<List<MemberForDisplayDTO>> GetAllMembersAsync()
@@ -70,7 +64,7 @@ namespace LibraryManagement.BLL
                 return true;
             }
             memberForDeactivate.IsActive = false;
-            await _unitOfWork.SaveChangesAsync();
+
             return true;
         }
       public async Task<bool> ActivateMember(int id) 

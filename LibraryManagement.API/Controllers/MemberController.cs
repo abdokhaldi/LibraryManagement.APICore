@@ -21,15 +21,6 @@ namespace LibraryManagement.API.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateMember([FromBody] MemberForCreationDTO memberDTO)
-        {      
-            int newMember = await _memberService.CreateMemberAsync(memberDTO);
-            if (newMember == 0)
-            {
-                return BadRequest("The member is already exists");
-            }
-            return CreatedAtAction(nameof(GetMemberDetais),new {id=newMember},newMember);
-        }
 
         
         [HttpGet("{id}")]
