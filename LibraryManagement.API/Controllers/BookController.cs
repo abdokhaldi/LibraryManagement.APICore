@@ -25,10 +25,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateBook([FromBody] BookForCreationDTO bookDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            
             
               var newBookId = await _bookService.CreateNewBookAsync(bookDTO);
             if (newBookId == null)

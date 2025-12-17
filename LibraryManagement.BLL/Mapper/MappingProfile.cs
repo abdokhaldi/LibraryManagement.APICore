@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
 using LibraryManagement.DTO.BookDTOs;
-using LibraryManagement.DAL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LibraryManagement.DAL.Entities;
 using LibraryManagement.DTO.PersonDTOs;
+using LibraryManagement.DTO.MemberDTOs;
 
 namespace LibraryManagement.BLL.Mapper
 {
@@ -58,6 +53,14 @@ namespace LibraryManagement.BLL.Mapper
 
             // Auto mapping for Borrowing
             // Auto mapping for Member
+            CreateMap<MemberForCreationDTO,Member>();
+            CreateMap<Member, MemberForDisplayDTO>()
+                .ForMember(dst => dst.FullName,
+                opt => opt.MapFrom(src =>
+                   src.Person.FirstName + " " + src.Person.LastName
+                    ));
+
+
             // Auto mapping for Person
             CreateMap<PersonForCreationDTO, Person>();
           

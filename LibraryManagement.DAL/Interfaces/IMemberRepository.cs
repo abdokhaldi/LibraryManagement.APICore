@@ -15,7 +15,7 @@ namespace LibraryManagement.DAL.Interfaces
 
         Task AddNewMemberAsync(Member memberEntity);
 
-        Task UpdateMemberAsync(Member memberEntity);
-
+        Task UpdateMemberAsync( Member memberEntity);
+        Task<bool> IsMemberExists(int id);
     }
 }

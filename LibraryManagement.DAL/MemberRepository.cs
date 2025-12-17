@@ -26,7 +26,6 @@ namespace LibraryManagement.DAL
             }
             
        
-       
         public async Task<Member?> GetMemberForUpdateAsync(int memberID)
         {
             
@@ -39,9 +38,10 @@ namespace LibraryManagement.DAL
         public async Task<Member?> GetMemberForReadOnlyAsync(int memberID)
         {
 
-            var member = await _context.Members.AsNoTracking()
+            var member = await _context.Members
+                .AsNoTracking()
                 .Include(m => m.Person)
-                .Where(m => m.MemberID == memberID)
+                .Where(m => m.MemberID == memberID && m.IsActive==true)
                 .FirstOrDefaultAsync();
             return member;
         }
@@ -54,7 +54,7 @@ namespace LibraryManagement.DAL
         }
        
 
-        public Task UpdateMemberAsync(Member memberEntity)
+        public Task UpdateMemberAsync( Member memberEntity)
         {
             
                 _context.Members.Update(memberEntity);
@@ -73,7 +73,13 @@ namespace LibraryManagement.DAL
 
                 return member;
             }
+        public async Task<bool> IsMemberExists(int id)
+        {
+            return await _context.Members
+                .AsNoTracking()
+                .AnyAsync(m => m.PersonID == id && m.IsActive==true);
             
+        }
 
     }
 }

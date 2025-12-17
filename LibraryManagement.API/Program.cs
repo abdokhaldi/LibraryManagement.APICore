@@ -21,9 +21,10 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
-
 builder.Services.AddScoped<IPersonService,PersonService>();
 
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IMemberService, MemberService>();
 //builder.Services.AddAutoMapper();
 builder.Services.AddAutoMapper(cfg =>
 {

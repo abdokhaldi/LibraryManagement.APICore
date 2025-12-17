@@ -1,19 +1,93 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using AutoMapper;
 using LibraryManagement.BLL.Interfaces;
+using LibraryManagement.DAL.Entities;
+
 using LibraryManagement.DAL;
+
 using LibraryManagement.DAL.Interfaces;
 using LibraryManagement.DTO;
+using LibraryManagement.DTO.MemberDTOs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 namespace LibraryManagement.BLL
 {
     public class MemberService : IMemberService
     {
-        private readonly IMemberRepository _memberRepository;
-
-        public MemberService(IMemberRepository memberRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        public MemberService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _memberRepository = memberRepository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
+
+      public async Task<int> CreateMemberAsync(MemberForCreationDTO memberDTO)
+        {
+            bool exist = await _unitOfWork.MemberRepository.IsMemberExists(memberDTO.PersonID);
+            if (exist)
+            {
+                return 0;
+            }
+            var memberEntity = _mapper.Map<Member>(memberDTO);
+            await _unitOfWork.MemberRepository.AddNewMemberAsync(memberEntity);
+            await _unitOfWork.SaveChangesAsync();
+            return 1;
+        }
+
+      public async Task<List<MemberForDisplayDTO>> GetAllMembersAsync()
+        {
+            var membersQuery = await _unitOfWork.MemberRepository.GetQueryableMembersAsync();
+           
+            var activeMembers = await membersQuery
+                .Where(m => m.IsActive == true)
+                .ProjectTo<MemberForDisplayDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return activeMembers;
+             }
+      public async Task<MemberForDisplayDTO?> GetMemberDetails(int id)
+        {
+            var member = await _unitOfWork.MemberRepository.GetMemberForReadOnlyAsync(id);
+            if (member == null)
+            {
+                return null;
+            }
+            var MemberDTO = _mapper.Map<MemberForDisplayDTO>(member);
+            return MemberDTO;
+        }
+      public async Task<bool> DeactivateMember(int id)
+        {
+            var memberForDeactivate = await _unitOfWork.MemberRepository.GetMemberForUpdateAsync(id);
+            if (memberForDeactivate == null)
+            {
+                return false;
+            }
+            if (!memberForDeactivate.IsActive)
+            {
+                return true;
+            }
+            memberForDeactivate.IsActive = false;
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+      public async Task<bool> ActivateMember(int id) 
+        {
+            var memberForActivate = await _unitOfWork.MemberRepository.GetMemberForUpdateAsync(id);
+            if (memberForActivate == null)
+            {
+                return false;
+            }
+            if (memberForActivate.IsActive)
+            {
+                return true;
+            }
+            memberForActivate.IsActive = true;
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
