@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibraryManagement.DTO.BorrowingDTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace LibraryManagement.BLL.Interfaces
 {
     public interface IBorrowingService
     {
+        Task<int> CreateBorrowingAsync(BorrowingForCreationDTO borrowingDTO);
     }
 }

@@ -16,7 +16,7 @@ namespace LibraryManagement.DAL.Interfaces
 
         Task AddNewBookAsync(Book bookEntity);
 
-        Task<int?> GetBookQuantityAsync(int bookID);
+        Task<int> GetBookQuantityAsync(int bookID);
 
     }
 }

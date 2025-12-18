@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using  LibraryManagement.DAL.Entities;
+using Microsoft.EntityFrameworkCore.Internal;
 namespace LibraryManagement.DAL.Context
 {
     public class LibraryDbContext : DbContext
@@ -20,18 +21,12 @@ namespace LibraryManagement.DAL.Context
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Member> Members { get; set; }
 
-        // DbSets for views
-        public DbSet<BorrowingInfoView> FullBorrowingsInfo { get; set; }
-        public DbSet<SmallPersonEntity> SmallPeople { get; set; }
-
-        public DbSet<SmallBookEntity> SmallBooks { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BorrowingInfoView>().HasNoKey().ToView("FullBorrowingsInfo");
-            modelBuilder.Entity<SmallBookEntity>().HasNoKey().ToView("SmallBooks");
-            modelBuilder.Entity<SmallPersonEntity>().HasNoKey().ToView("SmallPeople");
-            base.OnModelCreating(modelBuilder);
+             base.OnModelCreating(modelBuilder);
+            //
+            
         }
 
     }

@@ -10,7 +10,9 @@ namespace LibraryManagement.DAL.Entities
     {
         [Key]
         public int UserID { get; set; }
+        [Required]
         public int PersonID { get; set; }
+        [ForeignKey(nameof(PersonID))]
         public Person Person { get; set; } = null!;
         [Required]
         [MaxLength(50)]
@@ -18,7 +20,9 @@ namespace LibraryManagement.DAL.Entities
         [Required]
         [MaxLength(200)]
         public string Password { get; set; } = null!;
+        [Required]
         public int RoleID { get; set; }
+        [ForeignKey(nameof(RoleID))]
         public Role Role { get; set; } = null!;
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }

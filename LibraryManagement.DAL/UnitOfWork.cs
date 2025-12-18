@@ -9,7 +9,6 @@ public class UnitOfWork : IUnitOfWork
   public IBookRepository BookRepository { get; }
   public IMemberRepository MemberRepository { get; }
   public IActivityRepository ActivityRepository { get; }
-  public IBorrowingInfoRepository BorrowingInfoRepository { get; }
   public IBorrowingRepository BorrowingRepository { get; }
   public ICategoryRepository CategoryRepository { get; }
   public IPersonRepository PersonRepository { get; }
@@ -26,7 +25,6 @@ public class UnitOfWork : IUnitOfWork
         BookRepository =    new BookRepository(_context);
         MemberRepository =    new MemberRepository(_context);
         ActivityRepository   = new ActivityRepository(_context);
-        BorrowingInfoRepository = new BorrowingInfoRepository(_context);
         BorrowingRepository = new BorrowingRepository(_context);
         CategoryRepository   = new CategoryRepository(_context);
         PersonRepository     = new PersonRepository(_context);

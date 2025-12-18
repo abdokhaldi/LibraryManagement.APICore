@@ -11,7 +11,6 @@ namespace LibraryManagement.DAL.Interfaces
         IBookRepository BookRepository { get; }
         IMemberRepository MemberRepository { get; }
         IActivityRepository ActivityRepository { get; }
-        IBorrowingInfoRepository BorrowingInfoRepository { get; }
         IBorrowingRepository BorrowingRepository { get; }
         ICategoryRepository CategoryRepository { get; }
         IPersonRepository PersonRepository { get; }

@@ -18,11 +18,6 @@ namespace LibraryManagement.API.Controllers
             _memberService = memberService;
         }
 
-        [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.Created)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-
-        
         [HttpGet("{id}")]
         [ProducesResponseType((int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]

@@ -15,12 +15,12 @@ namespace LibraryManagement.DAL
             _context = context;
         }
 
-        public async Task<bool> IsBookCurrentlyUnavailableAsync(int bookID,int personID)
+        public async Task<bool> IsBookCurrentlyUnavailableAsync(int bookID,int memberID)
         {
            
                 bool IsBookCurrentlyUnavailable = await _context.Borrowings.AnyAsync(
                                              b => b.BookID == bookID
-                                             && b.PersonID == personID
+                                             && b.MemberID == memberID
                                              && b.ReturnDate == null
                                              && b.IsCanceled == false
                                             );
@@ -47,7 +47,7 @@ namespace LibraryManagement.DAL
         {
            
                 var borrowing = await _context.Borrowings
-                                        .Include(b => b.Person)
+                                        .Include(b => b.Member)
                                         .Include(b => b.Book)
                                         .FirstOrDefaultAsync(b=>b.BorrowingID == borrowingID);
                 return borrowing;
@@ -57,7 +57,7 @@ namespace LibraryManagement.DAL
         {
 
             var borrowing = await _context.Borrowings.AsNoTracking()
-                                    .Include(b => b.Person)
+                                    .Include(b => b.Member)
                                     .Include(b => b.Book)
                                     .FirstOrDefaultAsync(b => b.BorrowingID == borrowingID);
             return borrowing;

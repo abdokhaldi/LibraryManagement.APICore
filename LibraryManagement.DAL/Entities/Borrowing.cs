@@ -10,10 +10,16 @@ namespace LibraryManagement.DAL.Entities
     {
         [Key]
         public int BorrowingID { get; set; }
+
+        [Required]
         public int BookID { get; set; }
+        [ForeignKey(nameof(BookID))]
         public Book Book { get; set; } = null!;
-        public int PersonID { get; set; }
-        public Person Person { get; set; } = null!;
+        [Required]
+        public int MemberID { get; set; }
+        [ForeignKey(nameof(MemberID))]
+        public Member Member { get; set; } = null!;
+        
         public DateTime BorrowingDate { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime? ReturnDate { get; set; }

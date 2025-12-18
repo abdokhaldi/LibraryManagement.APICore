@@ -56,12 +56,12 @@ namespace LibraryManagement.DAL
            
 
       
-        public async Task<int?> GetBookQuantityAsync(int bookID)
+        public async Task<int> GetBookQuantityAsync(int bookID)
         {
             
                 var quantity = await _context.Books.AsNoTracking()
                                .Where(b=>b.BookID == bookID)
-                               .Select(b=>(int?)b.Quantity)
+                               .Select(b=>b.Quantity )
                               .FirstOrDefaultAsync();
                 return quantity;
             }

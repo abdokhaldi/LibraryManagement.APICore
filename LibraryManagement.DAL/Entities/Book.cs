@@ -21,7 +21,9 @@ namespace LibraryManagement.DAL.Entities
 
         public string? YearPublished { get; set; }
         public int Quantity { get; set; }
+        [Required]
         public int CategoryID { get; set; }
+        [ForeignKey(nameof(CategoryID))]
         public Category? Category { get; set; }
         
         [MaxLength(150)]

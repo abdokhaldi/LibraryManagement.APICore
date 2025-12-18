@@ -3,6 +3,7 @@ using LibraryManagement.DTO.BookDTOs;
 using LibraryManagement.DAL.Entities;
 using LibraryManagement.DTO.PersonDTOs;
 using LibraryManagement.DTO.MemberDTOs;
+using LibraryManagement.DTO.BorrowingDTOs;
 
 namespace LibraryManagement.BLL.Mapper
 {
@@ -52,6 +53,10 @@ namespace LibraryManagement.BLL.Mapper
                     );
 
             // Auto mapping for Borrowing
+            CreateMap<BorrowingForCreationDTO,Borrowing>();
+            CreateMap<BorrowingForDisplayDTO, Borrowing>();
+            CreateMap<BorrowingForUpdateDTO, Borrowing>();
+
             // Auto mapping for Member
             CreateMap<MemberForCreationDTO,Member>();
             CreateMap<Member, MemberForDisplayDTO>()
@@ -61,7 +66,7 @@ namespace LibraryManagement.BLL.Mapper
                     ));
 
 
-            // Auto mapping for Person
+            // Auto mapping for Member
             CreateMap<PersonForCreationDTO, Person>();
           
             var personMappingForDisplay = CreateMap<Person, PersonForDisplayDTO>();
