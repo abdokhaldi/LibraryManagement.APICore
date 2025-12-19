@@ -11,7 +11,7 @@ namespace LibraryManagement.DAL.Interfaces
         Task<Member?> GetMemberForUpdateAsync(int memberID);
         Task<Member?> GetMemberForReadOnlyAsync(int memberID);
 
-        Task<Member?> GetMemberByPersonIDForReadOnlyAsync(int personID);
+        Task<Member?> GetMemberByPersonIDAsync(int personID);
 
         Task AddNewMemberAsync(Member memberEntity);
 

@@ -42,7 +42,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Library Management API V1",
         Version = "v1",
-        Description = "نظام إدارة المكتبة - واجهة برمجة التطبيقات"
+        Description = "Library Management - API"
     });
 });
 

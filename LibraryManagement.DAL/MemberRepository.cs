@@ -63,10 +63,10 @@ namespace LibraryManagement.DAL
             
             
     
-        public async Task<Member?> GetMemberByPersonIDForReadOnlyAsync(int personID)
+        public async Task<Member?> GetMemberByPersonIDAsync(int personID)
         {
             
-              var member = await _context.Members.AsNoTracking()
+              var member = await _context.Members
                 .Include(m => m.Person)
                 .Where(m => m.PersonID == personID)
                 .FirstOrDefaultAsync();

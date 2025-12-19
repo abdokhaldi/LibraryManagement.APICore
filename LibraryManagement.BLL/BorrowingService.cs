@@ -11,11 +11,11 @@ namespace LibraryManagement.BLL
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IMemberService _memberService;
-        public BorrowingService(IUnitOfWork unitOfWork, IMapper mapper)
+        public BorrowingService(IUnitOfWork unitOfWork,IMemberService memberService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _memberService = new MemberService(_unitOfWork, _mapper);
+            _memberService = memberService;
         }
 
       public async Task<int> CreateBorrowingAsync(BorrowingForCreationDTO borrowingDTO)
@@ -28,23 +28,30 @@ namespace LibraryManagement.BLL
             }
             var memberToCreate = new MemberForCreationDTO { PersonID = borrowingDTO.PersonID, JoinDate = DateTime.Now, IsActive = true };
                 
-            var member = await _memberService.CreateMemberAsync(memberToCreate);
+            var memberEntity = await _memberService.CreateMemberAsync(memberToCreate);
 
             bookEntity!.Quantity --;
 
             var borrowingEntity = _mapper.Map<Borrowing>(borrowingDTO);
+
+            borrowingEntity.Member = memberEntity;
             borrowingEntity.BorrowingDate = DateTime.Now;
             borrowingEntity.Status = "Borrowed";
             borrowingEntity.ReturnDate = null;
             borrowingEntity.IsCanceled = false;
-            borrowingEntity.MemberID = member.MemberID;
 
             await _unitOfWork.BorrowingRepository.RecordNewBorrowingAsync(borrowingEntity);
 
-            await _unitOfWork.SaveChangesAsync();
-
-            return borrowingEntity.BorrowingID;
-        }
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+                return borrowingEntity.BorrowingID;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            }
 
     }
 }

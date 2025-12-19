@@ -19,11 +19,16 @@ namespace LibraryManagement.BLL
 
       public async Task<Member> CreateMemberAsync(MemberForCreationDTO memberDTO)
         {
-            var existingMember = await _unitOfWork.MemberRepository.GetMemberByPersonIDForReadOnlyAsync(memberDTO.PersonID);
-
+            var existingMember = await _unitOfWork.MemberRepository.GetMemberByPersonIDAsync(memberDTO.PersonID);
+              
             if (existingMember != null)
             {
                 return existingMember;
+            }
+            var person = await _unitOfWork.PersonRepository.GetPersonForReadOnlyAsync(memberDTO.PersonID);
+            if (memberDTO==null)
+            {
+                throw new Exception("The person associated with this member ID does not exist.");
             }
             var memberEntity = _mapper.Map<Member>(memberDTO);
             await _unitOfWork.MemberRepository.AddNewMemberAsync(memberEntity);
