@@ -26,7 +26,7 @@ namespace LibraryManagement.BLL
                 return existingMember;
             }
             var person = await _unitOfWork.PersonRepository.GetPersonForReadOnlyAsync(memberDTO.PersonID);
-            if (memberDTO==null)
+            if (person == null)
             {
                 throw new Exception("The person associated with this member ID does not exist.");
             }
