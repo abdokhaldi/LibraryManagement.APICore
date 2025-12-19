@@ -2,6 +2,7 @@
 using LibraryManagement.DAL;
 using LibraryManagement.DAL.Context;
 using LibraryManagement.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 public class UnitOfWork : IUnitOfWork
@@ -33,9 +34,14 @@ public class UnitOfWork : IUnitOfWork
         }
 
     
-    public Task<int> SaveChangesAsync()
+    public async Task<int> SaveChangesAsync()
     {
-        return _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _context.Database.BeginTransactionAsync();
     }
 
     public void Dispose()

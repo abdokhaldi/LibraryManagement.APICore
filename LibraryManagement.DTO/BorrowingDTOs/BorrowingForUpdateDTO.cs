@@ -8,7 +8,6 @@ namespace LibraryManagement.DTO.BorrowingDTOs
 {
     public class BorrowingForUpdateDTO
     {
-        public required int BorrowingID { get; set; }
         public required DateTime DueDate { get; set; }
            
     }

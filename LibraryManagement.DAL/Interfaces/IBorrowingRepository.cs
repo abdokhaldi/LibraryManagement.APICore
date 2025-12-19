@@ -1,7 +1,4 @@
 ﻿using LibraryManagement.DAL.Entities;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LibraryManagement.DAL.Interfaces
 {
@@ -12,12 +9,9 @@ namespace LibraryManagement.DAL.Interfaces
         Task<bool> IsBookCurrentlyUnavailableAsync(int bookID, int personID);
 
         Task RecordNewBorrowingAsync(Borrowing borrowingEntity);
-
-        Task UpdateBorrowingAsync(Borrowing borrowingEntity);
-
         Task<Borrowing?> GetBorrowingForUpdateAsync(int borrowingID);
-        Task<Borrowing?> FindBorrowingForReadOnlyAsync(int borrowingID);
-
+        Task<Borrowing?> GetBorrowingForReadOnlyAsync(int borrowingID);
+       
 
     }
 }

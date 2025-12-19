@@ -22,7 +22,7 @@ namespace LibraryManagement.DAL
                                              b => b.BookID == bookID
                                              && b.MemberID == memberID
                                              && b.ReturnDate == null
-                                             && b.IsCanceled == false
+                                             && b.IsCanceled == true
                                             );
                 return IsBookCurrentlyUnavailable;
             }
@@ -33,37 +33,24 @@ namespace LibraryManagement.DAL
             return Task.CompletedTask;
         }
             
-        
-        public  Task UpdateBorrowingAsync(Borrowing borrowingEntity)
-        {
-          
-                _context.Borrowings.Update(borrowingEntity);
-                return Task.CompletedTask;
-            
-        }
-        
-
-        public  async Task<Borrowing?> GetBorrowingForUpdateAsync(int borrowingID)
+        public async Task<Borrowing?> GetBorrowingForUpdateAsync(int borrowingID)
         {
            
                 var borrowing = await _context.Borrowings
-                                        .Include(b => b.Member)
-                                        .Include(b => b.Book)
-                                        .FirstOrDefaultAsync(b=>b.BorrowingID == borrowingID);
+                                      .FindAsync(borrowingID);
                 return borrowing;
             }
 
-        public async Task<Borrowing?> FindBorrowingForReadOnlyAsync(int borrowingID)
+        public async Task<Borrowing?> GetBorrowingForReadOnlyAsync(int borrowingID)
         {
 
             var borrowing = await _context.Borrowings.AsNoTracking()
-                                    .Include(b => b.Member)
                                     .Include(b => b.Book)
+                                    .Include(m => m.Member)
+                                    .ThenInclude(m=>m.Person)
                                     .FirstOrDefaultAsync(b => b.BorrowingID == borrowingID);
             return borrowing;
         }
-
-
 
         public  Task<IQueryable<Borrowing>> GetQueryableBorrowingsAsync()
         {

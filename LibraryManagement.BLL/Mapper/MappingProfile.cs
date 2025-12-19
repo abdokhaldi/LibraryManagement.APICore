@@ -54,7 +54,16 @@ namespace LibraryManagement.BLL.Mapper
 
             // Auto mapping for Borrowing
             CreateMap<BorrowingForCreationDTO,Borrowing>();
-            CreateMap<BorrowingForDisplayDTO, Borrowing>();
+         var mappingBorrowingForDisplay =  CreateMap<Borrowing, BorrowingForDisplayDTO>()
+                .ForMember(dst => dst.FullName,
+                opt => opt.MapFrom(src=>src.Member.Person.FirstName +" "+ src.Member.Person.LastName )
+                );
+            mappingBorrowingForDisplay.ForMember(
+                dst => dst.Title,
+                opt => opt.MapFrom(src => src.Book.Title)
+                );
+
+
             CreateMap<BorrowingForUpdateDTO, Borrowing>();
 
             // Auto mapping for Member

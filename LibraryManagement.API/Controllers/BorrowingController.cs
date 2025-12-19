@@ -35,10 +35,32 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetBorrowingDetails(int id)
         {
-            return Ok($"{id}");
+            var borrowing = await _borrowingService.GetBorrowingDetailsAsync(id);
+            if (borrowing == null)
+            {
+                return NotFound($"The borrowing with ID:{id} not found .");
+            }
+            return Ok(borrowing);
         }
 
-
+        [HttpPatch("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> ReturnBook(int id)
+        {
+            var (success, error) = await _borrowingService.ReturnBookAsync(id);
+            if (!success)
+            {
+                if (error.ToLower().Contains("not found"))
+                {
+                    return NotFound(error);
+                }
+                return BadRequest(error);
+            }
+            return NoContent();
+        
+        }
 
     }
 }
