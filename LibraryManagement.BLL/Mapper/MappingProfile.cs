@@ -48,7 +48,7 @@ namespace LibraryManagement.BLL.Mapper
 
             CreateMap<Book, BookForDisplayDTO>()
              .ForMember(
-                    dest => dest.CategoryName,
+                    dst => dst.CategoryName,
                     opt => opt.MapFrom(src => src.Category!.CategoryName)
                     );
 
@@ -64,7 +64,7 @@ namespace LibraryManagement.BLL.Mapper
                 );
 
 
-            CreateMap<BorrowingForUpdateDTO, Borrowing>();
+            CreateMap<BorrowingForExtendDTO, Borrowing>();
 
             // Auto mapping for Member
             CreateMap<MemberForCreationDTO,Member>();

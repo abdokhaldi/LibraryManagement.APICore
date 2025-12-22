@@ -11,13 +11,13 @@ namespace LibraryManagement.API.Controllers
     public class BorrowingController : ControllerBase
     {
         private readonly IBorrowingService _borrowingService;
-        public BorrowingController(IBorrowingService borrowingService) 
+        public BorrowingController(IBorrowingService borrowingService)
         {
             _borrowingService = borrowingService;
         }
 
         [HttpPost]
-        [ProducesResponseType((int) HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         public async Task<IActionResult> RecordNewBorrowing([FromBody] BorrowingForCreationDTO borrowingDTO)
@@ -27,9 +27,9 @@ namespace LibraryManagement.API.Controllers
             {
                 return BadRequest("No book to borrow");
             }
-            return CreatedAtAction(nameof(GetBorrowingDetails),new {id=newBorrowingID },newBorrowingID);
+            return CreatedAtAction(nameof(GetBorrowingDetails), new { id = newBorrowingID }, newBorrowingID);
         }
-       
+
         [HttpGet("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -43,10 +43,10 @@ namespace LibraryManagement.API.Controllers
             return Ok(borrowing);
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}/ReturnBook")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        [ProducesResponseType((int) HttpStatusCode.NotFound)]
-        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ReturnBook(int id)
         {
             var (success, error) = await _borrowingService.ReturnBookAsync(id);
@@ -59,8 +59,34 @@ namespace LibraryManagement.API.Controllers
                 return BadRequest(error);
             }
             return NoContent();
+
+        }
+
+        [HttpPatch("{id}/ExtendDueDate")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> ExtendDueDate(int id, [FromBody] BorrowingForExtendDTO borrowingDTO)
+        {
+            var (success, error) = await _borrowingService.ExtendDueDateAsync(id,borrowingDTO);
+            if (!success)
+            {
+                if (error.ToLower().Contains("not found"))
+                {
+                    return NotFound(error);
+                }
+                return BadRequest(error);
+            }
+            return NoContent();
         
         }
 
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetBorrowings()
+        {
+            var borrowings = await _borrowingService.GetBorrowingsAsync();
+            return Ok(borrowings);
+         }
     }
 }

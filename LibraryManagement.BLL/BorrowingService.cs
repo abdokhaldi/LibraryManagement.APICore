@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DAL.Entities;
 using LibraryManagement.DAL.Interfaces;
 using LibraryManagement.DTO.BorrowingDTOs;
 using LibraryManagement.DTO.MemberDTOs;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 namespace LibraryManagement.BLL
 {
@@ -64,7 +66,7 @@ namespace LibraryManagement.BLL
             var borrowingDTO = _mapper.Map<BorrowingForDisplayDTO>(borrowing);
             return borrowingDTO;
         }
-        public async Task<(bool Success, string Error)> ReturnBookAsync(int id)
+        public async Task<(bool success, string error)> ReturnBookAsync(int id)
         {
           
             var borrowingEntity = await _unitOfWork.BorrowingRepository.GetBorrowingForUpdateAsync(id);
@@ -90,5 +92,37 @@ namespace LibraryManagement.BLL
             await _unitOfWork.SaveChangesAsync();
             return (true, string.Empty);
         }
+        public async Task<(bool success,string error)> ExtendDueDateAsync(int id, BorrowingForExtendDTO borrowingDTO)
+        {
+            var borrowingEntity = await _unitOfWork.BorrowingRepository.GetBorrowingForUpdateAsync(id);
+            if (borrowingEntity == null || borrowingEntity.IsCanceled==true)
+            {
+                return (false , $"The borrowing with ID :{id} is not found or was cancelled .");
+            }
+            if (borrowingEntity.ReturnDate != null)
+            {
+                return (false, $"The completed borrowing cannot be updated .");
+
+            }
+            if (borrowingEntity.DueDate > borrowingDTO.DueDate)
+            {
+                return (false,$"Invalid date , the new due date must be later than the current due date");
+            }
+            _mapper.Map(borrowingDTO,borrowingEntity);
+           await  _unitOfWork.SaveChangesAsync();
+            return (true,string.Empty);
+        }
+
+      public async Task<List<BorrowingForDisplayDTO>> GetBorrowingsAsync()
+        {
+            var borrowings = await _unitOfWork.BorrowingRepository.GetQueryableBorrowingsAsync();
+
+            var borrowingsDTO = await borrowings
+                .Where(b => b.IsCanceled == false)
+                .ProjectTo<BorrowingForDisplayDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+            return borrowingsDTO;
+        }
+
     }
 }
