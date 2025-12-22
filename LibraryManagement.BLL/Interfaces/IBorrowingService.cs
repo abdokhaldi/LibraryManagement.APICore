@@ -14,5 +14,7 @@ namespace LibraryManagement.BLL.Interfaces
         Task<(bool success, string error)> ReturnBookAsync(int id);
         Task<(bool success, string error)> ExtendDueDateAsync(int id, BorrowingForExtendDTO borrowingDTO);
         Task<List<BorrowingForDisplayDTO>> GetBorrowingsAsync();
+        Task<List<BorrowingForDisplayDTO>> GetOverdueAsync();
+
     }
 }

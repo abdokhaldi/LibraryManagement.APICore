@@ -3,12 +3,13 @@ using AutoMapper.QueryableExtensions;
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DAL.Entities;
 using LibraryManagement.DAL.Interfaces;
+using LibraryManagement.DTO.BookDTOs;
 using LibraryManagement.DTO.BorrowingDTOs;
 using LibraryManagement.DTO.MemberDTOs;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 namespace LibraryManagement.BLL
-{
+{  
     public class BorrowingService : IBorrowingService
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -104,7 +105,7 @@ namespace LibraryManagement.BLL
                 return (false, $"The completed borrowing cannot be updated .");
 
             }
-            if (borrowingEntity.DueDate > borrowingDTO.DueDate)
+            if (borrowingEntity.DueDate >= borrowingDTO.DueDate)
             {
                 return (false,$"Invalid date , the new due date must be later than the current due date");
             }
@@ -113,16 +114,26 @@ namespace LibraryManagement.BLL
             return (true,string.Empty);
         }
 
-      public async Task<List<BorrowingForDisplayDTO>> GetBorrowingsAsync()
+        public async Task<List<BorrowingForDisplayDTO>> GetBorrowingsAsync()
         {
-            var borrowings = await _unitOfWork.BorrowingRepository.GetQueryableBorrowingsAsync();
+            var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetQueryableBorrowingsAsync();
 
-            var borrowingsDTO = await borrowings
+            var borrowingsDTO = await borrowingsQuery
                 .Where(b => b.IsCanceled == false)
                 .ProjectTo<BorrowingForDisplayDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
             return borrowingsDTO;
         }
+        public async Task<List<BorrowingForDisplayDTO>> GetOverdueAsync()
+        {
+            var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetQueryableBorrowingsAsync();
 
+            var borrowingsDTO = await borrowingsQuery
+                .Where(b => b.ReturnDate == null && b.DueDate < DateTime.UtcNow)
+                .ProjectTo<BorrowingForDisplayDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return borrowingsDTO;
+        }
     }
 }

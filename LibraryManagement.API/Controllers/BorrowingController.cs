@@ -88,5 +88,17 @@ namespace LibraryManagement.API.Controllers
             var borrowings = await _borrowingService.GetBorrowingsAsync();
             return Ok(borrowings);
          }
+
+        
+        [HttpGet("/GetOverdue")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetOverdue()
+        {
+            var borrowings = await _borrowingService.GetOverdueAsync();
+            return Ok(borrowings);
+        }
+
+
+
     }
 }
