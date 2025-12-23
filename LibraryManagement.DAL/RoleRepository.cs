@@ -32,7 +32,8 @@ var            query = _context.Roles.AsQueryable();
             
                 var role = await _context.Roles
                 .AsNoTracking()
-                .Where(r=>r.RoleID ==roleID).FirstOrDefaultAsync();
+                .Where(r=>r.RoleID ==roleID)
+                .FirstOrDefaultAsync();
                 return role;
             }
         public async Task<Role?> GetRoleForUpdateAsync(int roleID)
@@ -40,6 +41,11 @@ var            query = _context.Roles.AsQueryable();
 
             var role = await _context.Roles.FindAsync(roleID);
             return role;
+        }
+        public Task CreateRole(Role role)
+        {
+            _context.Roles.Add(role);
+            return Task.CompletedTask;
         }
     }
 }

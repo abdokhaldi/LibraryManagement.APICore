@@ -1,10 +1,8 @@
 ﻿
-
 namespace LibraryManagement.DTO.RoleDTOs
 {
-    public class RoleForDisplayDTO
+    public class RoleForCreationDTO
     {
-        public required int RoleID { get; set; }
         public required string RoleName { get; set; }
     }
 }

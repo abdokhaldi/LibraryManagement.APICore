@@ -4,6 +4,8 @@ using LibraryManagement.DAL.Entities;
 using LibraryManagement.DTO.PersonDTOs;
 using LibraryManagement.DTO.MemberDTOs;
 using LibraryManagement.DTO.BorrowingDTOs;
+using LibraryManagement.DTO.RoleDTOs;
+using LibraryManagement.DTO.UserDTOs;
 
 namespace LibraryManagement.BLL.Mapper
 {
@@ -102,7 +104,29 @@ namespace LibraryManagement.BLL.Mapper
                       opt.MapFrom(s => s.IsActive!.Value);
                       opt.UseDestinationValue();
                   });
+
+            // Roles
+            CreateMap<RoleForCreationDTO,Role>();
+            CreateMap<Role, RoleForDisplayDTO>();
+
+            // Users
+            CreateMap<UserForCreationDTO,User>();
+           
+            var mappingUserForDisplay = CreateMap<User, UserForDisplayDTO>();
+           
+            mappingUserForDisplay.ForMember(dst => dst.FullName,
+                opt => opt.MapFrom(src => src.Person.FirstName + " " + src.Person.LastName)
+                );
+            mappingUserForDisplay.ForMember(dst => dst.RoleName,
+                                  opt => opt.MapFrom(src =>src.Role.RoleName)
+                );
+            mappingUserForDisplay.ForMember(dst => dst.Status,
+            opt => opt.MapFrom(src => src.IsActive?"Active":"Inactive"));
+           
+            
+            CreateMap<UserForUpdateDTO,User>();
+
         }
-        
+
     }
 }

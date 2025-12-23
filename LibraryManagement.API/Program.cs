@@ -27,8 +27,15 @@ builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IBorrowingRepository, BorrowingRepository>();
 builder.Services.AddScoped<IBorrowingService, BorrowingService>();
+builder.Services.AddScoped<IRoleRepository,RoleRepository>();
+builder.Services.AddScoped<IRoleService,RoleService>();
+builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddScoped<IUserService,UserService>();
+
 
 // 4. إعداد AutoMapper
+
+
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddMaps(typeof(MappingProfile).Assembly);

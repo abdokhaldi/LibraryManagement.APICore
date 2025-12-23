@@ -12,5 +12,6 @@ namespace LibraryManagement.DAL.Interfaces
         Task<Role?> GetRoleForReadOnlyAsync(int roleID);
 
         Task<IQueryable<Role>> GetQueryableRolesAsync();
+        Task CreateRole(Role role);
     }
 }

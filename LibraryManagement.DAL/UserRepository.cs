@@ -1,11 +1,7 @@
 ﻿using LibraryManagement.DAL.Context;
 using LibraryManagement.DAL.Entities;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using LibraryManagement.DAL.Interfaces;
 
 
@@ -63,16 +59,13 @@ namespace LibraryManagement.DAL
 
         public async Task<bool>  IsUsernameExistsAsync(string username)
         {
-            
-                var exists = await _context.Users.Where(u => u.Username == username).AsNoTracking()
-                                           .Select(u => u.Username)
-                                           .FirstOrDefaultAsync();
-                return (exists != null);
-            }
+
+            var exists = await _context.Users.AsNoTracking().AnyAsync(u=>u.Username == username);
+            return exists;
+        }
 
 
         public Task AddNewUserAsync(User userEntity)
-
         {
                _context.Users.Add(userEntity);
                 return Task.CompletedTask;
