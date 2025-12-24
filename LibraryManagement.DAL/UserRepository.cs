@@ -37,16 +37,25 @@ namespace LibraryManagement.DAL
 
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
-           
-                var user = await _context.Users.AsNoTracking() 
-                                .Include(u=>u.Person)
-                                .Include(u => u.Role)
-                                .FirstOrDefaultAsync(u =>u.Username==username);
+            var user = await _context.Users.AsNoTracking()
+                               .Include(p=>p.Person)
+                               .Include(r=>r.Role)
+                               .FirstOrDefaultAsync(u =>u.Username==username);
                 return user;
          }
-           
 
-        public  Task<IQueryable<User>> GetQueryableUsersAsync()
+      public async Task<User?> GetUserForLoginAsync(string identifier)
+        {
+            var user = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.Person)
+                .Where(u => u.Username == identifier
+                || u.Person.Email == identifier)
+                .FirstOrDefaultAsync();
+            return user;
+        }
+
+        public Task<IQueryable<User>> GetQueryableUsersAsync()
         {
            
                 var query = _context.Users

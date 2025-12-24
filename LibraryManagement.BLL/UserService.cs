@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using LibraryManagement.BLL.Interfaces;
-using LibraryManagement.DAL;
 using LibraryManagement.DAL.Interfaces;
 using LibraryManagement.DAL.Entities;
 using LibraryManagement.DTO.UserDTOs;
@@ -25,7 +24,13 @@ namespace LibraryManagement.BLL
                 return -1;
             }
             var userEntity = _mapper.Map<User>(userDTO);
-            await _unitOfWork.UserRepository.AddNewUserAsync(userEntity);
+            string passwordHashed = BCrypt.Net.BCrypt.HashPassword(userEntity.Password);
+            userEntity.Password = passwordHashed;
+            userEntity.CreatedAt = DateTime.UtcNow;
+            userEntity.IsBlocked = false;
+            userEntity.IsActive = true;
+            
+        await _unitOfWork.UserRepository.AddNewUserAsync(userEntity);
             await _unitOfWork.SaveChangesAsync();
 
             return userEntity.UserID;
@@ -38,9 +43,28 @@ namespace LibraryManagement.BLL
                 return null;
             }
             var userDTO = _mapper.Map<UserForDisplayDTO>(user);
+            
             return userDTO;
         }
+        public async Task<(bool success,string error)> UpdateUserAsync(int id, UserForUpdateDTO userDTO)
+        {
+            var user = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
+            if (user ==null )
+            {
+                    return (false, $"The user with ID:{id} was not found for update.");
+            }
+            var userWithSameName = await _unitOfWork.UserRepository.GetUserByUsernameAsync(user.Username);
+            if (userWithSameName != null && userWithSameName.UserID != id)
+            {
+                return (false, $"The username: {userDTO.Username} is already taken by another user.");
+            }
+            _mapper.Map(userDTO, user);
+
+            await _unitOfWork.SaveChangesAsync();
+            return (true,string.Empty);
+        }
+        
     }
 
-    }
+}
 

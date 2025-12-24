@@ -1,10 +1,5 @@
-﻿using LibraryManagement.DAL.Interfaces;
-using LibraryManagement.DTO.UserDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LibraryManagement.DTO.UserDTOs;
+
 
 namespace LibraryManagement.BLL.Interfaces
 {
@@ -12,5 +7,6 @@ namespace LibraryManagement.BLL.Interfaces
     {
         Task<int> RegisterUserAsync(UserForCreationDTO userDTO);
         Task<UserForDisplayDTO?> GetUserDerailsAsync(int id);
+        Task<(bool success, string error)> UpdateUserAsync(int id, UserForUpdateDTO userDTO);
     }
 }

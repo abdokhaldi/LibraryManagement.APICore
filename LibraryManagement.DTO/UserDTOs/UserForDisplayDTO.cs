@@ -12,7 +12,9 @@ namespace LibraryManagement.DTO.UserDTOs
         public required string FullName { get; set; }
         public required string Username { get; set; }
         public required string RoleName { get; set; }
-        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
+        public required bool IsActive { get; set; }
+        public required bool IsBlocked { get; set; }
+
     }
 }

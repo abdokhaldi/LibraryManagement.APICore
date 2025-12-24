@@ -97,13 +97,13 @@ namespace LibraryManagement.BLL.Mapper
                         return srcMember != null;
                     })
                 );
-            mappingPersonForUpdate.ForMember(d => d.IsActive,
-                  opt => {
-                      opt.PreCondition(
-                          s => s.IsActive.HasValue);
-                      opt.MapFrom(s => s.IsActive!.Value);
-                      opt.UseDestinationValue();
-                  });
+           mappingPersonForUpdate.ForMember(dst => dst.IsActive,
+                 opt => {
+                     opt.PreCondition(
+                         s => s.IsActive.HasValue);
+                     opt.MapFrom(s => s.IsActive!.Value);
+                     opt.UseDestinationValue();
+                 });
 
             // Roles
             CreateMap<RoleForCreationDTO,Role>();
@@ -120,12 +120,51 @@ namespace LibraryManagement.BLL.Mapper
             mappingUserForDisplay.ForMember(dst => dst.RoleName,
                                   opt => opt.MapFrom(src =>src.Role.RoleName)
                 );
-            mappingUserForDisplay.ForMember(dst => dst.Status,
-            opt => opt.MapFrom(src => src.IsActive?"Active":"Inactive"));
-           
             
-            CreateMap<UserForUpdateDTO,User>();
-
+            
+          var mappingUserForUpdate = CreateMap<UserForUpdateDTO,User>();
+            mappingUserForUpdate.ForAllMembers(
+                opts => opts.Condition(
+                    (src ,dst,srcMember) 
+                   => {
+                        return srcMember != null;
+                    }
+                    )
+                );
+            mappingUserForUpdate.ForMember(
+                dst=>dst.IsActive,
+                opt =>
+                {
+                    opt.PreCondition(s => s.IsActive.HasValue);
+                    opt.MapFrom(s => s.IsActive!.Value);
+                }
+               );
+            mappingUserForUpdate.ForMember(
+                dst => dst.IsBlocked,
+                opt =>
+                {
+                    opt.PreCondition(s=>s.IsBlocked.HasValue);
+                    opt.MapFrom(s=>s.IsBlocked!.Value);
+                    opt.UseDestinationValue();
+                }
+                );
+            mappingUserForUpdate.ForMember(
+                dst =>dst.RoleID ,
+                opt =>
+                {
+                    opt.PreCondition(s=>s.RoleID.HasValue);
+                    opt.MapFrom(s=>s.RoleID!.Value);
+                } 
+                );
+            mappingUserForUpdate.ForMember(
+                dst=>dst.PersonID,
+                opt =>
+                {
+                    opt.PreCondition(s=>s.PersonID.HasValue);
+                    opt.MapFrom(s=>s.PersonID!.Value);
+                    opt.UseDestinationValue();
+                }
+                );
         }
 
     }

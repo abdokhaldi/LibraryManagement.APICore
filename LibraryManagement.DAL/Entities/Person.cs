@@ -22,8 +22,9 @@ namespace LibraryManagement.DAL.Entities
         [Required]
         [MaxLength(20)]
         public string Phone { get; set; }= null!;
+        [Required]
         [MaxLength(100)]
-        public string? Email { get; set; }
+        public string Email { get; set; } = null!;
         [Required]
         [MaxLength(200)]
         public string Address { get; set; } = null!;

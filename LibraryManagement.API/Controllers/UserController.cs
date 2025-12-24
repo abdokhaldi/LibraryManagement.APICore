@@ -41,5 +41,25 @@ namespace LibraryManagement.API.Controllers
             }
             return Ok(user);
         }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+      public async Task<IActionResult> UpdateUser(int id, [FromBody] UserForUpdateDTO userDTO)
+        {
+            var (success, error) = await _userService.UpdateUserAsync(id,userDTO);
+            if (!success)
+            {
+                if (error.ToLower().Contains("not found"))
+                {
+                    return NotFound(error);
+                }
+                return BadRequest(error);
+            }
+            return NoContent();
+        }
+
+
         }
 }

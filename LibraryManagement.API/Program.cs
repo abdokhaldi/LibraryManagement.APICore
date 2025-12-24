@@ -31,9 +31,9 @@ builder.Services.AddScoped<IRoleRepository,RoleRepository>();
 builder.Services.AddScoped<IRoleService,RoleService>();
 builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IAuthService,AuthService>();
 
-
-// 4. إعداد AutoMapper
+// 4. Setup AutoMapper
 
 
 builder.Services.AddAutoMapper(cfg =>
@@ -41,7 +41,7 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddMaps(typeof(MappingProfile).Assembly);
 });
 
-// 5. إعداد Swagger (توليد المستندات)
+// 5. Setup Swagger (Docs generate)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -55,7 +55,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// 6. Middleware لمعالجة الاستثناءات (Exception Handling)
+// 6. Middleware  (Exception Handling)
 app.UseExceptionMiddleware();
 
 // 7. إعدادات Pipeline لبيئة التطوير

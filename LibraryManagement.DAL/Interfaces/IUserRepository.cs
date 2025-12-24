@@ -10,7 +10,8 @@ namespace LibraryManagement.DAL.Interfaces
         Task<User?> GetUserForReadOnlyAsync(int userID);
 
         Task<User?> GetUserByUsernameAsync(string username);
-
+        Task<User?> GetUserForLoginAsync(string identifier);
+        
         Task<IQueryable<User>> GetQueryableUsersAsync();
 
         Task<bool> IsUsernameExistsAsync(string username);
