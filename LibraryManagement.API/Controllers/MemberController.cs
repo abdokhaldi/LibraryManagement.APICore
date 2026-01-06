@@ -1,5 +1,6 @@
 ﻿using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DTO.MemberDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
@@ -7,6 +8,7 @@ using System.Net;
 
 namespace LibraryManagement.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
 

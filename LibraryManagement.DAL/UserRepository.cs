@@ -49,6 +49,7 @@ namespace LibraryManagement.DAL
             var user = await _context.Users
                 .AsNoTracking()
                 .Include(u => u.Person)
+                .Include(u=>u.Role)
                 .Where(u => u.Username == identifier
                 || u.Person.Email == identifier)
                 .FirstOrDefaultAsync();

@@ -2,12 +2,14 @@
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DTO;
 using LibraryManagement.DTO.BookDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace LibraryManagement.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BookController : ControllerBase
@@ -35,7 +37,7 @@ namespace LibraryManagement.API.Controllers
             }
                return CreatedAtAction(nameof(GetBookDetails), new { bookID = newBookId.Value }, newBookId);
         }
-
+       
         [HttpGet("{bookID}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

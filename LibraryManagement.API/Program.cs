@@ -5,13 +5,36 @@ using LibraryManagement.BLL.Mapper;
 using LibraryManagement.DAL;
 using LibraryManagement.DAL.Context;
 using LibraryManagement.DAL.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. إضافة الخدمات الأساسية للمتحكمات
 builder.Services.AddControllers();
+builder.Services.AddAuthentication(
+    JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters =
+
+        new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["jwt:Issuer"],
+            ValidAudience = builder.Configuration["jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+               Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"])
+               )
+        };
+  });
+
+builder.Services.AddAuthorization();
 
 // 2. إعداد قاعدة البيانات (SQL Server)
 builder.Services.AddDbContext<LibraryDbContext>(options =>
@@ -32,6 +55,8 @@ builder.Services.AddScoped<IRoleService,RoleService>();
 builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddScoped<IAuthService,AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ISecurityService,SecurityService>();
 
 // 4. Setup AutoMapper
 
@@ -50,6 +75,32 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Library Management API V1",
         Version = "v1",
         Description = "Library Management - API"
+    });
+    // إضافة تعريف الأمان (Security Definition)
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' , Example: 'Bearer eye123...'"
+    });
+
+    // إضافة متطلبات الأمان (Security Requirement) لجميع العمليات
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 
@@ -71,6 +122,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 // 8. تعيين المسارات للمتحكمات

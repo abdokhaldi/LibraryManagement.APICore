@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryManagement.BLL.Common
+namespace LibraryManagement.DTO.Common
 {
-    public enum LoginResult
+    public enum LoginStatus
     {
        
         Success,

@@ -1,10 +1,10 @@
-﻿using LibraryManagement.BLL.Common;
+﻿using LibraryManagement.DTO.LoginResult;
 
 namespace LibraryManagement.BLL.Interfaces
 {
     public interface IAuthService
     {
         
-        Task<(LoginResult status, string message)> LoginAsync(string identifier, string password);
+        Task<LoginResult> LoginAsync(string identifier, string password);
     }
 }

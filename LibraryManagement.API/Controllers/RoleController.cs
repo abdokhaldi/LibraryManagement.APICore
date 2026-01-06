@@ -1,14 +1,16 @@
-﻿using LibraryManagement.BLL.Interfaces;
+﻿using LibraryManagement.API.Common;
+using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DTO.RoleDTOs;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace LibraryManagement.API.Controllers
 {
+    [Authorize(Roles ="Admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class RoleController : BaseController
     {
         public readonly IRoleService _roleService;
         public RoleController(IRoleService roleService)

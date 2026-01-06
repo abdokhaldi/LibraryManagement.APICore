@@ -1,10 +1,12 @@
 ﻿using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DTO.PersonDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagement.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PersonController : ControllerBase
@@ -19,8 +21,7 @@ namespace LibraryManagement.API.Controllers
         [HttpPost]
         [ProducesResponseType((int)StatusCodes.Status201Created)]
         [ProducesResponseType((int)StatusCodes.Status400BadRequest)]
-
-        public async Task<IActionResult> CreatePerson([FromBody] PersonForCreationDTO personDTO)
+      public async Task<IActionResult> CreatePerson([FromBody] PersonForCreationDTO personDTO)
         {
             
             var newPersonID = await _personService.CreatePersonAsync(personDTO);

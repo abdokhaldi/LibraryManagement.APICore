@@ -50,7 +50,15 @@ namespace LibraryManagement.DAL
             _context.People.Add(personEntity);
             return Task.CompletedTask;
         }
-            
-       
+
+        public async Task<bool> IsPersonActive(int id)
+        {
+            bool active = await _context.People
+                .AnyAsync(p=>
+                p.PersonID==id
+                && p.IsActive==true);
+            return active;
+        }
+
     }
 }

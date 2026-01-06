@@ -1,12 +1,13 @@
 ﻿using LibraryManagement.BLL.Interfaces;
-using LibraryManagement.BLL.Common;
-
+using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.UserDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace LibraryManagement.API.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -16,6 +17,7 @@ namespace LibraryManagement.API.Controllers
         {
             _authService = authService;
         }
+        [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -23,13 +25,15 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> Login([FromBody]UserForLoginDTO loginDTO)
         {
-            var (status, message) = await _authService.LoginAsync(loginDTO.Identifier, loginDTO.Password);
+            var result = await _authService.LoginAsync(loginDTO.Identifier, loginDTO.Password);
 
-            return status switch
+            
+            return result.status switch
             {
-                LoginResult.Success => Ok(new { Message = message }),
-                LoginResult.InvalidCredentials => Unauthorized(new { Message = message }),
-                LoginResult.Blocked or LoginResult.Deactivated => StatusCode(StatusCodes.Status403Forbidden, new { Message = message }),
+                LoginStatus.Success => Ok(result),
+                LoginStatus.InvalidCredentials => Unauthorized("Invalid username or password ."),
+                LoginStatus.Blocked  => StatusCode(StatusCodes.Status403Forbidden, new { Message = "You was blocked, contact the admin" }),
+                LoginStatus.Deactivated => StatusCode(StatusCodes.Status403Forbidden, new { Message = "You was inactivated, contact the admin" }),
                 _ => BadRequest()
             };
         }

@@ -1,6 +1,8 @@
 ﻿using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DAL.Interfaces;
-using LibraryManagement.BLL.Common;
+using LibraryManagement.DTO.Common;
+using LibraryManagement.DTO.LoginResult;
+
 
 namespace LibraryManagement.BLL
 {
@@ -9,36 +11,46 @@ namespace LibraryManagement.BLL
     {
        
         private readonly IUnitOfWork _unitOfWork;
-        
-        public AuthService(IUnitOfWork unitOfWork)
+        private readonly ITokenService _tokenService;
+        private readonly ISecurityService _securityService;
+        public AuthService(IUnitOfWork unitOfWork, ITokenService tokenService, ISecurityService securityService)
         {
             _unitOfWork = unitOfWork;
+            _tokenService = tokenService;
+            _securityService = securityService;
         }
 
-        public async Task<(LoginResult status,string message)> LoginAsync(string identifier, string password)
+        public async Task<LoginResult> LoginAsync(string identifier, string password)
         {
             var userForLogin = await _unitOfWork.UserRepository.GetUserForLoginAsync(identifier);
             if (userForLogin == null)
             {
-                return (LoginResult.InvalidCredentials, "Invalid identifier or password .");
+                return LoginResult.Failure(LoginStatus.InvalidCredentials);
             }
-            bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(password,userForLogin.Password);
+            bool isPasswordCorrect = _securityService.Verify(password,userForLogin.Password);
             if (!isPasswordCorrect)
             {
-                return (LoginResult.InvalidCredentials, "Invalid identifier or password .");
+                return LoginResult.Failure(LoginStatus.InvalidCredentials) ;
             }
 
             if (userForLogin.IsBlocked == true)
                     {
-                        return (LoginResult.Blocked, "Your account is blocked, contact the admin.");
+                return LoginResult.Failure(LoginStatus.Blocked);
                     }
 
                     if (userForLogin.IsActive == false)
                     {
-                        return (LoginResult.Deactivated, "Your account is inactivated, contact the admin.");
+                        return LoginResult.Failure(LoginStatus.Deactivated);
                     }
 
-            return (LoginResult.Success, "Welcome , you have successfully logged in .");
+            string token = _tokenService.GenerateToken(userForLogin);
+            return LoginResult.Success(
+                new LoginSuccessDTO
+                {
+                    Token = token,
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(60)
+                }
+                );
             }
         
         }
