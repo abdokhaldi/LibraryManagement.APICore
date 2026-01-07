@@ -11,7 +11,7 @@ using LibraryManagement.DTO.OperationResult;
 
 namespace LibraryManagement.API.Controllers
 {
-    //[Authorize(Roles ="Admin")]
+    [Authorize(Roles ="Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : BaseController

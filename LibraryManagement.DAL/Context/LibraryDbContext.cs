@@ -25,15 +25,18 @@ namespace LibraryManagement.DAL.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Person>()
-                  .HasIndex(p => new { p.Email, p.Phone })
+                  .HasIndex(p => p.Email)
                   .IsUnique();
+            modelBuilder.Entity<Person>()
+                .HasIndex(p => p.Phone)
+                .IsUnique();
             modelBuilder.Entity<User>()
                  .HasIndex(u => u.Username)
                  .IsUnique();
            
              base.OnModelCreating(modelBuilder);
             //
-            
+           
         }
 
     }
