@@ -12,6 +12,8 @@ using LibraryManagement.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Data.Common;
+using System.ComponentModel;
+using System.Diagnostics;
 namespace LibraryManagement.DAL
 {
     public class PersonRepository : IPersonRepository
@@ -59,6 +61,25 @@ namespace LibraryManagement.DAL
                 && p.IsActive==true);
             return active;
         }
+        
+        
+        public async Task<(bool EmailExists, bool PhoneExists)> IsEmailOrPhoneExistsAsync(string email,string phone)
+        {
+            var result = await _context.People
+                .Where(p => p.Email == email || p.Phone == phone)
+                .Select(p => new
+                {
+                    EmailMatch = p.Email == email,
+                    PhoneMatch = p.Phone == phone
+                })
+                .FirstOrDefaultAsync();
+            return (result?.EmailMatch?? false, result?.PhoneMatch ?? false);   
+        }
 
+        public async Task<bool> IsEmailExists(string email)
+            => await _context.People.AnyAsync(p=>p.Email==email);
+
+        public async Task<bool> IsPhoneExists(string phone)
+            => await _context.People.AnyAsync(p => p.Phone == phone);
     }
 }

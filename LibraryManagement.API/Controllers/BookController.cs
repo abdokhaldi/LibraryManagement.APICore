@@ -6,13 +6,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using LibraryManagement.DTO.Common;
+using LibraryManagement.API.Common;
 
 namespace LibraryManagement.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController : ControllerBase
+    public class BookController : BaseController
     {
         private readonly IBookService _bookService;
         public BookController(IBookService bookService)
@@ -24,54 +26,43 @@ namespace LibraryManagement.API.Controllers
 
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateBook([FromBody] BookForCreationDTO bookDTO)
         {
-            
-            
-              var newBookId = await _bookService.CreateNewBookAsync(bookDTO);
-            if (newBookId == null)
-            {
-                return BadRequest("This title is already exists , books must have a unique title.");
-
-            }
-               return CreatedAtAction(nameof(GetBookDetails), new { bookID = newBookId.Value }, newBookId);
+             var result = await _bookService.CreateNewBookAsync(bookDTO);
+              
+            if(result.IsSuccess)
+               return CreatedAtAction(nameof(GetBookDetails), new { id = result.Data }, result.Data);
+            return HandleErrorResult(result);
         }
        
-        [HttpGet("{bookID}")]
+        [HttpGet("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetBookDetails(int bookID)
+        public async Task<IActionResult> GetBookDetails(int id)
         {
            
-            var book = await _bookService.GetBookDetailsAsync(bookID);
-            if (book == null)
-            {
-               
-                return NotFound($"The book with ID:{bookID} is not found");
-            }
-                return Ok(book);
+            var result = await _bookService.GetBookDetailsAsync(id);
+            if (result.IsSuccess)
+                return Ok(result.Data);
+           
+                return HandleErrorResult(result);
             }
 
         [HttpPut("{id}")]
         [ProducesResponseType((int)StatusCodes.Status404NotFound)]
         [ProducesResponseType((int) StatusCodes.Status204NoContent)]
+        [ProducesResponseType((int)StatusCodes.Status400BadRequest)]
+
         public async Task<IActionResult> UpdateBook(int id,[FromBody] BookForUpdateDTO bookDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            int updateResult = await _bookService.UpdateBookAsync(id, bookDTO);
-            if (updateResult == 0)
-            {
-                return NotFound($"The book with ID : {id} not found for update .");
-            }
-            if (updateResult == -1)
-            {
-               return BadRequest($"The book with title:{bookDTO.Title} is already exists.");
-            }
-            return NoContent();
+            
+            var result = await _bookService.UpdateBookAsync(id, bookDTO);
+            if (result.IsSuccess)
+                return NoContent();
+
+            return HandleErrorResult(result);
         }
 
         [HttpPatch("{id}/DeactivateBook")]
@@ -79,17 +70,12 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int) StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeactivateBook(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            
+            var result = await _bookService.DeactivateBookAsync(id);
+            if (result.IsSuccess)
+                return NoContent();
 
-            bool deactivationResult = await _bookService.DeactivateBookAsync(id);
-            if (deactivationResult == false)
-            {
-                return NotFound($"The book with ID:{id} not found for deactivate");
-            }
-            return NoContent();
+            return HandleErrorResult(result);
         }
 
         [HttpPatch("{id}/ActivateBook")]
@@ -97,17 +83,12 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ActivateBook(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            
+            var result = await _bookService.ActivateBookAsync(id);
+            if (result.IsSuccess)
+                return NoContent();
 
-            bool deactivationResult = await _bookService.ActivateBookAsync(id);
-            if (deactivationResult == false)
-            {
-                return NotFound($"The book with ID:{id} not found for Activate");
-            }
-            return NoContent();
+            return HandleErrorResult(result);
         }
 
         [HttpGet]

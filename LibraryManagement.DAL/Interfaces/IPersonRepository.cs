@@ -14,6 +14,10 @@ namespace LibraryManagement.DAL.Interfaces
         Task AddNewPersonAsync(Person personEntity);
 
         Task<bool> IsPersonActive(int id);
+        Task<bool> IsEmailExists(string email);
+        Task<bool> IsPhoneExists(string phone);
+        Task<(bool EmailExists, bool PhoneExists)> IsEmailOrPhoneExistsAsync(string email, string phone);
+
 
     }
 }

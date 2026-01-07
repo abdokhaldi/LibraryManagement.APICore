@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.DAL.Entities;
+using LibraryManagement.DTO.OperationResult;
 using LibraryManagement.DTO.PersonDTOs;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,14 @@ namespace LibraryManagement.BLL.Interfaces
 {
     public interface IPersonService
     {
-        Task<PersonForDisplayDTO?> GetPersonDetailsAsync(int id);
+        Task<OperationResult<PersonForDisplayDTO>> GetPersonDetailsAsync(int id);
         Task<List<PersonForDisplayDTO>> GetAllPeopleAsync();
-        Task<bool> UpdatePersonAsync(int id, PersonForUpdateDTO personDTO);
-        Task<int> CreatePersonAsync(PersonForCreationDTO personDTO);
-        Task<bool> ActivatePersonAsync(int id);
-        Task<bool> DeactivatePersonAsync(int id);
+        Task<OperationResult> UpdatePersonAsync(int id, PersonForUpdateDTO personDTO);
+        Task<OperationResult<int>> CreatePersonAsync(PersonForCreationDTO personDTO);
+        Task<OperationResult> ActivatePersonAsync(int id);
+        Task<OperationResult> DeactivatePersonAsync(int id);
+        
+
 
     }
 }

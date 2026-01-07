@@ -7,6 +7,9 @@ using LibraryManagement.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using LibraryManagement.DTO.OperationResult;
+using LibraryManagement.DTO.Common;
+
 
 namespace LibraryManagement.BLL
 {
@@ -20,13 +23,13 @@ namespace LibraryManagement.BLL
             _mapper = mapper;
         }
        
-       public async Task<int?> CreateNewBookAsync(BookForCreationDTO bookDTO)
+       public async Task<OperationResult<int>> CreateNewBookAsync(BookForCreationDTO bookDTO)
         {
             
               var exists = await _unitOfWork.BookRepository.IsTitleExistsAsync(bookDTO.Title);
               if (exists)
               {
-                return null;
+                return OperationResult<int>.Failure(OperationStatus.Conflict, "This title is already exists , books must have a unique title.");
               }
 
             var bookToCreate = _mapper.Map<Book>(bookDTO);
@@ -34,62 +37,65 @@ namespace LibraryManagement.BLL
             await _unitOfWork.BookRepository.AddNewBookAsync(bookToCreate);
                 await _unitOfWork.SaveChangesAsync();
            
-            return bookToCreate.BookID;
+            return OperationResult<int>.Success(bookToCreate.BookID);
         }
-       public async Task<int> UpdateBookAsync(int id,BookForUpdateDTO bookDTO)
+       public async Task<OperationResult> UpdateBookAsync(int id,BookForUpdateDTO bookDTO)
         {
              var bookToUpdate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(id);
 
              if (bookToUpdate == null)
              {
-                return 0;
+                return OperationResult.Failure(OperationStatus.NotFound, $"The book with ID:{id} was not found for update .");
              }
             if (bookDTO.Title != null && bookDTO.Title !=bookToUpdate.Title)
             {
                 bool titleExists = await _unitOfWork.BookRepository.IsTitleExistsAsync(bookDTO.Title);
                 if (titleExists == true)
                 {
-                    return -1;
+                    return OperationResult.Failure(OperationStatus.Conflict, $"The title is already exists .");
+
                 }
             }
             _mapper.Map(bookDTO, bookToUpdate);
             
             await _unitOfWork.SaveChangesAsync();
 
-            return 1;
+            return OperationResult.Success();
           }
 
-       public async Task<bool> ActivateBookAsync(int bookID)
+       public async Task<OperationResult> ActivateBookAsync(int bookID)
         {
             var bookToActivate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(bookID);
             if (bookToActivate == null)
             {
-                return false;
+                return OperationResult.Failure(OperationStatus.NotFound,$"The book with ID:{bookID} not found for activate");
             }
             if (bookToActivate.IsActive)
             {
-                return true;
+                return OperationResult.Success();
+
             }
-            
+
             bookToActivate.IsActive = true;
             await _unitOfWork.SaveChangesAsync();
-            return true;
+            return OperationResult.Success();
         }
-       public async Task<bool> DeactivateBookAsync(int bookID)
+       public async Task<OperationResult> DeactivateBookAsync(int bookID)
         {
             var bookToActivate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(bookID);
             if (bookToActivate == null)
             {
-                return false;
+                return OperationResult.Failure(OperationStatus.NotFound, $"The book with ID:{bookID} not found for deactivate");
+
             }
             if (!bookToActivate.IsActive)
             {
-                return true;
+                return OperationResult.Success();
             }
 
             bookToActivate.IsActive = false;
             await _unitOfWork.SaveChangesAsync();
-            return true;
+            return OperationResult.Success();
         }
        public async Task<List<BookForDisplayDTO>> GetAllActiveBooksAsync()
         {
@@ -102,15 +108,16 @@ namespace LibraryManagement.BLL
             
             return activeBooksDTO;
         }
-       public async Task<BookForDisplayDTO?> GetBookDetailsAsync (int bookID) 
+       public async Task<OperationResult<BookForDisplayDTO>> GetBookDetailsAsync (int bookID) 
         {
             var bookEntity = await _unitOfWork.BookRepository.GetBookForReadOnlyAsync(bookID);
             if (bookEntity == null)
             {
-                return null;
+                return OperationResult<BookForDisplayDTO>.Failure(OperationStatus.NotFound, $"The book with ID:{bookID} not found ");
+
             }
             var bookDTO = _mapper.Map<BookForDisplayDTO>(bookEntity);
-            return bookDTO;
+            return OperationResult<BookForDisplayDTO>.Success(bookDTO);
         }  
 
 

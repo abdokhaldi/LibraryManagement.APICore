@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using LibraryManagement.DTO.OperationResult;
 namespace LibraryManagement.BLL.Interfaces
 {
     public interface IRoleService
     {
-        Task<int> CreateRoleAsync(RoleForCreationDTO roleDTO);
-        Task<RoleForDisplayDTO?> GetRoleAsync(int id);
+        Task<OperationResult<int>> CreateRoleAsync(RoleForCreationDTO roleDTO);
+        Task<OperationResult<RoleForDisplayDTO>> GetRoleAsync(int id);
     }
 }

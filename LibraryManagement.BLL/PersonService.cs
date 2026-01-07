@@ -1,107 +1,119 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LibraryManagement.BLL.Interfaces;
-using LibraryManagement.DAL;
 using LibraryManagement.DAL.Entities;
-
 using LibraryManagement.DAL.Interfaces;
-using LibraryManagement.DTO;
 using LibraryManagement.DTO.PersonDTOs;
+using LibraryManagement.DTO.OperationResult;
+using LibraryManagement.DTO.Common;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Reflection;
+
 namespace LibraryManagement.BLL
 {
-    
     public class PersonService : IPersonService
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public PersonService(IUnitOfWork unitOfWork,IMapper mapper)
+        public PersonService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<int> CreatePersonAsync(PersonForCreationDTO personDTO)
+        public async Task<OperationResult<int>> CreatePersonAsync(PersonForCreationDTO personDTO)
         {
+            var check = await _unitOfWork.PersonRepository.IsEmailOrPhoneExistsAsync(personDTO.Email,personDTO.Phone);
+            if (check.EmailExists)
+            {
+                return OperationResult<int>.Failure(OperationStatus.Conflict,"Email is already existing.");
+            }
+            if (check.PhoneExists)
+            {
+                return OperationResult<int>.Failure(OperationStatus.Conflict, "Phone number is already existing.");
+            }
             var personEntity = _mapper.Map<Person>(personDTO);
             personEntity.IsActive = true;
+
             await _unitOfWork.PersonRepository.AddNewPersonAsync(personEntity);
             await _unitOfWork.SaveChangesAsync();
-            return personEntity.PersonID;
+
+            return OperationResult<int>.Success(personEntity.PersonID);
         }
 
-        public async Task<PersonForDisplayDTO?> GetPersonDetailsAsync(int id)
+        public async Task<OperationResult<PersonForDisplayDTO>> GetPersonDetailsAsync(int id)
         {
             var person = await _unitOfWork.PersonRepository.GetPersonForReadOnlyAsync(id);
             if (person == null)
             {
-                return null;
+                return OperationResult<PersonForDisplayDTO>.Failure(OperationStatus.NotFound, $"The person with ID: {id} was not found.");
             }
+
             var personDTO = _mapper.Map<PersonForDisplayDTO>(person);
-            return personDTO;
+            return OperationResult<PersonForDisplayDTO>.Success(personDTO);
         }
-        public async Task<bool> UpdatePersonAsync(int id, PersonForUpdateDTO personDTO)
+
+        public async Task<OperationResult> UpdatePersonAsync(int id, PersonForUpdateDTO personDTO)
         {
             var personForUpdate = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(id);
-            if (personForUpdate == null || personForUpdate.IsActive==false)
+
+            if (personForUpdate == null)
             {
-                return false;
+                return OperationResult.Failure(OperationStatus.NotFound, $"The person with ID: {id} was not found for update.");
             }
-            
-             _mapper.Map(personDTO,personForUpdate);
-            
+
+            if (!personForUpdate.IsActive)
+            {
+                return OperationResult.Failure(OperationStatus.Conflict, "Cannot update an inactive person.");
+            }
+
+            _mapper.Map(personDTO, personForUpdate);
             await _unitOfWork.SaveChangesAsync();
-            return true;
+
+            return OperationResult.Success();
         }
 
-       public async Task<bool> ActivatePersonAsync(int id)
+        public async Task<OperationResult> ActivatePersonAsync(int id)
         {
-            var personForActivate = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(id);
-            if (personForActivate == null)
+            var person = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(id);
+            if (person == null)
             {
-                return false;
+                return OperationResult.Failure(OperationStatus.NotFound, $"Person with ID: {id} not found.");
             }
-            if (personForActivate.IsActive == true)
-            {
-                return true;
-            }
-            personForActivate.IsActive = true;
+
+            if (person.IsActive) return OperationResult.Success();
+
+            person.IsActive = true;
             await _unitOfWork.SaveChangesAsync();
-            return true;
+            return OperationResult.Success();
         }
 
-        public async Task<bool> DeactivatePersonAsync(int id)
+        public async Task<OperationResult> DeactivatePersonAsync(int id)
         {
-            var personForActivate = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(id);
-            if (personForActivate == null)
+            var person = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(id);
+            if (person == null)
             {
-                return false;
+                return OperationResult.Failure(OperationStatus.NotFound, $"Person with ID: {id} not found.");
             }
-            if (personForActivate.IsActive == false)
-            {
-                return false;
-            }
-            personForActivate.IsActive = false;
+
+            if (!person.IsActive) return OperationResult.Success();
+
+            person.IsActive = false;
             await _unitOfWork.SaveChangesAsync();
-            return true;
+            return OperationResult.Success();
         }
 
-      public async Task<List<PersonForDisplayDTO>> GetAllPeopleAsync()
+        public async Task<List<PersonForDisplayDTO>> GetAllPeopleAsync()
         {
             var personsQuery = await _unitOfWork.PersonRepository.GetQueryablePeopleAsync();
-            var activePersons = await personsQuery
-                                     .Where(p => p.IsActive == true)
-                                     .ProjectTo<PersonForDisplayDTO>(_mapper.ConfigurationProvider)
-                                     .ToListAsync();
-            return activePersons;                                                  
-         }
-
-       
+            return await personsQuery
+                .Where(p => p.IsActive)
+                .ProjectTo<PersonForDisplayDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
     }
 }

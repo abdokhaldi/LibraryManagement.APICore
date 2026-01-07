@@ -20,15 +20,14 @@ namespace LibraryManagement.API.Controllers
 
         [HttpPost]
         [ProducesResponseType((int) HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateRole([FromBody] RoleForCreationDTO roleDTO)
         {
-            int newRoleID = await _roleService.CreateRoleAsync(roleDTO);
-            if (newRoleID == -1)
-            {
-                return BadRequest($"The role is already existing .");
-            }
-            return CreatedAtAction(nameof(GetRole),new { id = newRoleID },newRoleID );
+            var result = await _roleService.CreateRoleAsync(roleDTO);
+            if (result.IsSuccess)
+                return CreatedAtAction(nameof(GetRole), new { id = result.Data }, result.Data);
+                       return HandleErrorResult(result);
         }
 
         [HttpGet("{id}")]
@@ -36,12 +35,11 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetRole(int id)
         {
-            var role = await _roleService.GetRoleAsync(id);
-            if (role == null)
-            {
-                return NotFound($"The role with ID:{id} not found");
-            }
-            return Ok(role);
+            var result = await _roleService.GetRoleAsync(id);
+            if (result.IsSuccess)
+                return Ok(result.Data);
+
+            return HandleErrorResult(result);
         }
 
 

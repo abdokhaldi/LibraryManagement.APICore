@@ -1,15 +1,16 @@
-﻿using LibraryManagement.BLL.Interfaces;
+﻿using LibraryManagement.API.Common;
+using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DTO.PersonDTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace LibraryManagement.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonController : ControllerBase
+    public class PersonController : BaseController
     {
         private readonly IPersonService _personService;
         public PersonController(IPersonService personService)
@@ -20,14 +21,16 @@ namespace LibraryManagement.API.Controllers
 
         [HttpPost]
         [ProducesResponseType((int)StatusCodes.Status201Created)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
         [ProducesResponseType((int)StatusCodes.Status400BadRequest)]
       public async Task<IActionResult> CreatePerson([FromBody] PersonForCreationDTO personDTO)
         {
             
-            var newPersonID = await _personService.CreatePersonAsync(personDTO);
-             
-                return CreatedAtAction(nameof(GetPersonDetails), new {id = newPersonID}, newPersonID);
-            }
+            var result = await _personService.CreatePersonAsync(personDTO);
+            if (result.IsSuccess)
+                return CreatedAtAction(nameof(GetPersonDetails), new { id = result.Data }, result.Data);
+                       return HandleErrorResult(result);
+      }
         
 
         [HttpGet("{id}")]
@@ -37,32 +40,29 @@ namespace LibraryManagement.API.Controllers
         public async Task<IActionResult> GetPersonDetails(int id)
         {
             
-            var person = await _personService.GetPersonDetailsAsync(id);
-            if (person==null)
-            {
-                return NotFound($"The person with ID : {id} not found .");
-            }
-            return Ok(person);
+            var result = await _personService.GetPersonDetailsAsync(id);
+            if (result.IsSuccess)
+                return Ok(result.Data);
+
+            return HandleErrorResult(result);
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType((int)StatusCodes.Status404NotFound)]
         [ProducesResponseType((int)StatusCodes.Status204NoContent)]
         [ProducesResponseType((int)StatusCodes.Status400BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
 
         public async Task<IActionResult> UpdatePerson(int id, [FromBody]PersonForUpdateDTO personDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            bool updateResult = await _personService.UpdatePersonAsync(id,personDTO);
-            if (updateResult == false)
-            {
-                return NotFound($"The person with ID:{id} not found for update .");
-            }
+            
+            var result = await _personService.UpdatePersonAsync(id,personDTO);
 
-            return NoContent();
+            if (result.IsSuccess)
+                return NoContent();
+
+            return HandleErrorResult(result);
+
         }
         [HttpPatch("{id}/ActivatePerson")]
         [ProducesResponseType((int) StatusCodes.Status404NotFound)]
@@ -71,46 +71,33 @@ namespace LibraryManagement.API.Controllers
 
         public async Task<IActionResult> ActivatePerson(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                BadRequest(ModelState);
-            }
-            bool activateResult = await _personService.ActivatePersonAsync(id);
-            if (activateResult == false)
-            {
-                return NotFound();
-            }
-            return NoContent();
+           
+            var result = await _personService.ActivatePersonAsync(id);
+            if (result.IsSuccess)
+                return NoContent();
+
+            return HandleErrorResult(result);
         }
         [HttpPatch("{id}/DeactivatePerson")]
         [ProducesResponseType((int)StatusCodes.Status404NotFound)]
         [ProducesResponseType((int)StatusCodes.Status204NoContent)]
-        [ProducesResponseType((int) StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeactivatePerson(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                BadRequest(ModelState);
-            }
-            bool deactivateResult = await _personService.DeactivatePersonAsync(id);
-            if (deactivateResult == false)
-            {
-                return NotFound();
-            }
-            return NoContent();
+            
+            var result = await _personService.DeactivatePersonAsync(id);
+            if (result.IsSuccess)
+                return NoContent();
+
+            return HandleErrorResult(result);
         }
 
         [HttpGet]
         [ProducesResponseType((int)StatusCodes.Status200OK)]
-        [ProducesResponseType((int)StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAllPersons()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var list = await _personService.GetAllPeopleAsync();
-            return Ok(list);
+            
+            var persons = await _personService.GetAllPeopleAsync();
+            return Ok(persons);
         }
     }
 }
