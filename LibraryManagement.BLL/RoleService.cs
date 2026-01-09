@@ -2,7 +2,7 @@
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DAL.Entities;
 using LibraryManagement.DAL.Interfaces;
-using LibraryManagement.DTO.OperationResult;
+using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.RoleDTOs;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagement.DTO.Common;

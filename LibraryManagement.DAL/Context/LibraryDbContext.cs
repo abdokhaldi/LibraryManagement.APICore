@@ -33,6 +33,10 @@ namespace LibraryManagement.DAL.Context
             modelBuilder.Entity<User>()
                  .HasIndex(u => u.Username)
                  .IsUnique();
+            modelBuilder.Entity<Book>()
+                .HasIndex(b => b.Title)
+                .IsUnique();
+
            
              base.OnModelCreating(modelBuilder);
             //

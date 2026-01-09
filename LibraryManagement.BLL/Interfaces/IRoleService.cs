@@ -1,11 +1,5 @@
-﻿using LibraryManagement.DAL.Entities;
-using LibraryManagement.DTO.RoleDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LibraryManagement.DTO.OperationResult;
+﻿using LibraryManagement.DTO.RoleDTOs;
+using LibraryManagement.DTO.OperationResults;
 namespace LibraryManagement.BLL.Interfaces
 {
     public interface IRoleService

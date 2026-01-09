@@ -68,12 +68,12 @@ namespace LibraryManagement.DAL
 
        public async Task<bool> IsTitleExistsAsync(string title)
         {
-            return await _context.Books.AsNoTracking()
+            return await _context.Books
                 .AnyAsync(b=>b.Title.ToLower() == title.ToLower());
         }
         public async Task<bool> IsTitleExistsAsync(int id,string title)
         {
-            return await _context.Books.AsNoTracking()
+            return await _context.Books
                 .AnyAsync(b =>b.BookID == id && b.Title.ToLower() == title.ToLower());
         }
     }

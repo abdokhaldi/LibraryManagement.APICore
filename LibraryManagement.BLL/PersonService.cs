@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DAL.Entities;
 using LibraryManagement.DAL.Interfaces;
 using LibraryManagement.DTO.PersonDTOs;
-using LibraryManagement.DTO.OperationResult;
+using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Common;
 using Microsoft.EntityFrameworkCore;
 

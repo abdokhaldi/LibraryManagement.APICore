@@ -1,4 +1,4 @@
-﻿using LibraryManagement.DTO.OperationResult;
+﻿using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.UserDTOs;
 
 

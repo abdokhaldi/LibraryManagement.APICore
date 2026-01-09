@@ -1,7 +1,7 @@
 ﻿
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.OperationResults;
-namespace LibraryManagement.DTO.OperationResult
+namespace LibraryManagement.DTO.OperationResults
 {
     public class OperationResult : IOperationResult
     {

@@ -17,6 +17,9 @@ namespace LibraryManagement.BLL
             _mapper = mapper;
         }
 
+        // this method is for create a member internally
+        // automatically when borrowing is created for first
+        // time by the person
       public async Task<Member> CreateMemberAsync(MemberForCreationDTO memberDTO)
         {
             var existingMember = await _unitOfWork.MemberRepository.GetMemberByPersonIDAsync(memberDTO.PersonID);

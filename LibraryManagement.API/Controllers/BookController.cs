@@ -1,12 +1,8 @@
-﻿using LibraryManagement.BLL;
-using LibraryManagement.BLL.Interfaces;
-using LibraryManagement.DTO;
+﻿using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DTO.BookDTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using LibraryManagement.DTO.Common;
 using LibraryManagement.API.Common;
 
 namespace LibraryManagement.API.Controllers

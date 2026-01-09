@@ -3,11 +3,11 @@ using AutoMapper.QueryableExtensions;
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DAL.Entities;
 using LibraryManagement.DAL.Interfaces;
-using LibraryManagement.DTO.BookDTOs;
 using LibraryManagement.DTO.BorrowingDTOs;
+using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.MemberDTOs;
+using LibraryManagement.DTO.OperationResults;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 namespace LibraryManagement.BLL
 {  
     public class BorrowingService : IBorrowingService
@@ -22,19 +22,24 @@ namespace LibraryManagement.BLL
             _memberService = memberService;
         }
 
-        public async Task<int> CreateBorrowingAsync(BorrowingForCreationDTO borrowingDTO)
+        public async Task<OperationResult<int>> CreateBorrowingAsync(BorrowingForCreationDTO borrowingDTO)
         {
             var bookEntity = await _unitOfWork.BookRepository.GetBookForUpdateAsync(borrowingDTO.BookID);
 
-            if (bookEntity == null || bookEntity.Quantity <= 0)
+            if (bookEntity == null)
             {
-                return 0;
+                return OperationResult<int>.Failure(OperationStatus.NotFound, $"The book with ID:{borrowingDTO.BookID} was not found for borrowing");
+            }
+            if (bookEntity.Quantity <= 0)
+            {
+             return OperationResult<int>.Failure(OperationStatus.Conflict, $"cannot borrow this book , the book quantity is 0");
+
             }
             var memberToCreate = new MemberForCreationDTO { PersonID = borrowingDTO.PersonID, JoinDate = DateTime.Now, IsActive = true };
 
             var memberEntity = await _memberService.CreateMemberAsync(memberToCreate);
 
-            bookEntity!.Quantity--;
+            bookEntity.Quantity--;
 
             var borrowingEntity = _mapper.Map<Borrowing>(borrowingDTO);
 
@@ -49,7 +54,7 @@ namespace LibraryManagement.BLL
             try
             {
                 await _unitOfWork.SaveChangesAsync();
-                return borrowingEntity.BorrowingID;
+                return OperationResult<int>.Success(borrowingEntity.BorrowingID);
             }
             catch (Exception)
             {
@@ -57,33 +62,42 @@ namespace LibraryManagement.BLL
             }
         }
 
-        public async Task<BorrowingForDisplayDTO?> GetBorrowingDetailsAsync(int id)
+        public async Task<OperationResult<BorrowingForDisplayDTO>> GetBorrowingDetailsAsync(int id)
         {
             var borrowing = await _unitOfWork.BorrowingRepository.GetBorrowingForReadOnlyAsync(id);
-            if (borrowing == null || borrowing!.IsCanceled == true)
+            if (borrowing == null)
             {
-                return null;
+                return OperationResult<BorrowingForDisplayDTO>.Failure(OperationStatus.NotFound, $"The borrowing with ID:{borrowing?.BorrowingID} was not found .");
             }
+            if (borrowing.IsCanceled)
+            {
+                return OperationResult<BorrowingForDisplayDTO>.Failure(OperationStatus.NotFound, $"The borrowing with ID:{borrowing.BorrowingID} was cancelled .");
+            }
+
             var borrowingDTO = _mapper.Map<BorrowingForDisplayDTO>(borrowing);
-            return borrowingDTO;
+            return OperationResult<BorrowingForDisplayDTO>.Success(borrowingDTO);
         }
-        public async Task<(bool success, string error)> ReturnBookAsync(int id)
+        public async Task<OperationResult> ReturnBookAsync(int id)
         {
           
             var borrowingEntity = await _unitOfWork.BorrowingRepository.GetBorrowingForUpdateAsync(id);
             
-            if (borrowingEntity == null || borrowingEntity.IsCanceled==true)
+            if (borrowingEntity == null)
             {
-                return (false, "Borrowing record not found or was canceled");
+                return OperationResult.Failure(OperationStatus.NotFound,$"Borrowing record with ID:{id} was not found .");
             }
+            if (borrowingEntity.IsCanceled) {
+                return OperationResult.Failure(OperationStatus.Cancelled, "Cannot process return operation for cancelled Borrowing .");
+            }
+
             if (borrowingEntity.ReturnDate != null)
             {
-               return  (false,"This book has already been returned .");
+               return OperationResult.Failure(OperationStatus.Conflict,"This book has already been returned .");
             }
             var bookEntity = await _unitOfWork.BookRepository.GetBookForUpdateAsync(borrowingEntity.BookID);
             if (bookEntity == null)
             {
-                return(false , "Associated book is missing from the system .");
+                return OperationResult.Failure(OperationStatus.Conflict , "Associated book is missing from the system .");
             }
             bookEntity.Quantity++;
 
@@ -91,27 +105,32 @@ namespace LibraryManagement.BLL
             borrowingEntity.Status = "Returned";
 
             await _unitOfWork.SaveChangesAsync();
-            return (true, string.Empty);
+            return OperationResult.Success();
         }
-        public async Task<(bool success,string error)> ExtendDueDateAsync(int id, BorrowingForExtendDTO borrowingDTO)
+        public async Task<OperationResult> ExtendDueDateAsync(int id, BorrowingForExtendDTO borrowingDTO)
         {
             var borrowingEntity = await _unitOfWork.BorrowingRepository.GetBorrowingForUpdateAsync(id);
-            if (borrowingEntity == null || borrowingEntity.IsCanceled==true)
+            if (borrowingEntity == null)
             {
-                return (false , $"The borrowing with ID :{id} is not found or was cancelled .");
+                return OperationResult.Failure(OperationStatus.NotFound, $"Borrowing record with ID:{id} was not found .");
             }
+            if (borrowingEntity.IsCanceled)
+            {
+                return OperationResult.Failure(OperationStatus.Cancelled, "Cannot extend date for cancelled Borrowing .");
+            }
+
             if (borrowingEntity.ReturnDate != null)
             {
-                return (false, $"The completed borrowing cannot be updated .");
+                return OperationResult.Failure(OperationStatus.Conflict, $"The completed borrowing cannot be extended .");
 
             }
             if (borrowingEntity.DueDate >= borrowingDTO.DueDate)
             {
-                return (false,$"Invalid date , the new due date must be later than the current due date");
+                return OperationResult.Failure(OperationStatus.ValidationError, $"Invalid date , the new due date must be later than the current due date");
             }
             _mapper.Map(borrowingDTO,borrowingEntity);
            await  _unitOfWork.SaveChangesAsync();
-            return (true,string.Empty);
+            return OperationResult.Success();
         }
 
         public async Task<List<BorrowingForDisplayDTO>> GetBorrowingsAsync()

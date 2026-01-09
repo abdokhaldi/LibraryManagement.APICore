@@ -20,6 +20,7 @@ namespace LibraryManagement.DAL.Entities
         public string? Publisher { get; set; }
 
         public string? YearPublished { get; set; }
+        [Required]
         public int Quantity { get; set; }
         [Required]
         public int CategoryID { get; set; }

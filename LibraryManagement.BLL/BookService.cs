@@ -7,7 +7,7 @@ using LibraryManagement.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using LibraryManagement.DTO.OperationResult;
+using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Common;
 
 

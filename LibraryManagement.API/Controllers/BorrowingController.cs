@@ -1,16 +1,16 @@
 ﻿using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DTO.BorrowingDTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using LibraryManagement.API.Common;
 
 namespace LibraryManagement.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class BorrowingController : ControllerBase
+    public class BorrowingController : BaseController
     {
         private readonly IBorrowingService _borrowingService;
         public BorrowingController(IBorrowingService borrowingService)
@@ -24,12 +24,12 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.Created)]
         public async Task<IActionResult> RecordNewBorrowing([FromBody] BorrowingForCreationDTO borrowingDTO)
         {
-            int newBorrowingID = await _borrowingService.CreateBorrowingAsync(borrowingDTO);
-            if (newBorrowingID == 0)
-            {
-                return BadRequest("No book to borrow");
-            }
-            return CreatedAtAction(nameof(GetBorrowingDetails), new { id = newBorrowingID }, newBorrowingID);
+            var result = await _borrowingService.CreateBorrowingAsync(borrowingDTO);
+            if (result.IsSuccess)
+              return CreatedAtAction(nameof(GetBorrowingDetails), new { id = result.Data }, result.Data);
+
+            return HandleErrorResult(result);
+            
         }
 
         [HttpGet("{id}")]
@@ -37,12 +37,11 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetBorrowingDetails(int id)
         {
-            var borrowing = await _borrowingService.GetBorrowingDetailsAsync(id);
-            if (borrowing == null)
-            {
-                return NotFound($"The borrowing with ID:{id} not found .");
-            }
-            return Ok(borrowing);
+            var result = await _borrowingService.GetBorrowingDetailsAsync(id);
+            if (result.IsSuccess)
+               return Ok(result.Data);
+            return HandleErrorResult(result);
+            
         }
 
         [HttpPatch("{id}/ReturnBook")]
@@ -51,16 +50,11 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ReturnBook(int id)
         {
-            var (success, error) = await _borrowingService.ReturnBookAsync(id);
-            if (!success)
-            {
-                if (error.ToLower().Contains("not found"))
-                {
-                    return NotFound(error);
-                }
-                return BadRequest(error);
-            }
+            var result = await _borrowingService.ReturnBookAsync(id);
+            if (result.IsSuccess)
+             
             return NoContent();
+            return HandleErrorResult(result);
 
         }
 
@@ -70,17 +64,11 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ExtendDueDate(int id, [FromBody] BorrowingForExtendDTO borrowingDTO)
         {
-            var (success, error) = await _borrowingService.ExtendDueDateAsync(id,borrowingDTO);
-            if (!success)
-            {
-                if (error.ToLower().Contains("not found"))
-                {
-                    return NotFound(error);
-                }
-                return BadRequest(error);
-            }
-            return NoContent();
-        
+            var result = await _borrowingService.ExtendDueDateAsync(id,borrowingDTO);
+            if (result.IsSuccess)
+            
+               return NoContent();
+            return HandleErrorResult(result);
         }
 
         [HttpGet]
