@@ -88,6 +88,15 @@ namespace LibraryManagement.DAL
                 _context.Users.Update(userEntity);
                return Task.CompletedTask;
         }
-           
+
+        public async Task<User?> GetUserAsPersonAsync(int personID)
+        {
+            var user = await _context.Users.AsNoTracking()
+                                           .Where(u => u.PersonID == personID)
+                                           .FirstOrDefaultAsync();
+            return user;
+        }
+
+
     }
 }

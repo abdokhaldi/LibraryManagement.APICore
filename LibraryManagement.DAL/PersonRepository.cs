@@ -1,19 +1,9 @@
-﻿using System;
-using LibraryManagement.DAL.Entities;
+﻿using LibraryManagement.DAL.Entities;
 using LibraryManagement.DAL.Interfaces;
-using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LibraryManagement.DAL.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using System.Data.Common;
-using System.ComponentModel;
-using System.Diagnostics;
+
 namespace LibraryManagement.DAL
 {
     public class PersonRepository : IPersonRepository
@@ -53,13 +43,21 @@ namespace LibraryManagement.DAL
             return Task.CompletedTask;
         }
 
-        public async Task<bool> IsPersonActive(int id)
+        public async Task<(bool isNotFound,bool isNotActive)> CheckPersonStatus(int id)
         {
-            bool active = await _context.People
-                .AnyAsync(p=>
-                p.PersonID==id
-                && p.IsActive==true);
-            return active;
+            var personStatus = await _context.People
+                    .AsNoTracking()
+                    .Where(p => p.PersonID == id)
+                    .Select(p => new
+                    {
+                        IsActive =  p.IsActive
+                    }
+            ).FirstOrDefaultAsync();
+
+            if (personStatus == null)
+                return (isNotFound: true, isNotActive: false);
+
+            return (isNotFound: false, isNotActive:!personStatus.IsActive);
         }
         
         

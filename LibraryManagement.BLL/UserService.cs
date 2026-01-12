@@ -39,16 +39,29 @@ namespace LibraryManagement.BLL
 
         public async Task<OperationResult<int>> RegisterUserAsync(UserForCreationDTO userDTO)
         {
+            var personStatus = await _unitOfWork.PersonRepository.CheckPersonStatus(userDTO.PersonID);
+            if (personStatus.isNotFound)
+            {
+                return OperationResult<int>.Failure(OperationStatus.Conflict, $"The person with ID: {userDTO.PersonID} is not exists .");
+            }
+            if (personStatus.isNotActive)
+            {
+                return OperationResult<int>.Failure(OperationStatus.Conflict, "Cannot create a user for an inactive person .");
+
+            }
+
+            var personAsUser = await _unitOfWork.UserRepository.GetUserAsPersonAsync(userDTO.PersonID);
+            if (personAsUser!= null)
+            {
+                return OperationResult<int>.Failure(OperationStatus.Conflict,$"The person with ID:{personAsUser.PersonID} is already created as a user .");
+            }
             bool isUserExists = await _unitOfWork.UserRepository. IsUsernameExistsAsync(userDTO.Username);
             if (isUserExists)
             {
                 return OperationResult<int>.Failure(OperationStatus.Conflict, "This username is already Used , try another one ."); 
             }
-            bool isPersonActive = await _unitOfWork.PersonRepository.IsPersonActive(userDTO.PersonID);
-            if (!isPersonActive)
-            {
-                return OperationResult<int>.Failure(OperationStatus.Conflict,"Cannot create user for an inactive person .");
-            }
+            
+
             var userEntity = _mapper.Map<User>(userDTO);
             string passwordHashed = _securityService.HashPassword(userEntity.Password);
             userEntity.Password = passwordHashed;
@@ -74,16 +87,44 @@ namespace LibraryManagement.BLL
         }
         public async Task<OperationResult> UpdateUserAsync(int id, UserForUpdateDTO userDTO)
         {
+            
             var user = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (user ==null )
             {
                     return OperationResult.Failure(OperationStatus.NotFound, $"The user with ID:{id} was not found for update.");
             }
-            var userWithSameName = await _unitOfWork.UserRepository.GetUserByUsernameAsync(user.Username);
-            if (userWithSameName != null && userWithSameName.UserID != id)
+
+            if (userDTO.PersonID.HasValue && userDTO.PersonID.Value!= user.PersonID)
             {
-                return OperationResult.Failure(OperationStatus.Conflict, $"The username: {userDTO.Username} is already taken by another user.");
+                var personStatus = await _unitOfWork.PersonRepository.CheckPersonStatus(userDTO.PersonID.Value);
+                if (personStatus.isNotFound)
+                {
+                    return OperationResult.Failure(OperationStatus.Conflict, $"The person with ID: {userDTO.PersonID} is not exists .");
+                }
+                if (personStatus.isNotActive)
+                {
+                    return OperationResult.Failure(OperationStatus.Conflict, "Cannot create a user for an inactive person .");
+
+                }
             }
+
+            if (userDTO.PersonID.HasValue)
+            {
+                var personAsUser = await _unitOfWork.UserRepository.GetUserAsPersonAsync(userDTO.PersonID.Value);
+                if (personAsUser != null && personAsUser.PersonID != user.PersonID)
+                {
+                    return OperationResult<int>.Failure(OperationStatus.Conflict, $"The person with ID:{personAsUser.PersonID} is already is another user in the system .");
+          
+                }
+            }
+            if (!string.IsNullOrEmpty(userDTO.Username)) 
+                {
+                bool isUsedUsername = await _unitOfWork.UserRepository.IsUsernameExistsForUpdateAsync(user.UserID, userDTO.Username);
+                if (isUsedUsername)
+                {
+                    return OperationResult.Failure(OperationStatus.Conflict, $"The username: {userDTO.Username} is already taken by another user.");
+                }
+              }
             _mapper.Map(userDTO, user);
 
             await _unitOfWork.SaveChangesAsync();
