@@ -54,14 +54,6 @@ namespace LibraryManagement.DAL
         }
        
 
-        public Task UpdateMemberAsync( Member memberEntity)
-        {
-            
-                _context.Members.Update(memberEntity);
-            return Task.CompletedTask;
-            }
-            
-            
     
         public async Task<Member?> GetMemberByPersonIDAsync(int personID)
         {

@@ -57,7 +57,8 @@ builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ISecurityService,SecurityService>();
-
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService,CategoryService>();
 // 4. Setup AutoMapper
 
 

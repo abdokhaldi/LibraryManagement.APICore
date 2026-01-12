@@ -14,11 +14,14 @@ namespace LibraryManagement.DAL
             _context = context;
         }
 
-        public  Task<IQueryable<Category>> GetCategoriesAsync()
+       public async Task<List<Category>> GetCategoriesAsync()
         {
             
-                var categoriesList =  _context.Categories.AsNoTracking();
-                return Task.FromResult(categoriesList);
+                var categories = await _context.Categories
+                                .AsNoTracking()
+                                .ToListAsync();
+
+                return categories;
             
         }
 
@@ -34,6 +37,18 @@ namespace LibraryManagement.DAL
             var category = await _context.Categories.FindAsync(categoryID);
             return category;
         }
-
+        public Task AddNewCategoryAsync(Category category) {
+            _context.Categories.Add(category);
+            return Task.CompletedTask;
+        }
+        public Task DeleteCategoryAsync(Category category) {
+            _context.Categories.Remove(category);
+            return Task.CompletedTask;
+        }
+        public async Task<bool> IsCategoryExistsAsync(string categoryName)
+        {
+            return await _context.Categories.AnyAsync(c =>
+                           c.CategoryName.ToLower() == categoryName.ToLower());
+        }
     }
 }

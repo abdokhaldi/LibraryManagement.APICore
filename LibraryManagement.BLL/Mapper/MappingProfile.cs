@@ -6,6 +6,7 @@ using LibraryManagement.DTO.MemberDTOs;
 using LibraryManagement.DTO.BorrowingDTOs;
 using LibraryManagement.DTO.RoleDTOs;
 using LibraryManagement.DTO.UserDTOs;
+using LibraryManagement.DTO.CategoryDTOs;
 
 namespace LibraryManagement.BLL.Mapper
 {
@@ -164,7 +165,20 @@ namespace LibraryManagement.BLL.Mapper
                     opt.MapFrom(s=>s.PersonID!.Value);
                     opt.UseDestinationValue();
                 }
+
                 );
+
+             CreateMap<CategoryForCreationDTO, Category>();
+             CreateMap<CategoryForUpdateDTO, Category>()
+                .ForAllMembers(opts =>
+                opts.Condition(
+                    (src, opt, srcMember) =>
+                    {
+                      return  srcMember != null;
+                    })
+                );
+            CreateMap<Category, CategoryForDisplayDTO>();  
+
         }
 
     }

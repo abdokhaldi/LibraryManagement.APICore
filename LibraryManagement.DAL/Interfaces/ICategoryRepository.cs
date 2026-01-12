@@ -9,8 +9,11 @@ namespace LibraryManagement.DAL.Interfaces
 {
     public interface ICategoryRepository
     {
-        Task<IQueryable<Category>> GetCategoriesAsync();
+        Task<List<Category>> GetCategoriesAsync();  
         Task<Category?> GetCategoryForReadOnlyAsync(int categoryID);
         Task<Category?> GetCategoryForUpdateAsync(int categoryID);
+        Task AddNewCategoryAsync(Category category);
+        Task DeleteCategoryAsync(Category category);
+        Task<bool> IsCategoryExistsAsync(string categoryName);
     }
 }
