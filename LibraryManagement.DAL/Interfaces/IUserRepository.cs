@@ -15,7 +15,8 @@ namespace LibraryManagement.DAL.Interfaces
         Task<IQueryable<User>> GetQueryableUsersAsync();
 
         Task<bool> IsUsernameExistsAsync(string username);
-        
+        Task<bool> IsUsernameExistsForUpdateAsync(int id,string username);
+
         Task AddNewUserAsync(User userEntity);
 
         Task UpdateUserAsync(User userEntity);

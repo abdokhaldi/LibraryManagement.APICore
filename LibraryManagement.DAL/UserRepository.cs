@@ -70,11 +70,20 @@ namespace LibraryManagement.DAL
         public async Task<bool>  IsUsernameExistsAsync(string username)
         {
 
-            var exists = await _context.Users.AsNoTracking().AnyAsync(u=>u.Username == username);
+            var exists = await _context.Users.AnyAsync(u=>u.Username == username);
             return exists;
         }
 
+        public async Task<bool> IsUsernameExistsForUpdateAsync(int id, string username)
 
+        {
+
+            var exists = await _context.Users.AnyAsync(u =>
+            u.Username == username 
+            && u.UserID != id
+            );
+            return exists;
+        }
         public Task AddNewUserAsync(User userEntity)
         {
                _context.Users.Add(userEntity);
