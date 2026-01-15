@@ -13,9 +13,9 @@ namespace LibraryManagement.DTO.BookDTOs
         public  string? Title { get; set; }
         public  string? Author { get; set; }
         public  string? Publisher { get; set; }
-        public  string? YearPublished { get; set; }
+        public short? YearPublished { get; set; }
         [Range(1,10000,ErrorMessage = "Quantity must be between 1 to 10000")]
-        public  int? Quantity { get; set; }
+        public short? Quantity { get; set; }
         public  int? CategoryID { get; set; }
         public string? ImagePath { get; set; }
         public bool? IsActive { get; set; }

@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using  LibraryManagement.DAL.Entities;
+using  LibraryManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Internal;
 namespace LibraryManagement.DAL.Context
 {

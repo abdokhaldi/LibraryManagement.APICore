@@ -1,8 +1,8 @@
-﻿using LibraryManagement.DAL.Entities;
+﻿using LibraryManagement.Domain.Entities;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LibraryManagement.DAL.Interfaces
+namespace LibraryManagement.Domain.Interfaces
 {
    
     public interface IBookRepository

@@ -4,7 +4,7 @@ using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.BLL.Mapper;
 using LibraryManagement.DAL;
 using LibraryManagement.DAL.Context;
-using LibraryManagement.DAL.Interfaces;
+using LibraryManagement.Domain.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;

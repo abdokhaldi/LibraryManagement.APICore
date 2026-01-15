@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using LibraryManagement.BLL.Interfaces;
-using LibraryManagement.DAL.Interfaces;
-using LibraryManagement.DAL.Entities;
+using LibraryManagement.Domain.Interfaces;
+using LibraryManagement.Domain.Entities;
 using LibraryManagement.DTO.UserDTOs;
 using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Common;

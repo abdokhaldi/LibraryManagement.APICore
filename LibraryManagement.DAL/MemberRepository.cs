@@ -1,6 +1,6 @@
 ﻿
-using LibraryManagement.DAL.Entities;
-using LibraryManagement.DAL.Interfaces;
+using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Interfaces;
 using System;
 using System.Data;
 using System.Data.Common;

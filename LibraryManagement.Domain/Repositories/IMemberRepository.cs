@@ -1,8 +1,7 @@
-﻿using LibraryManagement.DAL.Entities;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LibraryManagement.Domain.Entities;
 
-namespace LibraryManagement.DAL.Interfaces
+
+namespace LibraryManagement.Domain.Interfaces
 {
     public interface IMemberRepository
     {

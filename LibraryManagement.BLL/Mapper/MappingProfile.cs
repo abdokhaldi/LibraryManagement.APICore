@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using LibraryManagement.DTO.BookDTOs;
-using LibraryManagement.DAL.Entities;
+using LibraryManagement.Domain.Entities;
 using LibraryManagement.DTO.PersonDTOs;
 using LibraryManagement.DTO.MemberDTOs;
 using LibraryManagement.DTO.BorrowingDTOs;

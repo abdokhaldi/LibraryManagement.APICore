@@ -1,11 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using LibraryManagement.Domain.Interfaces;
 
-namespace LibraryManagement.DAL.Interfaces
+namespace LibraryManagement.Domain.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
@@ -18,6 +14,8 @@ namespace LibraryManagement.DAL.Interfaces
         IRoleRepository RoleRepository { get; }
         IUserRepository UserRepository { get; }
         Task<int> SaveChangesAsync();
-        Task<IDbContextTransaction> BeginTransactionAsync();
+        Task BeginTransactionAsync();
+        Task CommitAsync();
+        Task RollbackAsync();
     }
 }

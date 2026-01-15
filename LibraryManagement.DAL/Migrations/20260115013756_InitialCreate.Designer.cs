@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagement.DAL.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20251217232733_InitialCreate")]
+    [Migration("20260115013756_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace LibraryManagement.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.Activity", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Activity", b =>
                 {
                     b.Property<int>("ActivityID")
                         .ValueGeneratedOnAdd()
@@ -34,29 +34,34 @@ namespace LibraryManagement.DAL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActivityID"));
 
                     b.Property<string>("ActivityType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EntityID")
                         .HasColumnType("int");
 
                     b.Property<string>("EntityName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
 
                     b.HasKey("ActivityID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Activities");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.Book", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Book", b =>
                 {
                     b.Property<int>("BookID")
                         .ValueGeneratedOnAdd()
@@ -66,43 +71,42 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.Property<string>("Author")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
                     b.Property<string>("ImagePath")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasColumnName("Image");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Publisher")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<short>("Quantity")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("YearPublished")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<short?>("YearPublished")
+                        .HasColumnType("smallint");
 
                     b.HasKey("BookID");
 
                     b.HasIndex("CategoryID");
 
+                    b.HasIndex("Title")
+                        .IsUnique();
+
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.Borrowing", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Borrowing", b =>
                 {
                     b.Property<int>("BorrowingID")
                         .ValueGeneratedOnAdd()
@@ -130,8 +134,7 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BorrowingID");
 
@@ -142,7 +145,7 @@ namespace LibraryManagement.DAL.Migrations
                     b.ToTable("Borrowings");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.Category", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Category", b =>
                 {
                     b.Property<int>("CategoryID")
                         .ValueGeneratedOnAdd()
@@ -152,19 +155,17 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CategoryID");
 
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.Member", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Member", b =>
                 {
                     b.Property<int>("MemberID")
                         .ValueGeneratedOnAdd()
@@ -188,7 +189,7 @@ namespace LibraryManagement.DAL.Migrations
                     b.ToTable("Members");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.Person", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Person", b =>
                 {
                     b.Property<int>("PersonID")
                         .ValueGeneratedOnAdd()
@@ -198,26 +199,22 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
                         .IsRequired()
-                        .HasMaxLength(1)
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<bool>("IsActive")
@@ -225,20 +222,24 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("PersonID");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Phone")
+                        .IsUnique();
 
                     b.ToTable("People");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.Role", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Role", b =>
                 {
                     b.Property<int>("RoleID")
                         .ValueGeneratedOnAdd()
@@ -248,15 +249,14 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.Property<string>("RoleName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RoleID");
 
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.User", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserID")
                         .ValueGeneratedOnAdd()
@@ -275,8 +275,7 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PersonID")
                         .HasColumnType("int");
@@ -286,21 +285,35 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserID");
 
-                    b.HasIndex("PersonID");
+                    b.HasIndex("PersonID")
+                        .IsUnique();
 
                     b.HasIndex("RoleID");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.Book", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Activity", b =>
                 {
-                    b.HasOne("LibraryManagement.DAL.Entities.Category", "Category")
+                    b.HasOne("LibraryManagement.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Book", b =>
+                {
+                    b.HasOne("LibraryManagement.Domain.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -309,15 +322,15 @@ namespace LibraryManagement.DAL.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.Borrowing", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Borrowing", b =>
                 {
-                    b.HasOne("LibraryManagement.DAL.Entities.Book", "Book")
+                    b.HasOne("LibraryManagement.Domain.Entities.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LibraryManagement.DAL.Entities.Member", "Member")
+                    b.HasOne("LibraryManagement.Domain.Entities.Member", "Member")
                         .WithMany()
                         .HasForeignKey("MemberID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -328,9 +341,9 @@ namespace LibraryManagement.DAL.Migrations
                     b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.Member", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Member", b =>
                 {
-                    b.HasOne("LibraryManagement.DAL.Entities.Person", "Person")
+                    b.HasOne("LibraryManagement.Domain.Entities.Person", "Person")
                         .WithMany()
                         .HasForeignKey("PersonID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -339,15 +352,15 @@ namespace LibraryManagement.DAL.Migrations
                     b.Navigation("Person");
                 });
 
-            modelBuilder.Entity("LibraryManagement.DAL.Entities.User", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.User", b =>
                 {
-                    b.HasOne("LibraryManagement.DAL.Entities.Person", "Person")
+                    b.HasOne("LibraryManagement.Domain.Entities.Person", "Person")
                         .WithMany()
                         .HasForeignKey("PersonID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LibraryManagement.DAL.Entities.Role", "Role")
+                    b.HasOne("LibraryManagement.Domain.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleID")
                         .OnDelete(DeleteBehavior.Cascade)

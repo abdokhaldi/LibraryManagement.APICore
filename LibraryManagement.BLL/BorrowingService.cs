@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LibraryManagement.BLL.Interfaces;
-using LibraryManagement.DAL.Entities;
-using LibraryManagement.DAL.Interfaces;
+using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.BorrowingDTOs;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.MemberDTOs;

@@ -1,6 +1,6 @@
-﻿using LibraryManagement.DAL.Entities;
+﻿using LibraryManagement.Domain.Entities;
 
-namespace LibraryManagement.DAL.Interfaces
+namespace LibraryManagement.Domain.Interfaces
 {
     public interface IBorrowingRepository
     {

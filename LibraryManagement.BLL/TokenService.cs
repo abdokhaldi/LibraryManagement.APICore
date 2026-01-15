@@ -1,5 +1,5 @@
 ﻿using LibraryManagement.BLL.Interfaces;
-using LibraryManagement.DAL.Entities;
+using LibraryManagement.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

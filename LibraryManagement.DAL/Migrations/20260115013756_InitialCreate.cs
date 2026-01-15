@@ -12,31 +12,13 @@ namespace LibraryManagement.DAL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Activities",
-                columns: table => new
-                {
-                    ActivityID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ActivityType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EntityName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EntityID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Activities", x => x.ActivityID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
                     CategoryID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true)
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -49,13 +31,13 @@ namespace LibraryManagement.DAL.Migrations
                 {
                     PersonID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    City = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(1)", maxLength: 1, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(1)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -69,7 +51,7 @@ namespace LibraryManagement.DAL.Migrations
                 {
                     RoleID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    RoleName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,13 +64,13 @@ namespace LibraryManagement.DAL.Migrations
                 {
                     BookID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Author = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Publisher = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    YearPublished = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Publisher = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    YearPublished = table.Column<short>(type: "smallint", nullable: true),
+                    Quantity = table.Column<short>(type: "smallint", nullable: false),
                     CategoryID = table.Column<int>(type: "int", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -130,8 +112,8 @@ namespace LibraryManagement.DAL.Migrations
                     UserID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PersonID = table.Column<int>(type: "int", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RoleID = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -165,7 +147,7 @@ namespace LibraryManagement.DAL.Migrations
                     BorrowingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsCanceled = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -185,10 +167,45 @@ namespace LibraryManagement.DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Activities",
+                columns: table => new
+                {
+                    ActivityID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ActivityType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EntityName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EntityID = table.Column<int>(type: "int", nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Activities", x => x.ActivityID);
+                    table.ForeignKey(
+                        name: "FK_Activities_Users_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_UserID",
+                table: "Activities",
+                column: "UserID");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Books_CategoryID",
                 table: "Books",
                 column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_Title",
+                table: "Books",
+                column: "Title",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Borrowings_BookID",
@@ -206,14 +223,33 @@ namespace LibraryManagement.DAL.Migrations
                 column: "PersonID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_People_Email",
+                table: "People",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_People_Phone",
+                table: "People",
+                column: "Phone",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_PersonID",
                 table: "Users",
-                column: "PersonID");
+                column: "PersonID",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleID",
                 table: "Users",
                 column: "RoleID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
         }
 
         /// <inheritdoc />

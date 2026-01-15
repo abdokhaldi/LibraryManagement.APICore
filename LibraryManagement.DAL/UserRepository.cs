@@ -1,8 +1,8 @@
 ﻿using LibraryManagement.DAL.Context;
-using LibraryManagement.DAL.Entities;
+using LibraryManagement.Domain.Entities;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
-using LibraryManagement.DAL.Interfaces;
+using LibraryManagement.Domain.Interfaces;
 
 
 namespace LibraryManagement.DAL

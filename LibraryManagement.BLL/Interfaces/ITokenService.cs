@@ -1,4 +1,4 @@
-﻿using LibraryManagement.DAL.Entities;
+﻿using LibraryManagement.Domain.Entities;
 
 namespace LibraryManagement.BLL.Interfaces
 {

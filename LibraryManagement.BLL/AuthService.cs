@@ -1,5 +1,5 @@
 ﻿using LibraryManagement.BLL.Interfaces;
-using LibraryManagement.DAL.Interfaces;
+using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.LoginResult;
 

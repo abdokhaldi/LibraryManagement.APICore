@@ -1,6 +1,5 @@
-﻿using LibraryManagement.DAL.Entities;
-using LibraryManagement.DAL.Interfaces;
-using System.Data.Common;
+﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 

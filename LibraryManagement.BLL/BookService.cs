@@ -1,9 +1,9 @@
 ﻿
 using LibraryManagement.BLL.Interfaces;
-using LibraryManagement.DAL.Interfaces;
+using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.BookDTOs;
 using System.Data;
-using LibraryManagement.DAL.Entities;
+using LibraryManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
