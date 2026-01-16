@@ -11,8 +11,8 @@ namespace LibraryManagement.DTO.BookDTOs
         public required string Title { get; set; }
         public required string Author { get; set; }
         public string? Publisher { get; set; }
-        public string? YearPublished { get; set; }
-        public required int Quantity { get; set; }
+        public short? YearPublished { get; set; }
+        public required short Quantity { get; set; }
         public required string CategoryName { get; set; }
         public string? ImagePath { get; set; }
         public required bool IsActive { get; set; }

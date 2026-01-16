@@ -24,25 +24,12 @@ namespace LibraryManagement.DAL.Context
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Person>()
-                  .HasIndex(p => p.Email)
-                  .IsUnique();
-            modelBuilder.Entity<Person>()
-                .HasIndex(p => p.Phone)
-                .IsUnique();
-            modelBuilder.Entity<User>()
-                 .HasIndex(u => u.Username)
-                 .IsUnique();
-            modelBuilder.Entity<Book>()
-                .HasIndex(b => b.Title)
-                .IsUnique();
-            modelBuilder.Entity<User>()
-                 .HasIndex(u => u.PersonID)
-                 .IsUnique();
-
+            
             base.OnModelCreating(modelBuilder);
             //
-           
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(LibraryDbContext).Assembly);
+                
         }
 
     }
