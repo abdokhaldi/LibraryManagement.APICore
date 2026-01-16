@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using  LibraryManagement.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Internal;
 namespace LibraryManagement.DAL.Context
 {
     public class LibraryDbContext : DbContext
@@ -26,6 +24,7 @@ namespace LibraryManagement.DAL.Context
         {
             
             base.OnModelCreating(modelBuilder);
+
             //
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(LibraryDbContext).Assembly);

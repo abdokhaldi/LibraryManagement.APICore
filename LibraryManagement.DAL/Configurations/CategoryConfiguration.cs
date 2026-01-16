@@ -20,6 +20,13 @@ namespace LibraryManagement.DAL.Configurations
                 .IsRequired(false)
                 .HasMaxLength(300)
                 .IsUnicode();
+
+            builder.HasData(
+            new Category { CategoryID = 1, CategoryName = "Programming", Description = "Software development books" },
+            new Category { CategoryID = 2, CategoryName = "History", Description = "World history and biographies" },
+            new Category { CategoryID = 3, CategoryName = "Fiction", Description = "Novels and stories" }
+        );
+
         }
     }
 }
