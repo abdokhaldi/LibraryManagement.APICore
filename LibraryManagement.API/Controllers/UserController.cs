@@ -20,7 +20,7 @@ namespace LibraryManagement.API.Controllers
             _userService = userService;
         }
 
-
+        [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

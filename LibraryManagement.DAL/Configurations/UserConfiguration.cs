@@ -46,6 +46,10 @@ namespace LibraryManagement.DAL.Configurations
 
             builder.HasIndex(u=>u.Username)
                 .IsUnique();
+
+           
         }
+
+        
     }
 }

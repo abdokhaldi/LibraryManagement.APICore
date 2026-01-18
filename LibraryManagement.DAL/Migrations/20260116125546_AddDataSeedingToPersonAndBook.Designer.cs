@@ -4,6 +4,7 @@ using LibraryManagement.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagement.DAL.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    partial class LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260116125546_AddDataSeedingToPersonAndBook")]
+    partial class AddDataSeedingToPersonAndBook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -562,30 +565,6 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserID = 1,
-                            CreatedAt = new DateTime(2026, 1, 16, 13, 4, 29, 976, DateTimeKind.Utc).AddTicks(102),
-                            IsActive = true,
-                            IsBlocked = false,
-                            Password = "123456",
-                            PersonID = 11,
-                            RoleID = 1,
-                            Username = "abdokhal12"
-                        },
-                        new
-                        {
-                            UserID = 2,
-                            CreatedAt = new DateTime(2026, 1, 16, 13, 4, 29, 976, DateTimeKind.Utc).AddTicks(105),
-                            IsActive = true,
-                            IsBlocked = false,
-                            Password = "123456",
-                            PersonID = 2,
-                            RoleID = 2,
-                            Username = "fatima12"
-                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Activity", b =>
