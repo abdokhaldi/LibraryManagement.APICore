@@ -9,6 +9,7 @@ namespace LibraryManagement.DTO.LoginResult
     public class LoginSuccessDTO
     {
         public string Token { get; set; } = null!;
+        public string RefreshToken { get; set; } = null!;
        public DateTime ExpiresAt { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace LibraryManagement.DAL.Context
         public DbSet<Role> Roles { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Member> Members { get; set; }
-
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

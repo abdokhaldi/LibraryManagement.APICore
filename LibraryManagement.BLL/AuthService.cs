@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.BLL.Interfaces;
+using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.LoginResult;
@@ -44,10 +45,21 @@ namespace LibraryManagement.BLL
                     }
 
             string token = _tokenService.GenerateToken(userForLogin);
+            string refreshTokenString = _tokenService.GenerateRefreshToken();
+            var newRefreshTokenEntity = new RefreshToken
+            {
+                Token = refreshTokenString,
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+                UserID = userForLogin.UserID
+            };
+            userForLogin.RefreshTokens.Add(newRefreshTokenEntity);
+            await _unitOfWork.SaveChangesAsync();
             return LoginResult.Success(
                 new LoginSuccessDTO
                 {
                     Token = token,
+                    RefreshToken = refreshTokenString,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(60)
                 }
                 );
