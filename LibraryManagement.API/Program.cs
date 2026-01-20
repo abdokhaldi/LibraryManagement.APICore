@@ -13,7 +13,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. إضافة الخدمات الأساسية للمتحكمات
+// adding primary services
 builder.Services.AddControllers();
 builder.Services.AddAuthentication(
     JwtBearerDefaults.AuthenticationScheme)
@@ -28,19 +28,22 @@ builder.Services.AddAuthentication(
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["jwt:Issuer"],
             ValidAudience = builder.Configuration["jwt:Audience"],
+            ClockSkew =  TimeSpan.Zero,
             IssuerSigningKey = new SymmetricSecurityKey(
-               Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"])
+               Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"]!)
                )
+
         };
   });
 
 builder.Services.AddAuthorization();
 
-// 2. إعداد قاعدة البيانات (SQL Server)
+// setup database (SQL Server)
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 3. حقن التبعيات (Dependency Injection) - تأكد من مطابقة الأسماء في مشروعك
+// Dependency Injection
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
@@ -77,7 +80,7 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "Library Management - API"
     });
-    // إضافة تعريف الأمان (Security Definition)
+    // Security Definition
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -88,7 +91,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Enter 'Bearer' , Example: 'Bearer eye123...'"
     });
 
-    // إضافة متطلبات الأمان (Security Requirement) لجميع العمليات
+   // Security Requirement
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -107,18 +110,18 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// 6. Middleware  (Exception Handling)
+//  Middleware  (Exception Handling)
 app.UseExceptionMiddleware();
 
-// 7. إعدادات Pipeline لبيئة التطوير
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(); // يولد ملف swagger.json
+    app.UseSwagger(); //  swagger.json
     app.UseSwaggerUI(c =>
     {
-        // 🚨 الربط الصريح الذي يحل مشكلة الـ Parser Error
+        // for Parser Error problem
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Library Management API V1");
-        c.RoutePrefix = "swagger"; // يجعل الواجهة تظهر عند الرابط الأساسي /swagger
+        c.RoutePrefix = "swagger"; // lets ui shown at the main url : /swagger
     });
 }
 
@@ -127,7 +130,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 8. تعيين المسارات للمتحكمات
 app.MapControllers();
 
 app.Run();

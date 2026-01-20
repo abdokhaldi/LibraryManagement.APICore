@@ -7,7 +7,7 @@ using LibraryManagement.API.Common;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Librarian")]
     [Route("api/[controller]")]
     [ApiController]
     public class BookController : BaseController
@@ -19,7 +19,7 @@ namespace LibraryManagement.API.Controllers
         }
 
 
-
+        
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
@@ -32,7 +32,8 @@ namespace LibraryManagement.API.Controllers
                return CreatedAtAction(nameof(GetBookDetails), new { id = result.Data }, result.Data);
             return HandleErrorResult(result);
         }
-       
+
+        [AllowAnonymous]       
         [HttpGet("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -87,6 +88,7 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType((int)StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllBooks()

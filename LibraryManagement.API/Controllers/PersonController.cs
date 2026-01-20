@@ -7,7 +7,7 @@ using System.Net;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Librarian")]
     [Route("api/[controller]")]
     [ApiController]
     public class PersonController : BaseController
@@ -47,6 +47,7 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         [ProducesResponseType((int)StatusCodes.Status404NotFound)]
         [ProducesResponseType((int)StatusCodes.Status204NoContent)]
@@ -64,6 +65,8 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
 
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/ActivatePerson")]
         [ProducesResponseType((int) StatusCodes.Status404NotFound)]
         [ProducesResponseType((int)StatusCodes.Status204NoContent)]
@@ -78,6 +81,8 @@ namespace LibraryManagement.API.Controllers
 
             return HandleErrorResult(result);
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/DeactivatePerson")]
         [ProducesResponseType((int)StatusCodes.Status404NotFound)]
         [ProducesResponseType((int)StatusCodes.Status204NoContent)]

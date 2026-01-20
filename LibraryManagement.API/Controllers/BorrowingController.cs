@@ -7,9 +7,11 @@ using LibraryManagement.API.Common;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin,Librarian")]
+
+    [ApiController] 
     [Route("api/[controller]")]
-    [ApiController]
+    
     public class BorrowingController : BaseController
     {
         private readonly IBorrowingService _borrowingService;

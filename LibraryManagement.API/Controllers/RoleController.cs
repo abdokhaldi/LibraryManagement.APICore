@@ -7,7 +7,7 @@ using System.Net;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles ="Admin,Librarian")]
     [Route("api/[controller]")]
     [ApiController]
     public class RoleController : BaseController
@@ -18,6 +18,7 @@ namespace LibraryManagement.API.Controllers
             _roleService = roleService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType((int) HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]

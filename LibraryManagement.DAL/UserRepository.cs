@@ -53,6 +53,7 @@ namespace LibraryManagement.DAL
                 .Where(u => u.Username == identifier
                 || u.Person.Email == identifier)
                 .FirstOrDefaultAsync();
+
             return user;
         }
 
@@ -70,8 +71,8 @@ namespace LibraryManagement.DAL
         public async Task<bool>  IsUsernameExistsAsync(string username)
         {
 
-            var exists = await _context.Users.AnyAsync(u=>u.Username == username);
-            return exists;
+           return await _context.Users.AnyAsync(u=>u.Username == username);
+           
         }
 
         public async Task<bool> IsUsernameExistsForUpdateAsync(int id, string username)
@@ -100,12 +101,18 @@ namespace LibraryManagement.DAL
 
         public async Task<User?> GetUserAsPersonAsync(int personID)
         {
-            var user = await _context.Users.AsNoTracking()
+            return await _context.Users.AsNoTracking()
                                            .Where(u => u.PersonID == personID)
                                            .FirstOrDefaultAsync();
-            return user;
+           
         }
-
+    public async Task<User?> GetUserByRefreshToken(string refreshToken)
+        {
+           return await _context.Users
+                                .Include(u => u.RefreshTokens)
+                                .SingleOrDefaultAsync( u => u.RefreshTokens 
+                                .Any(t => t.Token == refreshToken));   
+        }
 
     }
 }

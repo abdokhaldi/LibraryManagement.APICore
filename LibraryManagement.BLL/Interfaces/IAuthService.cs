@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.DTO.LoginResult;
+using LibraryManagement.DTO.RefreshTokenDTOs;
 
 namespace LibraryManagement.BLL.Interfaces
 {
@@ -6,5 +7,6 @@ namespace LibraryManagement.BLL.Interfaces
     {
         
         Task<LoginResult> LoginAsync(string identifier, string password);
+        Task<LoginResult> RefreshTokenAsync(RefreshTokenRequestDTO tokenDTO);
     }
 }

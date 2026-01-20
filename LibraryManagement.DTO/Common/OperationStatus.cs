@@ -14,7 +14,7 @@ namespace LibraryManagement.DTO.Common
         Cancelled,
         Conflict,
         ValidationError,
-        NotFound
-
+        NotFound,
+        Forbidden
     }
 }

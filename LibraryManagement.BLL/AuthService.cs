@@ -3,6 +3,7 @@ using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.LoginResult;
+using LibraryManagement.DTO.RefreshTokenDTOs;
 
 
 namespace LibraryManagement.BLL
@@ -64,8 +65,62 @@ namespace LibraryManagement.BLL
                 }
                 );
             }
-        
+
+       public async Task<LoginResult> RefreshTokenAsync(RefreshTokenRequestDTO request)
+        {
+            var user = await _unitOfWork.UserRepository.GetUserByRefreshToken(request.RefreshToken);
+
+            if (user == null)
+            {
+                return LoginResult.Failure(LoginStatus.InvalidCredentials);
+            }
+
+            var storedToken = user.RefreshTokens.SingleOrDefault(t=>t.Token == request.RefreshToken);
+            
+            if (storedToken==null || !storedToken!.IsActive)
+            {
+                return LoginResult.Failure(LoginStatus.InvalidCredentials);
+            }
+
+            if (user.IsBlocked)
+            {
+                return LoginResult.Failure(LoginStatus.Blocked);
+            }
+
+            if (!user.IsActive)
+            {
+                return LoginResult.Failure(LoginStatus.Deactivated);
+            }
+
+            storedToken.Revoked = DateTime.UtcNow;
+            storedToken.IsUsed = true;
+
+            var newAccessToken = _tokenService.GenerateToken(user);
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+            var newRefreshTokenEntity = new RefreshToken
+            {
+                Token = newRefreshToken,
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+                UserID = user.UserID
+            };
+
+            user.RefreshTokens.Add(newRefreshTokenEntity);
+            await _unitOfWork.SaveChangesAsync();
+
+            return LoginResult.Success(
+                new LoginSuccessDTO
+                {
+                    Token = newAccessToken,
+                    RefreshToken = newRefreshToken,
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(15)
+                }
+              );
         }
+       
+    
+    }
 
     }
 

@@ -8,13 +8,13 @@ namespace LibraryManagement.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
-            // اسم الجدول
+            
             builder.ToTable("UserRefreshTokens");
 
-            // المفتاح الأساسي
+           
             builder.HasKey(rt => rt.ID);
 
-            // إعدادات العمود Token
+            
             builder.Property(rt => rt.Token)
                    .IsRequired()
                    .HasMaxLength(500); 

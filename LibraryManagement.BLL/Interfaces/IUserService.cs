@@ -6,8 +6,8 @@ namespace LibraryManagement.BLL.Interfaces
 {
     public interface IUserService
     {
-        Task<List<UserForDisplayDTO>> GetAllActiveUsersAsync();
-        Task<OperationResult<int>> RegisterUserAsync(UserForCreationDTO userDTO);
+        Task<List<UserForDisplayDTO>> GetActiveUsersAsync();
+        Task<OperationResult<int>> RegisterUserAsync(UserForCreationDTO userDTO , string creator);
         Task<OperationResult<UserForDisplayDTO>> GetUserDetailsAsync(int id);
         Task<OperationResult> UpdateUserAsync(int id, UserForUpdateDTO userDTO);
         Task<OperationResult> DeactivateUserAsync(int id);

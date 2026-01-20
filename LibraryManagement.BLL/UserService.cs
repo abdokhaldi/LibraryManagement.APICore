@@ -26,7 +26,7 @@ namespace LibraryManagement.BLL
             _securityService = securityService;
         }
 
-       public async Task<List<UserForDisplayDTO>> GetAllActiveUsersAsync()
+       public async Task<List<UserForDisplayDTO>> GetActiveUsersAsync()
         {
             var usersQuery = await _unitOfWork.UserRepository.GetQueryableUsersAsync();
             var users = await usersQuery
@@ -37,8 +37,30 @@ namespace LibraryManagement.BLL
             return users;
         }
 
-        public async Task<OperationResult<int>> RegisterUserAsync(UserForCreationDTO userDTO)
+        public async Task<OperationResult<int>> RegisterUserAsync(UserForCreationDTO userDTO, string creator)
         {
+            var role = _unitOfWork.RoleRepository.GetRoleForReadOnlyAsync(userDTO.RoleID);
+            if (role == null )
+            {
+                return OperationResult<int>.Failure(OperationStatus.Conflict, "The role not existing");
+
+            }
+
+            if (creator != "Admin" && creator != "Librarian")
+            {
+                return OperationResult<int>.Failure(OperationStatus.Forbidden, "You are not allowed  to create users accounts.");
+
+            }
+
+            if (creator == "Librarian" && userDTO.RoleName != "User")
+            {
+                return OperationResult<int>.Failure(
+                    OperationStatus.Forbidden,
+                    "Access Denied: Librarians are only authorized to create Member accounts."
+                    );
+             }
+
+            
             var personStatus = await _unitOfWork.PersonRepository.CheckPersonStatus(userDTO.PersonID);
             if (personStatus.isNotFound)
             {
@@ -202,9 +224,7 @@ namespace LibraryManagement.BLL
             return OperationResult.Success();
 
         }
-
-        
-    }
+     }
 
 }
 

@@ -9,7 +9,8 @@ using LibraryManagement.API.Common;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Authorize(Roles ="Admin")]
+
+    [Authorize(Roles ="Admin,Librarian")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : BaseController
@@ -20,13 +21,13 @@ namespace LibraryManagement.API.Controllers
             _userService = userService;
         }
 
-        [AllowAnonymous]
+        
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> RegisterUser([FromBody] UserForCreationDTO userDTO)
         {
-            var result = await _userService.RegisterUserAsync(userDTO);
+            var result = await _userService.RegisterUserAsync(userDTO , CurrentUserRole);
 
             if (result.IsSuccess) 
                 return CreatedAtAction(nameof(GetUserDetails), new { id = result.Data }, result.Data);
@@ -45,7 +46,7 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
             
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -60,15 +61,16 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
         }
 
-       
+        
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetActiveUsers()
         {
-            var users = await _userService.GetAllActiveUsersAsync();
+            var users = await _userService.GetActiveUsersAsync();
             return Ok(users);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/deactivate")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
@@ -83,7 +85,12 @@ namespace LibraryManagement.API.Controllers
                 return HandleErrorResult(result);
 
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/activate")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ActiveUser(int id)
         {
             var result = await _userService.ActivateUserAsync(id);
@@ -92,6 +99,8 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/block")]
         [ProducesResponseType((int) HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -104,6 +113,8 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/unblock")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

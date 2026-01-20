@@ -1,11 +1,13 @@
 ﻿using LibraryManagement.API.Common;
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DTO.CategoryDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace LibraryManagement.API.Controllers
 {
+    [Authorize(Roles = "Admin,Librarian")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : BaseController
@@ -28,6 +30,7 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -60,8 +63,8 @@ namespace LibraryManagement.API.Controllers
                 return Ok(result.Data);
             return HandleErrorResult(result);
         }
-        
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]

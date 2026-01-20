@@ -5,7 +5,7 @@ using System.Net;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Librarian")]
     [Route("api/[controller]")]
     [ApiController]
 
@@ -20,7 +20,7 @@ namespace LibraryManagement.API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType((int) HttpStatusCode.OK)]
         [ProducesResponseType((int) HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetMemberDetais(int id)
+        public async Task<IActionResult> GetMemberDetails(int id)
         {
             var member = await _memberService.GetMemberDetails(id);
             if (member == null)
@@ -38,6 +38,7 @@ namespace LibraryManagement.API.Controllers
             return Ok(members);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/ActivateMember")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -53,6 +54,7 @@ namespace LibraryManagement.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/DeactivateMember")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
