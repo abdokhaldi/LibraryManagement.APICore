@@ -1,6 +1,7 @@
 ﻿using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
+using LibraryManagement.DTO.AuthDTOs;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.LoginResult;
 using LibraryManagement.DTO.RefreshTokenDTOs;
@@ -61,14 +62,14 @@ namespace LibraryManagement.BLL
                 {
                     Token = token,
                     RefreshToken = refreshTokenString,
-                    ExpiresAt = DateTime.UtcNow.AddMinutes(60)
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(15)
                 }
                 );
             }
 
        public async Task<LoginResult> RefreshTokenAsync(RefreshTokenRequestDTO request)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByRefreshToken(request.RefreshToken);
+            var user = await _unitOfWork.UserRepository.GetUserByRefreshTokenAsync(request.RefreshToken);
 
             if (user == null)
             {
@@ -119,7 +120,23 @@ namespace LibraryManagement.BLL
               );
         }
        
-    
+       public async Task<LoginResult> LogoutAsync(LogoutRequestDTO requestDTO)
+
+        {
+            var user = await _unitOfWork.UserRepository.GetUserByRefreshTokenAsync(requestDTO.RefreshToken);
+            if (user == null)
+            {
+                return LoginResult.Failure(LoginStatus.InvalidCredentials);
+            }
+            var storedToken = user.RefreshTokens.SingleOrDefault(rt => rt.Token == requestDTO.RefreshToken);
+            if (storedToken == null || !storedToken.IsActive)
+            {
+                return LoginResult.Failure(LoginStatus.InvalidCredentials);
+            }
+            storedToken.Revoked = DateTime.UtcNow;
+            await _unitOfWork.SaveChangesAsync();
+            return LoginResult.Success();
+        }
     }
 
     }

@@ -67,7 +67,7 @@ builder.Services.AddScoped<ICategoryService,CategoryService>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
-    cfg.AddMaps(typeof(MappingProfile).Assembly);
+    cfg.AddMaps(typeof(BookProfile).Assembly);
 });
 
 // 5. Setup Swagger (Docs generate)

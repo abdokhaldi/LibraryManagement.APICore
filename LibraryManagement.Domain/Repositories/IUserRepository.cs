@@ -21,7 +21,7 @@ namespace LibraryManagement.Domain.Interfaces
         Task UpdateUserAsync(User userEntity);
         Task<User?> GetUserAsPersonAsync(int personID);
 
-        Task<User?> GetUserByRefreshToken(string refreshToken);
+        Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
 
     }
 }

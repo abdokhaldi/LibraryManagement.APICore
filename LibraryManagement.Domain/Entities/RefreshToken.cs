@@ -15,13 +15,13 @@ namespace LibraryManagement.Domain.Entities
             public bool IsUsed { get; set; }
 
             public DateTime? Revoked { get; set; }
-
+            
+            
             public bool IsExpired => DateTime.UtcNow >= Expires;
 
             public bool IsActive => Revoked == null && !IsExpired;
-
+            
             public int UserID { get; set; }
-
             public User User { get; set; } = null!;
         }
     }

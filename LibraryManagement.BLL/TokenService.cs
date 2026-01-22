@@ -23,11 +23,11 @@ namespace LibraryManagement.BLL
                 new Claim(ClaimTypes.NameIdentifier,user.UserID.ToString()),
                 new Claim(ClaimTypes.Name , user.Username),
                 new Claim(ClaimTypes.Email,user.Person.Email),
-                new Claim(ClaimTypes.Role, user.Role.RoleName)
+                new Claim(ClaimTypes.Role, user.Role.RoleName??"User")
             };
 
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["jwt:key"])
+                Encoding.UTF8.GetBytes(_config["jwt:key"]!)
                 );
             var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(

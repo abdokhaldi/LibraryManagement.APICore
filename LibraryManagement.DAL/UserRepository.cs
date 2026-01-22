@@ -47,7 +47,6 @@ namespace LibraryManagement.DAL
       public async Task<User?> GetUserForLoginAsync(string identifier)
         {
             var user = await _context.Users
-                .AsNoTracking()
                 .Include(u => u.Person)
                 .Include(u=>u.Role)
                 .Where(u => u.Username == identifier
@@ -106,9 +105,11 @@ namespace LibraryManagement.DAL
                                            .FirstOrDefaultAsync();
            
         }
-    public async Task<User?> GetUserByRefreshToken(string refreshToken)
+    public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
         {
            return await _context.Users
+                                .Include(u=>u.Person)
+                                .Include(u => u.Role)
                                 .Include(u => u.RefreshTokens)
                                 .SingleOrDefaultAsync( u => u.RefreshTokens 
                                 .Any(t => t.Token == refreshToken));   

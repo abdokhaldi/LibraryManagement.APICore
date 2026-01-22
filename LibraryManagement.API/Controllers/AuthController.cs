@@ -1,7 +1,7 @@
 ﻿using LibraryManagement.BLL.Interfaces;
+using LibraryManagement.DTO.AuthDTOs;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.RefreshTokenDTOs;
-using LibraryManagement.DTO.UserDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -60,5 +60,27 @@ namespace LibraryManagement.API.Controllers
                 _ => BadRequest()
             };
         }
+
+        [Authorize]
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+
+        public async Task<IActionResult> Logout([FromBody]LogoutRequestDTO requestDto)
+        {
+            var result = await _authService.LogoutAsync(requestDto);
+            return result.status switch
+            {
+
+                LoginStatus.Success => Ok(new { Message= "Logged out successfully"}),
+                LoginStatus.InvalidCredentials => BadRequest("Invalid or already revoked token."),
+                _ => StatusCode(500, "An unexpected error occurred.")
+
+            };
+
+        }
+
+
     }
 }
