@@ -1,69 +1,74 @@
+# 📚 Library Management System - Core API
 
-
- #📚 Library Management System - API Core (ASP.NET 8)
-
-## 🌟 Overview
-
-This repository hosts the **Backend Services** for the Library Management System. This project is a **migration** and modernization effort, moving from a legacy .NET Framework/WinForms application utilizing **ADO.NET** to the latest Microsoft technologies.
-
-The goal is to provide robust and secure **RESTful APIs** for managing users, roles, books, and borrowing/return operations, with a strong focus on performance and security.
+### 🌟 Overview
+A modernized, robust Backend API built with **ASP.NET 8**. This project represents a comprehensive migration of a legacy Library Management system into a high-performance, scalable, and secure RESTful architecture, adhering to the highest industry standards.
 
 ---
 
-## 🛠️ Technology Stack
-
-* **Language:** C#
-* **Framework:** **ASP.NET Core 8**
-* **Data Access (ORM):** **Entity Framework Core 8**
-* **Database:** SQL Server
-* **Authentication:** JWT Bearer Tokens
-* **Documentation:** Swagger/OpenAPI
-
----
-
-## 🏗️ Project Architecture
-
-The project adheres to the **Separation of Concerns** principle, structured using a modified N-Tier model (similar to Clean/Onion Architecture) and includes the following layers:
-
-1.  **`LibraryManagement.Api`:** The Presentation Layer, containing **Controllers** to handle HTTP requests.
-2.  **`LibraryManagement.BLL`:** The **Business Logic Layer**, implementing business rules and authorization checks.
-3.  **`LibraryManagement.DAL`:** The **Data Access Layer**, holding the **`DbContext`** and **Entity Framework Core** configuration for database management.
-4.  **`LibraryManagement.DTO`:** Shared **Data Transfer Objects** used for inter-layer communication.
-5.  **`LibraryManagement.Common`:** Shared utility services (e.g., Security and Logging).
+### 🚀 Key Features & Security
+* **Dual-Token Authentication:** Implementation of **JWT Access Tokens** and **Refresh Tokens** for secure, long-lived user sessions.
+* **Token Revocation (Logout):** Advanced session management allowing for manual revocation of tokens to ensure immediate access termination.
+* **Secure Hashing:** Using **BCrypt** for industry-standard password hashing and protection.
+* **Global Exception Handling:** A centralized Middleware that intercepts unhandled exceptions to return consistent, secure JSON responses while preventing sensitive data leakage.
+* **Automated Mapping:** Orchestrated by **AutoMapper** using entity-specific profiles for clean, decoupled, and maintainable code.
+* **Standardized Responses:** All API operations utilize a generic `OperationResult<T>` wrapper for uniform communication with the frontend.
 
 ---
 
-## 🚀 Getting Started
+### 🏗️ Architecture & Design Patterns
+The project is built on **Clean Architecture** principles to ensure total separation of concerns and long-term maintainability:
 
-### 1. Cloning the Repository
+* **Repository Pattern:** Decouples data access from business logic, facilitating easier unit testing and flexibility.
+* **Unit of Work:** Coordinates transactions across multiple repositories to maintain data integrity and atomicity.
+* **Dependency Injection (DI):** Leverages interface-based injection to promote loose coupling throughout the system.
+* **Generic Repository:** Minimizes boilerplate code for standard CRUD operations while allowing for specialized logic.
 
-```bash
-git clone <Repository Link>
+---
 
-### 2. Database Setup
+### 📂 Project Structure
+* **LibraryManagement.API:** Handles HTTP requests, Middleware, and Controllers.
+* **LibraryManagement.BLL:** Implements core business rules, service logic, and authorization.
+* **LibraryManagement.DAL:** Manages **EF Core 8** configurations, DbContext, and Migrations.
+* **LibraryManagement.Domain:** Contains core Entities and domain-specific logic.
+* **LibraryManagement.DTO:** Holds Data Transfer Objects and shared result contracts.
 
-We utilize Entity Framework Core Migrations for database initialization and updates:
+---
 
-```bash
-# Ensure you are in the Solution directory
-dotnet restore
-dotnet ef database update --project LibraryManagement.DAL
+### 🛠️ Technology Stack
+* **Framework:** ASP.NET Core 8 (Web API)
+* **ORM:** Entity Framework Core 8 (SQL Server)
+* **Security:** JWT, BCrypt Hashing, Refresh Token Rotation
+* **Mapping:** AutoMapper (Modular Profile Configuration)
+* **Documentation:** Swagger / OpenAPI
 
+---
 
-### 3. Running the API
+### ⚙️ Getting Started
 
-* **Via Visual Studio:** Open the solution (`.sln`) and run the `LibraryManagement.Api` project.
-* **Via Command Line:**
+1.  **Clone the Repository:**
     ```bash
-    dotnet run --project LibraryManagement.Api
+    git clone [your-repository-link]
+    dotnet restore
     ```
 
-### 4. Accessing Swagger
+2.  **Database Setup:**
+    Ensure your connection string is configured in `appsettings.json`, then run:
+    ```bash
+    dotnet ef database update --project LibraryManagement.DAL
+    ```
 
-After running, you can test and view the endpoint documentation via the Swagger interface, which automatically opens (usually at `https://localhost:PORT/swagger`).
+3.  **Run the API:**
+    ```bash
+    dotnet run --project LibraryManagement.API
+    ```
+Note: For the first-time setup, ensure an Admin user is created via the /register endpoint (temporarily set to AllowAnonymous) to manage the system
+---
+
+### 🛡️ API Testing
+Explore and test the API endpoints (Authentication, Refresh Tokens, Logout, etc.) via the Swagger UI at:
+`https://localhost:[PORT]/swagger`
 
 ---
 
-## 🔑 Contribution
-
-Contributions and feedback on the migration process and architecture are welcome. Please use **Pull Requests** for all proposed changes.
+### 🔑 Contribution
+Contributions and architectural feedback are welcome. Please ensure all significant changes are proposed via **Pull Requests**.
