@@ -1,4 +1,5 @@
-﻿namespace LibraryManagement.Shared.Parameters.Base
+﻿
+namespace LibraryManagement.Shared.Parameters.Base
 {
     public abstract class RequestParameters
     {
@@ -11,5 +12,7 @@
         }
         public int PageNumber { get; set; } = 1;
         public string? SearchTerm { get; set; }
+        public string? OrderBy { get; set; }
+
     }
 }

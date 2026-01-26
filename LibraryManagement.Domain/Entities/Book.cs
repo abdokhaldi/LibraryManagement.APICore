@@ -19,8 +19,8 @@ namespace LibraryManagement.Domain.Entities
         public short Quantity { get; set; }
         
         public int CategoryID { get; set; }
-       
-        public Category? Category { get; set; }
+
+        public Category Category { get; set; } = null!;
        
         public string? ImagePath { get; set; }
        

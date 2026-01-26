@@ -4,6 +4,8 @@ using LibraryManagement.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagement.Shared.Parameters;
 using System.Data;
+using LibraryManagement.DAL.Base;
+
 
 
 
@@ -29,10 +31,15 @@ namespace LibraryManagement.DAL
 
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                string searchTerm = parameters.SearchTerm.Trim().ToLower();
-               query = query.Where(b => b.Title.ToLower().Contains(searchTerm) 
-                || b.Author.ToLower().Contains(searchTerm));
+                string searchTerm =  parameters.SearchTerm.Trim().ToLower();
+                query = query.Where(b =>
+                    b.Title.ToLower().Contains(searchTerm)
+                 || b.Author.ToLower().Contains(searchTerm)
+                 || b.Category.CategoryName.ToLower().Contains(searchTerm)
+                 );
             }
+            
+            query = query.ApplySort(parameters.OrderBy);
 
             return query;
         }
