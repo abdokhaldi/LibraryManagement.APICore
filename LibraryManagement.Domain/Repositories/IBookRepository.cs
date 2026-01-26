@@ -1,13 +1,12 @@
 ﻿using LibraryManagement.Domain.Entities;
-using System.Linq;
-using System.Threading.Tasks;
+using LibraryManagement.Shared.Parameters;
 
 namespace LibraryManagement.Domain.Interfaces
 {
    
     public interface IBookRepository
     {
-        Task<IQueryable<Book>> GetQueryableBooksAsync();
+        public IQueryable<Book> GetBookQuery(BookParameters parameters);
 
         Task<Book?> GetBookForUpdateAsync(int bookID);
         Task<Book?> GetBookForReadOnlyAsync(int bookID);

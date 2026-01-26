@@ -2,6 +2,7 @@
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using LibraryManagement.Shared.Parameters;
 using System.Data;
 
 
@@ -15,11 +16,25 @@ namespace LibraryManagement.DAL
         {
             _context = context;
         }
-        public  Task<IQueryable<Book>> GetQueryableBooksAsync()
+        public  IQueryable<Book> GetBookQuery(BookParameters parameters)
         {
-            var listBooks = _context.Books.Include(c => c.Category)
-                                           .AsNoTracking();
-                return Task.FromResult(listBooks);
+            var query = _context.Books
+                .Include(c => c.Category)
+                .AsNoTracking() ;
+
+            if (parameters.CategoryID.HasValue && parameters.CategoryID != 0)
+            {
+               query = query.Where(b => b.CategoryID == parameters.CategoryID);
+            }
+
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                string searchTerm = parameters.SearchTerm.Trim().ToLower();
+               query = query.Where(b => b.Title.ToLower().Contains(searchTerm) 
+                || b.Author.ToLower().Contains(searchTerm));
+            }
+
+            return query;
         }
 
 

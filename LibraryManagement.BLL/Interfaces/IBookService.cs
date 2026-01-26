@@ -1,12 +1,14 @@
 ﻿
 using LibraryManagement.DTO.BookDTOs;
 using LibraryManagement.DTO.OperationResults;
+using LibraryManagement.Shared.Helpers;
+using LibraryManagement.Shared.Parameters;
 
 namespace LibraryManagement.BLL.Interfaces
 {
     public interface IBookService
     {
-        Task<List<BookForDisplayDTO>> GetAllActiveBooksAsync();
+        Task<PagedList<BookForDisplayDTO>> GetAllActiveBooksAsync(BookParameters parameters);
 
         Task<OperationResult<BookForDisplayDTO>> GetBookDetailsAsync(int bookID);
 

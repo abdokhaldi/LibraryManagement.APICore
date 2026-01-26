@@ -9,6 +9,8 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Common;
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.Shared.Helpers;
 
 
 namespace LibraryManagement.BLL
@@ -97,16 +99,20 @@ namespace LibraryManagement.BLL
             await _unitOfWork.SaveChangesAsync();
             return OperationResult.Success();
         }
-       public async Task<List<BookForDisplayDTO>> GetAllActiveBooksAsync()
+       public async Task<PagedList<BookForDisplayDTO>> GetAllActiveBooksAsync(BookParameters parameters)
         {
-            var booksQuery = await _unitOfWork.BookRepository.GetQueryableBooksAsync();
+            var booksQuery = _unitOfWork.BookRepository.GetBookQuery(parameters);
 
-            var activeBooksDTO = await booksQuery
-                .Where(b => b.IsActive == true)
+            booksQuery.Where(b => b.IsActive == true);
+
+           int totalCount = await booksQuery.CountAsync();
+
+           var items = await booksQuery
                 .ProjectTo<BookForDisplayDTO>(_mapper.ConfigurationProvider)
+                .Skip((parameters.PageNumber - 1) * parameters.PageSize)
+                .Take(parameters.PageSize)
                 .ToListAsync();
-            
-            return activeBooksDTO;
+            return new PagedList<BookForDisplayDTO>(items,parameters.PageNumber,totalCount,parameters.PageSize);
         }
        public async Task<OperationResult<BookForDisplayDTO>> GetBookDetailsAsync (int bookID) 
         {

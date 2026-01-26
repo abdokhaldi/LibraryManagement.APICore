@@ -13,8 +13,20 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(
+    options =>
+    options.AddPolicy("CorsPolicy", builder =>
+
+          builder.AllowAnyOrigin()
+                 .AllowAnyMethod()                  
+                 .AllowAnyHeader()         
+                 .WithExposedHeaders("X-Pagination")
+          )      
+    );
+
 // adding primary services
 builder.Services.AddControllers();
+
 builder.Services.AddAuthentication(
     JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
@@ -127,6 +139,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
