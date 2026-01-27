@@ -1,10 +1,11 @@
 ﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Shared.Parameters;
 
 namespace LibraryManagement.Domain.Interfaces
 {
     public interface IPersonRepository
     {
-        Task<IQueryable<Person>> GetQueryablePeopleAsync();
+        IQueryable<Person> GetQueryablePeople(PersonParameters parameters);
 
         Task<Person?> GetPersonForReadOnlyAsync(int personID);
         Task<Person?> GetPersonForUpdateAsync(int personID);

@@ -3,6 +3,8 @@ using LibraryManagement.Domain.Interfaces;
 using System.Data;
 using LibraryManagement.DAL.Context;
 using Microsoft.EntityFrameworkCore;
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.DAL.Base;
 
 namespace LibraryManagement.DAL
 {
@@ -15,11 +17,29 @@ namespace LibraryManagement.DAL
         }
 
 
-         public Task<IQueryable<Person>> GetQueryablePeopleAsync()
+         public IQueryable<Person> GetQueryablePeople(PersonParameters parameters)
           {
             
                 var query = _context.People.AsNoTracking();
-                return Task.FromResult(query);
+
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                string searchTerm = parameters.SearchTerm.Trim().ToLower();
+
+                query = query.Where( p => 
+                    p.FirstName.ToLower() == parameters.SearchTerm
+                    || p.LastName.ToLower() == parameters.SearchTerm
+                    || p.Phone.ToLower() == parameters.SearchTerm
+                    || p.Email.ToLower() == parameters.SearchTerm
+                    || p.Address.ToLower() == parameters.SearchTerm
+                    || p.City.ToLower() == parameters.SearchTerm
+                    );
+            }
+
+            query = query.ApplySort(parameters.OrderBy);
+
+            return query;
+
             }
             
         public async Task<Person?> GetPersonForReadOnlyAsync(int personID)

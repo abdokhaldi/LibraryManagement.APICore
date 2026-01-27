@@ -1,9 +1,12 @@
 ﻿using LibraryManagement.API.Common;
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.DTO.PersonDTOs;
+using LibraryManagement.Shared.HEADER_KEYS;
+using LibraryManagement.Shared.Parameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 
 namespace LibraryManagement.API.Controllers
 {
@@ -63,7 +66,6 @@ namespace LibraryManagement.API.Controllers
                 return NoContent();
 
             return HandleErrorResult(result);
-
         }
 
         [Authorize(Roles = "Admin")]
@@ -96,13 +98,15 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType((int)StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllPersons()
+        public async Task<IActionResult> GetAllPersons([FromQuery] PersonParameters parameters)
         {
-            
-            var persons = await _personService.GetAllPeopleAsync();
-            return Ok(persons);
+            var pagedPersons = await _personService.GetAllPeopleAsync(parameters);
+
+            Response.Headers.Append(HeaderKeys.Pagination, JsonSerializer.Serialize(pagedPersons.Metadata));
+            return Ok(pagedPersons.Items);
         }
     }
 }
