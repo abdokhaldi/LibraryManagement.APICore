@@ -8,7 +8,7 @@ namespace LibraryManagement.BLL.Interfaces
 {
     public interface IBookService
     {
-        Task<PagedList<BookForDisplayDTO>> GetAllActiveBooksAsync(BookParameters parameters);
+        Task<PagedList<BookForDisplayDTO>> GetActiveBooksAsync(BookParameters parameters);
 
         Task<OperationResult<BookForDisplayDTO>> GetBookDetailsAsync(int bookID);
 

@@ -27,6 +27,57 @@ namespace LibraryManagement.DAL.Configurations
                 .HasForeignKey<Member>(m => m.PersonID)
                 .IsRequired();
 
+            builder.HasData(
+                new Member()
+                {
+                    MemberID = 1,
+                    PersonID = 2,
+                    JoinDate = DateTime.UtcNow,
+                    IsActive = true
+                },
+                new Member()
+                {
+                    MemberID = 2,
+                    PersonID = 1,
+                    JoinDate = DateTime.UtcNow,
+                    IsActive = true
+                },
+                new Member()
+                {
+                    MemberID = 3,
+                    PersonID = 4,
+                    JoinDate = DateTime.UtcNow,
+                    IsActive = true
+                },
+                new Member()
+                {
+                    MemberID = 4,
+                    PersonID = 3,
+                    JoinDate = DateTime.UtcNow,
+                    IsActive = true
+                },
+                new Member()
+                {
+                    MemberID = 5,
+                    PersonID = 6,
+                    JoinDate = DateTime.UtcNow,
+                    IsActive = true
+                },
+                new Member()
+                {
+                    MemberID = 6,
+                    PersonID = 5,
+                    JoinDate = DateTime.UtcNow,
+                    IsActive = true
+                },
+                 new Member()
+                 {
+                     MemberID = 7,
+                     PersonID = 7,
+                     JoinDate = DateTime.UtcNow,
+                     IsActive = true
+                 }
+                );
         }
     }
 }

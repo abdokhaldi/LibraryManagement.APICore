@@ -2,11 +2,8 @@
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.BookDTOs;
-using System.Data;
 using LibraryManagement.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.Shared.Parameters;
@@ -99,21 +96,16 @@ namespace LibraryManagement.BLL
             await _unitOfWork.SaveChangesAsync();
             return OperationResult.Success();
         }
-       public async Task<PagedList<BookForDisplayDTO>> GetAllActiveBooksAsync(BookParameters parameters)
+       public async Task<PagedList<BookForDisplayDTO>> GetActiveBooksAsync(BookParameters parameters)
         {
-            var booksQuery = _unitOfWork.BookRepository.GetBookQuery(parameters);
+            var pagedBooks = await _unitOfWork.BookRepository.GetActiveBooksAsync(parameters);
 
-            booksQuery.Where(b => b.IsActive == true);
+            var booksDTO = _mapper.Map<List<BookForDisplayDTO>>(pagedBooks.Items);
 
-           int totalCount = await booksQuery.CountAsync();
-
-           var items = await booksQuery
-                .ProjectTo<BookForDisplayDTO>(_mapper.ConfigurationProvider)
-                .Skip((parameters.PageNumber - 1) * parameters.PageSize)
-                .Take(parameters.PageSize)
-                .ToListAsync();
-            return new PagedList<BookForDisplayDTO>(items,parameters.PageNumber,totalCount,parameters.PageSize);
+            return  pagedBooks.MapTo(booksDTO);
+            
         }
+
        public async Task<OperationResult<BookForDisplayDTO>> GetBookDetailsAsync (int bookID) 
         {
             var bookEntity = await _unitOfWork.BookRepository.GetBookForReadOnlyAsync(bookID);

@@ -1,12 +1,14 @@
 ﻿using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.UserDTOs;
+using LibraryManagement.Shared.Helpers;
+using LibraryManagement.Shared.Parameters;
 
 
 namespace LibraryManagement.BLL.Interfaces
 {
     public interface IUserService
     {
-        Task<List<UserForDisplayDTO>> GetActiveUsersAsync();
+        Task<PagedList<UserForDisplayDTO>> GetActiveUsersAsync(UserParameters parameters);
         Task<OperationResult<int>> RegisterUserAsync(UserForCreationDTO userDTO , string creator);
         Task<OperationResult<UserForDisplayDTO>> GetUserDetailsAsync(int id);
         Task<OperationResult> UpdateUserAsync(int id, UserForUpdateDTO userDTO);

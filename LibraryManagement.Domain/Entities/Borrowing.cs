@@ -5,7 +5,8 @@ namespace LibraryManagement.Domain.Entities
    
     public class Borrowing
     {
-       
+        
+
         public int BorrowingID { get; set; }
 
       
@@ -27,5 +28,6 @@ namespace LibraryManagement.Domain.Entities
         public Book Book { get; set; } = null!;    
         public Member Member { get; set; } = null!;
 
+        
     }
 }

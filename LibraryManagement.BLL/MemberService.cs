@@ -39,7 +39,7 @@ namespace LibraryManagement.BLL
 
       public async Task<List<MemberForDisplayDTO>> GetAllMembersAsync()
         {
-            var membersQuery = await _unitOfWork.MemberRepository.GetQueryableMembersAsync();
+            var membersQuery = await _unitOfWork.MemberRepository.GetActiveMembersAsync();
            
             var activeMembers = await membersQuery
                 .Where(m => m.IsActive == true)

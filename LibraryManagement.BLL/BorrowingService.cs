@@ -135,7 +135,7 @@ namespace LibraryManagement.BLL
 
         public async Task<List<BorrowingForDisplayDTO>> GetBorrowingsAsync()
         {
-            var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetQueryableBorrowingsAsync();
+            var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetBorrowingsAsync();
 
             var borrowingsDTO = await borrowingsQuery
                 .Where(b => b.IsCanceled == false)
@@ -145,7 +145,7 @@ namespace LibraryManagement.BLL
         }
         public async Task<List<BorrowingForDisplayDTO>> GetOverdueAsync()
         {
-            var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetQueryableBorrowingsAsync();
+            var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetBorrowingsAsync();
 
             var borrowingsDTO = await borrowingsQuery
                 .Where(b => b.ReturnDate == null && b.DueDate < DateTime.UtcNow)

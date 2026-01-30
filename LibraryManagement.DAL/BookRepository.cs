@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using LibraryManagement.Shared.Parameters;
 using System.Data;
 using LibraryManagement.DAL.Base;
+using System.Linq.Dynamic.Core;
+using LibraryManagement.Shared.Helpers;
+using System.Diagnostics.Metrics;
 
 
 
@@ -18,10 +21,11 @@ namespace LibraryManagement.DAL
         {
             _context = context;
         }
-        public  IQueryable<Book> GetBookQuery(BookParameters parameters)
+        public async Task<PagedList<Book>> GetActiveBooksAsync(BookParameters parameters)
+
         {
             var query = _context.Books
-                .Include(c => c.Category)
+                .Include(b => b.Category)
                 .AsNoTracking() ;
 
             if (parameters.CategoryID.HasValue && parameters.CategoryID != 0)
@@ -41,7 +45,13 @@ namespace LibraryManagement.DAL
             
             query = query.ApplySort(parameters.OrderBy);
 
-            return query;
+            int totalCount = query.Count();
+
+            var items = await query
+                .Skip((parameters.PageNumber-1) * parameters.PageSize)
+                .Take(parameters.PageSize)
+                .ToListAsync();
+            return new PagedList(items,parameters.PageNumber ,totalCount,parameters.PageSize );
         }
 
 

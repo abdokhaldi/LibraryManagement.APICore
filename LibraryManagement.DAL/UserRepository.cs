@@ -3,7 +3,8 @@ using LibraryManagement.Domain.Entities;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagement.Domain.Interfaces;
-
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.DAL.Base;
 
 namespace LibraryManagement.DAL
 {
@@ -56,15 +57,44 @@ namespace LibraryManagement.DAL
             return user;
         }
 
-        public Task<IQueryable<User>> GetQueryableUsersAsync()
+        public IQueryable<User> GetQueryableUsers(UserParameters parameters)
         {
            
                 var query = _context.Users
+                                 .AsNoTracking()
                                  .Include(u => u.Person)
-                                 .Include(u => u.Role).AsNoTracking();
-                                 
-                return Task.FromResult(query);
+                                 .Include(u => u.Role)
+                                 .AsQueryable();
+
+            if (parameters.PersonID.HasValue && parameters.PersonID != 0)
+            {
+                query = query.Where(u => u.PersonID == parameters.PersonID);               
             }
+
+            if (parameters.IsBlocked)
+            {
+                query = query.Where(u => u.IsBlocked == parameters.IsBlocked);
+            }
+
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                string searchTerm = parameters.SearchTerm.Trim().ToLower();
+                query = query.Where(u =>
+
+                   u.Username.ToLower().Contains(searchTerm)
+                || u.Person.FirstName.ToLower().Contains(searchTerm)
+                || u.Person.LastName.ToLower().Contains(searchTerm)
+                || u.Person.Phone.ToLower().Contains(searchTerm)
+                || u.Person.Email.ToLower().Contains(searchTerm)
+                || u.Person.Address.ToLower().Contains(searchTerm)
+                || u.Person.City.ToLower().Contains(searchTerm)
+                );
+            }
+
+            query = query.ApplySort(parameters.OrderBy);
+
+            return query;
+        }
            
 
         public async Task<bool>  IsUsernameExistsAsync(string username)

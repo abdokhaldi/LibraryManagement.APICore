@@ -1,12 +1,12 @@
 ﻿using LibraryManagement.Domain.Entities;
 using LibraryManagement.Shared.Parameters;
-
+using LibraryManagement.Shared.Helpers;
 namespace LibraryManagement.Domain.Interfaces
 {
    
     public interface IBookRepository
     {
-        public IQueryable<Book> GetBookQuery(BookParameters parameters);
+        Task<PagedList<Book>> GetActiveBooksAsync(BookParameters parameters);
 
         Task<Book?> GetBookForUpdateAsync(int bookID);
         Task<Book?> GetBookForReadOnlyAsync(int bookID);

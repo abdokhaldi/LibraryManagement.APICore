@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using LibraryManagement.API.Common;
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.Shared.HEADER_KEYS;
+using System.Text.Json;
 
 
 
@@ -21,7 +24,7 @@ namespace LibraryManagement.API.Controllers
             _userService = userService;
         }
 
-        
+       
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -64,10 +67,13 @@ namespace LibraryManagement.API.Controllers
         
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetActiveUsers()
+        public async Task<IActionResult> GetActiveUsers([FromQuery] UserParameters parameters)
         {
-            var users = await _userService.GetActiveUsersAsync();
-            return Ok(users);
+            var usersPaged = await _userService.GetActiveUsersAsync(parameters);
+
+            Response.Headers.Append(HeaderKeys.Pagination, JsonSerializer.Serialize(usersPaged.Metadata));
+           
+            return Ok(usersPaged.Items);
         }
 
         [Authorize(Roles = "Admin")]

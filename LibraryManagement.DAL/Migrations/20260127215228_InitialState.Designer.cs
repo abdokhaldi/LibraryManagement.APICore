@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagement.DAL.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20260116130430_AddDataSeedingToUser")]
-    partial class AddDataSeedingToUser
+    [Migration("20260127215228_InitialState")]
+    partial class InitialState
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -217,6 +217,68 @@ namespace LibraryManagement.DAL.Migrations
                     b.HasIndex("MemberID");
 
                     b.ToTable("Borrowings", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            BorrowingID = 1,
+                            BookID = 1,
+                            BorrowingDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(148),
+                            DueDate = new DateTime(2026, 1, 31, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(151),
+                            IsCanceled = false,
+                            MemberID = 1,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BorrowingID = 2,
+                            BookID = 3,
+                            BorrowingDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(159),
+                            DueDate = new DateTime(2026, 2, 1, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(159),
+                            IsCanceled = false,
+                            MemberID = 2,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BorrowingID = 3,
+                            BookID = 5,
+                            BorrowingDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(161),
+                            DueDate = new DateTime(2026, 1, 29, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(162),
+                            IsCanceled = false,
+                            MemberID = 3,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BorrowingID = 4,
+                            BookID = 4,
+                            BorrowingDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(164),
+                            DueDate = new DateTime(2026, 1, 31, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(164),
+                            IsCanceled = false,
+                            MemberID = 3,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BorrowingID = 5,
+                            BookID = 5,
+                            BorrowingDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(166),
+                            DueDate = new DateTime(2026, 1, 31, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(167),
+                            IsCanceled = false,
+                            MemberID = 7,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BorrowingID = 6,
+                            BookID = 2,
+                            BorrowingDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(168),
+                            DueDate = new DateTime(2026, 2, 2, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(169),
+                            IsCanceled = false,
+                            MemberID = 7,
+                            Status = "Borrowed"
+                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Category", b =>
@@ -286,6 +348,57 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Members", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            MemberID = 1,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(7829),
+                            PersonID = 2
+                        },
+                        new
+                        {
+                            MemberID = 2,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(7832),
+                            PersonID = 1
+                        },
+                        new
+                        {
+                            MemberID = 3,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(7833),
+                            PersonID = 4
+                        },
+                        new
+                        {
+                            MemberID = 4,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(7834),
+                            PersonID = 3
+                        },
+                        new
+                        {
+                            MemberID = 5,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(7836),
+                            PersonID = 6
+                        },
+                        new
+                        {
+                            MemberID = 6,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(7837),
+                            PersonID = 5
+                        },
+                        new
+                        {
+                            MemberID = 7,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 1, 27, 21, 52, 28, 305, DateTimeKind.Utc).AddTicks(7838),
+                            PersonID = 7
+                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Person", b =>
@@ -484,6 +597,46 @@ namespace LibraryManagement.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("Revoked")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserRefreshTokens", (string)null);
+                });
+
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Role", b =>
                 {
                     b.Property<int>("RoleID")
@@ -565,30 +718,6 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserID = 1,
-                            CreatedAt = new DateTime(2026, 1, 16, 13, 4, 29, 976, DateTimeKind.Utc).AddTicks(102),
-                            IsActive = true,
-                            IsBlocked = false,
-                            Password = "123456",
-                            PersonID = 11,
-                            RoleID = 1,
-                            Username = "abdokhal12"
-                        },
-                        new
-                        {
-                            UserID = 2,
-                            CreatedAt = new DateTime(2026, 1, 16, 13, 4, 29, 976, DateTimeKind.Utc).AddTicks(105),
-                            IsActive = true,
-                            IsBlocked = false,
-                            Password = "123456",
-                            PersonID = 2,
-                            RoleID = 2,
-                            Username = "fatima12"
-                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Activity", b =>
@@ -643,6 +772,17 @@ namespace LibraryManagement.DAL.Migrations
                     b.Navigation("Person");
                 });
 
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("LibraryManagement.Domain.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LibraryManagement.Domain.Entities.User", b =>
                 {
                     b.HasOne("LibraryManagement.Domain.Entities.Person", "Person")
@@ -660,6 +800,11 @@ namespace LibraryManagement.DAL.Migrations
                     b.Navigation("Person");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.User", b =>
+                {
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

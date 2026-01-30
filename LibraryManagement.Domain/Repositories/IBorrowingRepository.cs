@@ -4,7 +4,7 @@ namespace LibraryManagement.Domain.Interfaces
 {
     public interface IBorrowingRepository
     {
-        Task<IQueryable<Borrowing>> GetQueryableBorrowingsAsync();
+        Task<IQueryable<Borrowing>> GetBorrowingsAsync();
 
         Task<bool> IsBookCurrentlyUnavailableAsync(int bookID, int personID);
 

@@ -18,5 +18,12 @@ namespace LibraryManagement.Shared.Helpers
             };
             Items = items;
         }
+   
+        public PagedList<TDestination> MapTo<TDestination>(List<TDestination> items)
+        {
+            return new PagedList<TDestination>(items,Metadata.CurrentPage,Metadata.TotalCount, Metadata.PageSize);
+        }
+    
+    
     }
 }

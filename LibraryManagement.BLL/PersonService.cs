@@ -110,14 +110,9 @@ namespace LibraryManagement.BLL
 
         public async Task<PagedList<PersonForDisplayDTO>> GetAllPeopleAsync(PersonParameters parameters)
         {
-            var personsQuery =  _unitOfWork.PersonRepository.GetQueryablePeople(parameters);
-            int totalCount = personsQuery.Count();
+            var pagedPersons =  _unitOfWork.PersonRepository.GetActivePeopleAsync(parameters);
 
-            var items = await personsQuery.ProjectTo<PersonForDisplayDTO>(_mapper.ConfigurationProvider)
-                                     .Skip((parameters.PageNumber - 1) * parameters.PageSize)
-                                     .Take(parameters.PageSize)
-                                     .ToListAsync();
-
+            var personsDTO = _mapper.Map<PersonForDisplayDTO>(pagedPersons);
             return new PagedList<PersonForDisplayDTO>(items,parameters.PageNumber,totalCount,parameters.PageSize);
         }
     }

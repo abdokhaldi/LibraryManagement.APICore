@@ -17,7 +17,7 @@ namespace LibraryManagement.DAL
         }
 
 
-         public IQueryable<Person> GetQueryablePeople(PersonParameters parameters)
+         public IQueryable<Person> GetActivePeopleAsync(PersonParameters parameters)
           {
             
                 var query = _context.People.AsNoTracking();

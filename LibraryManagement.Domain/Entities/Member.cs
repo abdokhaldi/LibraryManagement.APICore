@@ -6,6 +6,7 @@ namespace LibraryManagement.Domain.Entities
     public class Member
     {
         
+
         public int MemberID { get; set; }
        
         public int PersonID { get; set; }

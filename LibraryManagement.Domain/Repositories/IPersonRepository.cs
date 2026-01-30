@@ -5,7 +5,7 @@ namespace LibraryManagement.Domain.Interfaces
 {
     public interface IPersonRepository
     {
-        IQueryable<Person> GetQueryablePeople(PersonParameters parameters);
+        IQueryable<Person> GetActivePeopleAsync(PersonParameters parameters);
 
         Task<Person?> GetPersonForReadOnlyAsync(int personID);
         Task<Person?> GetPersonForUpdateAsync(int personID);

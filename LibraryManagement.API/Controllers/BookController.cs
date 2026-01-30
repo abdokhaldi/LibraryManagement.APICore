@@ -95,7 +95,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)StatusCodes.Status200OK)]
         public async Task<IActionResult> GetActiveBooks([FromQuery] BookParameters parameters)
         {
-            var pagedBooks = await _bookService.GetAllActiveBooksAsync(parameters);
+            var pagedBooks = await _bookService.GetActiveBooksAsync(parameters);
 
             Response.Headers.Append(HeaderKeys.Pagination , JsonSerializer.Serialize(pagedBooks.Metadata));
                 

@@ -2,7 +2,6 @@
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.DAL.Context;
 using Microsoft.EntityFrameworkCore;
-using System.Data.Common;
 using LibraryManagement.Domain.Interfaces;
 
 namespace LibraryManagement.DAL
@@ -52,7 +51,7 @@ namespace LibraryManagement.DAL
             return borrowing;
         }
 
-        public  Task<IQueryable<Borrowing>> GetQueryableBorrowingsAsync()
+        public  Task<IQueryable<Borrowing>> GetBorrowingsAsync()
         {
             var query =  _context.Borrowings.AsQueryable();
             return Task.FromResult(query);

@@ -1,4 +1,6 @@
 ﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Shared.Helpers;
+using LibraryManagement.Shared.Parameters;
 
 
 namespace LibraryManagement.Domain.Interfaces
@@ -11,7 +13,7 @@ namespace LibraryManagement.Domain.Interfaces
         Task<User?> GetUserByUsernameAsync(string username);
         Task<User?> GetUserForLoginAsync(string identifier);
         
-        Task<IQueryable<User>> GetQueryableUsersAsync();
+        Task<PagedList<User>> GetActiveUsersAsync(UserParameters parameters);
 
         Task<bool> IsUsernameExistsAsync(string username);
         Task<bool> IsUsernameExistsForUpdateAsync(int id,string username);
