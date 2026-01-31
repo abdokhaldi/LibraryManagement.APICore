@@ -7,7 +7,8 @@ using LibraryManagement.DTO.BorrowingDTOs;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.MemberDTOs;
 using LibraryManagement.DTO.OperationResults;
-using Microsoft.EntityFrameworkCore;
+using LibraryManagement.Shared.Helpers;
+using LibraryManagement.Shared.Parameters;
 namespace LibraryManagement.BLL
 {  
     public class BorrowingService : IBorrowingService
@@ -133,26 +134,25 @@ namespace LibraryManagement.BLL
             return OperationResult.Success();
         }
 
-        public async Task<List<BorrowingForDisplayDTO>> GetBorrowingsAsync()
+        public async Task<PagedList<BorrowingForDisplayDTO>> GetBorrowingsAsync(BorrowingParameters parameters)
         {
-            var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetBorrowingsAsync();
+            var pagedBorrowings = await _unitOfWork.BorrowingRepository.GetBorrowingsAsync(parameters);
 
-            var borrowingsDTO = await borrowingsQuery
-                .Where(b => b.IsCanceled == false)
-                .ProjectTo<BorrowingForDisplayDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-            return borrowingsDTO;
+            var pagedDTOs = _mapper.Map<List<BorrowingForDisplayDTO>>(pagedBorrowings.Items);
+
+            return pagedBorrowings.MapTo(pagedDTOs);
         }
-        public async Task<List<BorrowingForDisplayDTO>> GetOverdueAsync()
-        {
-            var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetBorrowingsAsync();
 
-            var borrowingsDTO = await borrowingsQuery
-                .Where(b => b.ReturnDate == null && b.DueDate < DateTime.UtcNow)
-                .ProjectTo<BorrowingForDisplayDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-
-            return borrowingsDTO;
-        }
+       // public async Task<List<BorrowingForDisplayDTO>> GetOverdueAsync()
+       // {
+         //   var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetBorrowingsAsync();
+         //
+         //   var borrowingsDTO = await borrowingsQuery
+         //       .Where(b => b.ReturnDate == null && b.DueDate < DateTime.UtcNow)
+         //       .ProjectTo<BorrowingForDisplayDTO>(_mapper.ConfigurationProvider)
+         //       .ToListAsync();
+         //
+         //   return borrowingsDTO;
+       // }
     }
 }

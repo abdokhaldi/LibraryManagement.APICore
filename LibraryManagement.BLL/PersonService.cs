@@ -9,7 +9,6 @@ using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.PersonDTOs;
 using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Common;
-using Microsoft.EntityFrameworkCore;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.Shared.Helpers;
 
@@ -110,10 +109,11 @@ namespace LibraryManagement.BLL
 
         public async Task<PagedList<PersonForDisplayDTO>> GetAllPeopleAsync(PersonParameters parameters)
         {
-            var pagedPersons =  _unitOfWork.PersonRepository.GetActivePeopleAsync(parameters);
+            var pagedPersons = await _unitOfWork.PersonRepository.GetActivePeopleAsync(parameters);
 
-            var personsDTO = _mapper.Map<PersonForDisplayDTO>(pagedPersons);
-            return new PagedList<PersonForDisplayDTO>(items,parameters.PageNumber,totalCount,parameters.PageSize);
+            var personsDTO = _mapper.Map<List<PersonForDisplayDTO>>(pagedPersons);
+
+            return  pagedPersons.MapTo(personsDTO);
         }
     }
 }

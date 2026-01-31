@@ -5,6 +5,7 @@ using LibraryManagement.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.DAL.Base;
+using LibraryManagement.Shared.Helpers;
 
 namespace LibraryManagement.DAL
 {
@@ -17,30 +18,30 @@ namespace LibraryManagement.DAL
         }
 
 
-         public IQueryable<Person> GetActivePeopleAsync(PersonParameters parameters)
+         public async Task<PagedList<Person>> GetActivePeopleAsync(PersonParameters parameters)
           {
             
                 var query = _context.People.AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                string searchTerm = parameters.SearchTerm.Trim().ToLower();
+                string searchTerm = parameters.SearchTerm.Trim();
 
                 query = query.Where( p => 
-                    p.FirstName.ToLower() == parameters.SearchTerm
-                    || p.LastName.ToLower() == parameters.SearchTerm
-                    || p.Phone.ToLower() == parameters.SearchTerm
-                    || p.Email.ToLower() == parameters.SearchTerm
-                    || p.Address.ToLower() == parameters.SearchTerm
-                    || p.City.ToLower() == parameters.SearchTerm
+                    p.FirstName.Contains(parameters.SearchTerm)
+                    || p.LastName.Contains(parameters.SearchTerm)
+                    || p.Phone.Contains(parameters.SearchTerm)
+                    || p.Email.Contains(parameters.SearchTerm)
+                    || p.Address.Contains(parameters.SearchTerm)
+                    || p.City.Contains(parameters.SearchTerm)
                     );
             }
 
             query = query.ApplySort(parameters.OrderBy);
 
-            return query;
-
-            }
+           
+            return await query.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+         }
             
         public async Task<Person?> GetPersonForReadOnlyAsync(int personID)
         {

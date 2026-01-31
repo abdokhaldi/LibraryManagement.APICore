@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+
+using LibraryManagement.Shared.Parameters.Base;
 
 namespace LibraryManagement.Shared.Parameters
 {
-    internal class MemberParameters
+    public class MemberParameters : RequestParameters
     {
+        
     }
 }

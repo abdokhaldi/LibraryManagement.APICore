@@ -19,13 +19,7 @@ namespace LibraryManagement.BLL.Mapper
                       opt.MapFrom(s => s.IsActive!.Value);
                       opt.UseDestinationValue();
                   });
-            mapping.ForMember(d => d.Quantity,
-                 opt => {
-                     opt.PreCondition(
-                         s => s.Quantity.HasValue);
-                     opt.MapFrom(s => s.Quantity!.Value);
-                     opt.UseDestinationValue();
-                 });
+           
             mapping.ForMember(
                 d => d.CategoryID,
                 opt => {
@@ -42,11 +36,22 @@ namespace LibraryManagement.BLL.Mapper
                     })
             );
 
-            CreateMap<Book, BookForDisplayDTO>()
-             .ForMember(
+         var  mappingFoDisplay = CreateMap<Book, BookForDisplayDTO>();
+            mappingFoDisplay.ForMember(
                     dst => dst.CategoryName,
                     opt => opt.MapFrom(src => src.Category!.CategoryName)
                     );
+
+            mappingFoDisplay.ForMember(
+                 dest =>  dest.TotalCopies,
+                 option => option.MapFrom(src => src.BookCopies.Count)
+                );
+
+            mappingFoDisplay.ForMember(
+                dest => dest.AvailableCopies,
+                option => option.MapFrom(src =>  src.BookCopies.Count(b=>
+                       b.IsActive && b.Status==CopyStatus.Available))
+                );
         }
     }
 }

@@ -7,6 +7,7 @@ using LibraryManagement.DAL.Context;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.Shared.Helpers;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using LibraryManagement.DAL.Base;
 
 namespace LibraryManagement.DAL
 {
@@ -18,7 +19,7 @@ namespace LibraryManagement.DAL
             _context = context;
         }
 
-        public  Task<PagedList<Member>> GetActiveMembersAsync(MemberParameters parameters)
+        public async Task<PagedList<Member>> GetActiveMembersAsync(MemberParameters parameters)
         {
 
             var query = _context.Members
@@ -41,12 +42,9 @@ namespace LibraryManagement.DAL
              );
             }
 
-            
+            query = query.ApplySort(parameters.OrderBy);
 
-
-
-
-            return Task.FromResult(query);
+            return await query.ToPagedListAsync(parameters.PageNumber,parameters.PageSize);
             }
             
        

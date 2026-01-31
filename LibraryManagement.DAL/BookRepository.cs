@@ -35,23 +35,17 @@ namespace LibraryManagement.DAL
 
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                string searchTerm =  parameters.SearchTerm.Trim().ToLower();
+                string searchTerm =  parameters.SearchTerm.Trim();
                 query = query.Where(b =>
-                    b.Title.ToLower().Contains(searchTerm)
-                 || b.Author.ToLower().Contains(searchTerm)
-                 || b.Category.CategoryName.ToLower().Contains(searchTerm)
+                    b.Title.Contains(searchTerm)
+                 || b.Author.Contains(searchTerm)
+                 || b.Category.CategoryName.Contains(searchTerm)
                  );
             }
             
             query = query.ApplySort(parameters.OrderBy);
 
-            int totalCount = query.Count();
-
-            var items = await query
-                .Skip((parameters.PageNumber-1) * parameters.PageSize)
-                .Take(parameters.PageSize)
-                .ToListAsync();
-            return new PagedList(items,parameters.PageNumber ,totalCount,parameters.PageSize );
+            return await query.ToPagedListAsync(parameters.PageNumber, parameters.PageSize); 
         }
 
 

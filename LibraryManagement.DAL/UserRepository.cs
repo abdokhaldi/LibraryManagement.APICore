@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.DAL.Base;
-
+using LibraryManagement.Shared.Helpers;
 namespace LibraryManagement.DAL
 {
     public class UserRepository : IUserRepository
@@ -57,7 +57,7 @@ namespace LibraryManagement.DAL
             return user;
         }
 
-        public IQueryable<User> GetQueryableUsers(UserParameters parameters)
+        public async Task<PagedList<User>> GetActiveUsersAsync(UserParameters parameters)
         {
            
                 var query = _context.Users
@@ -78,24 +78,24 @@ namespace LibraryManagement.DAL
 
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                string searchTerm = parameters.SearchTerm.Trim().ToLower();
+                string searchTerm = parameters.SearchTerm.Trim();
                 query = query.Where(u =>
 
-                   u.Username.ToLower().Contains(searchTerm)
-                || u.Person.FirstName.ToLower().Contains(searchTerm)
-                || u.Person.LastName.ToLower().Contains(searchTerm)
-                || u.Person.Phone.ToLower().Contains(searchTerm)
-                || u.Person.Email.ToLower().Contains(searchTerm)
-                || u.Person.Address.ToLower().Contains(searchTerm)
-                || u.Person.City.ToLower().Contains(searchTerm)
+                   u.Username.Contains(searchTerm)
+                || u.Person.FirstName.Contains(searchTerm)
+                || u.Person.LastName.Contains(searchTerm)
+                || u.Person.Phone.Contains(searchTerm)
+                || u.Person.Email.Contains(searchTerm)
+                || u.Person.Address.Contains(searchTerm)
+                || u.Person.City.Contains(searchTerm)
                 );
             }
 
             query = query.ApplySort(parameters.OrderBy);
-
-            return query;
+            
+            return await query.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
         }
-           
+
 
         public async Task<bool>  IsUsernameExistsAsync(string username)
         {

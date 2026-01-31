@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
