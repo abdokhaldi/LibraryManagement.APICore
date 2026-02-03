@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 using LibraryManagement.Domain.Settings;
+using LibraryManagement.Domain.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,6 +67,8 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("jwt"))
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
+builder.Services.AddScoped<IBookCopyService, BookCopyService>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();

@@ -7,6 +7,7 @@ using LibraryManagement.Shared.Helpers;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.Domain.Entities;
+using LibraryManagement.Shared.Types;
 
 namespace LibraryManagement.BLL
 {
@@ -61,6 +62,7 @@ namespace LibraryManagement.BLL
 
         }
 
+
         public async  Task<OperationResult> UpdateCopyAsync(int copyID, BookCopyForUpdateDTO bookCopyDTO) 
         {
             var copyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(c => c.BookCopyID==copyID,trackChanges:true);
@@ -77,13 +79,20 @@ namespace LibraryManagement.BLL
 
         }
 
-        public async  Task<OperationResult> ActivateCopy(int copyID) 
+        public async  Task<OperationResult> ActivateCopyAsync(int copyID) 
         {
             var copyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(c => c.BookCopyID == copyID, trackChanges: true);
             if (copyEntity == null)
             {
                 return OperationResult.Failure(OperationStatus.NotFound, $"The book copy with id : {copyID} was not found for update.");
             }
+            if (copyEntity.Status == CopyStatus.Lost
+                || copyEntity.Status == CopyStatus.Damaged)
+            {
+                return OperationResult.Failure(OperationStatus.Conflict, $"Cannot activate a lost or damaged copy.");
+
+            }
+
             if (copyEntity.IsActive)
             {
                 return OperationResult.Success();
@@ -92,12 +101,18 @@ namespace LibraryManagement.BLL
             await _unitOfWork.SaveChangesAsync();
             return OperationResult.Success();
         }
-      public async  Task<OperationResult> DeactivateCopy(int copyID) {
+      public async  Task<OperationResult> DeactivateCopyAsync(int copyID) {
             var copyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(c => c.BookCopyID == copyID, trackChanges: true);
-           
+            
             if (copyEntity == null)
             {
                 return OperationResult.Failure(OperationStatus.NotFound, $"The book copy with id : {copyID} was not found for update.");
+            }
+
+            if (copyEntity.Status == CopyStatus.Borrowed)
+            {
+                return OperationResult.Failure(OperationStatus.Conflict, $"Cannot deactivate a borrowed book copy.");
+
             }
 
             if (!copyEntity.IsActive)

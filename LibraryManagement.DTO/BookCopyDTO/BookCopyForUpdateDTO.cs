@@ -10,7 +10,7 @@ namespace LibraryManagement.DTO.BookCopyDTO
             public CopyStatus? Status { get; set; }
 
             
-            public string? Condition { get; set; } = null;
+            public string? Condition { get; set; }
 
             public bool? IsActive { get; set; }
         }

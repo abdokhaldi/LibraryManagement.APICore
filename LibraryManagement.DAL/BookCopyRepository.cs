@@ -20,13 +20,23 @@ namespace LibraryManagement.Domain.Repositories
 
         public Task<PagedList<BookCopy>> GetActiveBookCopiesAsync(BookCopyParameters parameters)
         {
-            var query = _context.BookCopies.AsNoTracking()
+            var query = _context.BookCopies
+                                .IgnoreQueryFilters()
+                                .AsNoTracking()
                                 .Include(cb => cb.Book)
-                                 .ThenInclude(cb => cb!.Category)
-                                 .AsQueryable();
+                                .ThenInclude(cb => cb!.Category)
+                                .AsQueryable();
+            if (parameters.IsActive.HasValue)
+            {
+                query = query.Where(cb => cb.IsActive == parameters.IsActive.Value);
+            }
             if (parameters.BookID.HasValue)
             {
                 query = query.Where(cb => cb.BookID == parameters.BookID);
+            }
+            if (parameters.Status.HasValue)
+            {
+                query = query.Where(cb => cb.Status==parameters.Status);
             }
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {

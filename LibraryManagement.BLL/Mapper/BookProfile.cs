@@ -15,8 +15,8 @@ namespace LibraryManagement.BLL.Mapper
             var mapping = CreateMap<BookForUpdateDTO, Book>();
             mapping.ForMember(d => d.IsActive,
                   opt => {
-                      opt.PreCondition(
-                          s => s.IsActive.HasValue);
+                      opt.PreCondition(s =>
+                           s.IsActive.HasValue);
                       opt.MapFrom(s => s.IsActive!.Value);
                       opt.UseDestinationValue();
                   });
