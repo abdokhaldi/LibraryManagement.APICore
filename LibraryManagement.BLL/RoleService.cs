@@ -4,7 +4,6 @@ using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.RoleDTOs;
-using Microsoft.EntityFrameworkCore;
 using LibraryManagement.DTO.Common;
 namespace LibraryManagement.BLL
 {
@@ -19,9 +18,8 @@ namespace LibraryManagement.BLL
         }
         public async Task<OperationResult<int>> CreateRoleAsync(RoleForCreationDTO roleDTO)
         {
-            var rolesQuery = await _unitOfWork.RoleRepository.GetQueryableRolesAsync();
-            bool exists = await rolesQuery.AnyAsync(r => r.RoleName.ToLower() == roleDTO.RoleName.ToLower());
-            if (exists)
+            bool isRoleExisting = await _unitOfWork.RoleRepository.IsRoleExistingAsync(roleDTO.RoleName);
+            if (isRoleExisting)
             {
                 return OperationResult<int>.Failure(OperationStatus.Conflict,"role is already exists .");
             }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.DTO.BookDTOs;
+using LibraryManagement.Shared.Types;
 
 
 namespace LibraryManagement.BLL.Mapper

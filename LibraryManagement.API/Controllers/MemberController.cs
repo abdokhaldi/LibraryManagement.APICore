@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.BLL.Interfaces;
+using LibraryManagement.Shared.Parameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -32,9 +33,9 @@ namespace LibraryManagement.API.Controllers
 
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllMembers()
+        public async Task<IActionResult> GetActiveMembers(MemberParameters parameters)
         {
-            var members = await _memberService.GetAllMembersAsync();
+            var members = await _memberService.GetActiveMembersAsync(parameters);
             return Ok(members);
         }
 

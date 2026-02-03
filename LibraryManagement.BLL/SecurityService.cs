@@ -1,5 +1,4 @@
-﻿using LibraryManagement.DAL;
-using LibraryManagement.DTO;
+﻿using LibraryManagement.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

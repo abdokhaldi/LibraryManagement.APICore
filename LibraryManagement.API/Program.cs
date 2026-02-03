@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using LibraryManagement.Domain.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +60,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("jwt"));
 // Dependency Injection
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

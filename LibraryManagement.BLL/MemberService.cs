@@ -3,8 +3,8 @@ using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.MemberDTOs;
-using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.Shared.Helpers;
 namespace LibraryManagement.BLL
 {
     public class MemberService : IMemberService
@@ -37,17 +37,15 @@ namespace LibraryManagement.BLL
             return memberEntity;
         }
 
-      public async Task<List<MemberForDisplayDTO>> GetAllMembersAsync()
+      public async Task<PagedList<MemberForDisplayDTO>> GetActiveMembersAsync(MemberParameters parameters)
         {
-            var membersQuery = await _unitOfWork.MemberRepository.GetActiveMembersAsync();
-           
-            var activeMembers = await membersQuery
-                .Where(m => m.IsActive == true)
-                .ProjectTo<MemberForDisplayDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            var pagedMembers = await _unitOfWork.MemberRepository.GetActiveMembersAsync( parameters);
 
-            return activeMembers;
-             }
+            var membersDTO = _mapper.Map<List<MemberForDisplayDTO>>(pagedMembers.Items);
+            return pagedMembers.MapTo(membersDTO);
+
+           }
+
       public async Task<MemberForDisplayDTO?> GetMemberDetails(int id)
         {
             var member = await _unitOfWork.MemberRepository.GetMemberForReadOnlyAsync(id);

@@ -42,11 +42,13 @@ namespace LibraryManagement.DAL.Configurations
                  .OnDelete(DeleteBehavior.Restrict)
                  .IsRequired();
 
+            builder.HasQueryFilter(b => b.BookCopy.IsActive);
+
             builder.HasData(
     new Borrowing()
     {
         BorrowingID = 1,
-        BookCopyID = 2, // نسخة كتاب 1 (كانت Borrowed في Seed النسخ)
+        BookCopyID = 2,
         MemberID = 1,
         BorrowingDate = DateTime.UtcNow,
         DueDate = DateTime.UtcNow.AddDays(4),

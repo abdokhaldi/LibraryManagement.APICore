@@ -1,6 +1,7 @@
 ﻿
 using LibraryManagement.DAL.Context;
 using LibraryManagement.Domain.Interfaces;
+using LibraryManagement.Domain.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,8 @@ namespace LibraryManagement.DAL
     {
        
         public IBookRepository BookRepository { get; }
+        public IBookCopyRepository BookCopyRepository { get; }
+
         public IMemberRepository MemberRepository { get; }
         public IActivityRepository ActivityRepository { get; }
         public IBorrowingRepository BorrowingRepository { get; }
@@ -26,6 +29,7 @@ namespace LibraryManagement.DAL
             _context = context;
 
             BookRepository = new BookRepository(_context);
+            BookCopyRepository = new BookCopyRepository(_context);
             MemberRepository = new MemberRepository(_context);
             ActivityRepository = new ActivityRepository(_context);
             BorrowingRepository = new BorrowingRepository(_context);

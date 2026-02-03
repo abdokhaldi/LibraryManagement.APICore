@@ -1,17 +1,9 @@
-﻿
+﻿using LibraryManagement.Shared.Types;
 
 namespace LibraryManagement.Domain.Entities
 {
    
-        public enum CopyStatus
-        {
-            Available = 1, 
-            Borrowed = 2,  
-            Lost = 3,      
-            Damaged = 4,   
-            Reserved = 5   
-        }
-
+        
         public class BookCopy
         {
             public int BookCopyID { get; set; }
@@ -24,8 +16,8 @@ namespace LibraryManagement.Domain.Entities
            
             public bool IsActive { get; set; } = true;
 
-            public int BookId { get; set; }
-            public Book Book { get; set; } = null!;
+            public int BookID { get; set; }
+            public Book? Book { get; set; }
  
             public ICollection<Borrowing> Borrowings { get; set; } = new List<Borrowing>();
             

@@ -17,17 +17,6 @@ namespace LibraryManagement.DAL
             _context = context;
         }
 
-        public async Task<bool> IsBookCurrentlyUnavailableAsync(int bookID,int memberID)
-        {
-           
-                bool IsBookCurrentlyUnavailable = await _context.Borrowings.AnyAsync(
-                                             b => b.BookID == bookID
-                                             && b.MemberID == memberID
-                                             && b.ReturnDate == null
-                                             && b.IsCanceled == true
-                                            );
-                return IsBookCurrentlyUnavailable;
-            }
             
         public Task RecordNewBorrowingAsync(Borrowing borrowingEntity)
         {
@@ -46,8 +35,11 @@ namespace LibraryManagement.DAL
         public async Task<Borrowing?> GetBorrowingForReadOnlyAsync(int borrowingID)
         {
 
-            var borrowing = await _context.Borrowings.AsNoTracking()
-                                    .Include(b => b.Book)
+            var borrowing = await _context.Borrowings
+                                    .AsNoTracking()
+                                    .Include(b => b.BookCopy)
+                                    .ThenInclude(b => b.Book)
+                                    .ThenInclude(b => b.Category)
                                     .Include(m => m.Member)
                                     .ThenInclude(m=>m.Person)
                                     .FirstOrDefaultAsync(b => b.BorrowingID == borrowingID);
@@ -57,8 +49,8 @@ namespace LibraryManagement.DAL
         public  Task<PagedList<Borrowing>> GetBorrowingsAsync(BorrowingParameters parameters)
         {
             var query =  _context.Borrowings
-                                 .Include(b => b.MemberID)
-                                 .Include(c => c.BookCopyID)
+                                 .Include(b => b.Member)
+                                 .Include(c => c.BookCopy)
                                  .AsQueryable();
 
             query = query.Where(b => b.IsCanceled == parameters.IsCanceled);
@@ -69,16 +61,16 @@ namespace LibraryManagement.DAL
                 query = query.Where(b=> b.MemberID == parameters.MemberID);
             }
 
-            if (parameters.BookID.HasValue && parameters.BookID != 0)
+            if (parameters.BookCopyID.HasValue && parameters.BookCopyID != 0)
             {
-                query = query.Where(b => b.BookID == parameters.BookID);
+                query = query.Where(b => b.BookCopyID == parameters.BookCopyID);
             }
             
 
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
                 query = query.Where(b => 
-                    b.Book.Title.Contains(parameters.SearchTerm)
+                    b.BookCopy.Book.Title.Contains(parameters.SearchTerm)
                     );
             }
 

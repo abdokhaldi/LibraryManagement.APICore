@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using LibraryManagement.API.Common;
+using LibraryManagement.Shared.Parameters;
 
 namespace LibraryManagement.API.Controllers
 {
@@ -75,19 +76,19 @@ namespace LibraryManagement.API.Controllers
 
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetBorrowings()
+        public async Task<IActionResult> GetBorrowings(BorrowingParameters parameters)
         {
-            var borrowings = await _borrowingService.GetBorrowingsAsync();
+            var borrowings = await _borrowingService.GetBorrowingsAsync(parameters);
             return Ok(borrowings);
          }
         
-        [HttpGet("/GetOverdue")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetOverdue()
-        {
-            var borrowings = await _borrowingService.GetOverdueAsync();
-            return Ok(borrowings);
-        }
+      //  [HttpGet("/GetOverdue")]
+      //  [ProducesResponseType((int)HttpStatusCode.OK)]
+      //  public async Task<IActionResult> GetOverdue()
+      //  {
+      //      var borrowings = await _borrowingService.GetOverdueAsync();
+      //      return Ok(borrowings);
+      //  }
 
 
 

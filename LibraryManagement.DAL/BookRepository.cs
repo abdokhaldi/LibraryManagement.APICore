@@ -7,7 +7,6 @@ using System.Data;
 using LibraryManagement.DAL.Base;
 using System.Linq.Dynamic.Core;
 using LibraryManagement.Shared.Helpers;
-using System.Diagnostics.Metrics;
 
 
 
@@ -25,6 +24,7 @@ namespace LibraryManagement.DAL
 
         {
             var query = _context.Books
+                .Include(b=>b.BookCopies)
                 .Include(b => b.Category)
                 .AsNoTracking() ;
 
@@ -54,10 +54,12 @@ namespace LibraryManagement.DAL
             
                 var book = await _context.Books
                     .Include(c=>c.Category)
+                    .Include(c => c.BookCopies)
                     .Where(b => b.BookID == bookID && b.IsActive == true)
                     .FirstOrDefaultAsync();
                 return book;
             }
+        
 
         public async Task<Book?> GetBookForReadOnlyAsync(int bookID)
         {
@@ -78,15 +80,7 @@ namespace LibraryManagement.DAL
            
 
       
-        public async Task<int> GetBookQuantityAsync(int bookID)
-        {
-            
-                var quantity = await _context.Books.AsNoTracking()
-                               .Where(b=>b.BookID == bookID)
-                               .Select(b=>b.Quantity )
-                              .FirstOrDefaultAsync();
-                return quantity;
-            }
+        
 
        public async Task<bool> IsTitleExistsAsync(string title)
         {
