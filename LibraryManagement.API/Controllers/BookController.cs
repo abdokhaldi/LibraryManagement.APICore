@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using LibraryManagement.API.Common;
-
+using LibraryManagement.Shared.Parameters;
+using System.Text.Json;
+using LibraryManagement.Shared.HEADER_KEYS;
 namespace LibraryManagement.API.Controllers
 {
     [Authorize(Roles = "Admin,Librarian")]
@@ -91,11 +93,13 @@ namespace LibraryManagement.API.Controllers
         [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType((int)StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllBooks()
+        public async Task<IActionResult> GetActiveBooks([FromQuery] BookParameters parameters)
         {
-            var books = await _bookService.GetAllActiveBooksAsync();
-           
-                return Ok(books);
+            var pagedBooks = await _bookService.GetActiveBooksAsync(parameters);
+
+            Response.Headers.Append(HeaderKeys.Pagination , JsonSerializer.Serialize(pagedBooks.Metadata));
+                
+                return Ok(pagedBooks.Items);
         }
 
 

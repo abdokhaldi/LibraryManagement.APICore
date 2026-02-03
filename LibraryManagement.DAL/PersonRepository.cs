@@ -3,6 +3,9 @@ using LibraryManagement.Domain.Interfaces;
 using System.Data;
 using LibraryManagement.DAL.Context;
 using Microsoft.EntityFrameworkCore;
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.DAL.Base;
+using LibraryManagement.Shared.Helpers;
 
 namespace LibraryManagement.DAL
 {
@@ -15,12 +18,30 @@ namespace LibraryManagement.DAL
         }
 
 
-         public Task<IQueryable<Person>> GetQueryablePeopleAsync()
+         public async Task<PagedList<Person>> GetActivePeopleAsync(PersonParameters parameters)
           {
             
                 var query = _context.People.AsNoTracking();
-                return Task.FromResult(query);
+
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                string searchTerm = parameters.SearchTerm.Trim();
+
+                query = query.Where( p => 
+                    p.FirstName.Contains(parameters.SearchTerm)
+                    || p.LastName.Contains(parameters.SearchTerm)
+                    || p.Phone.Contains(parameters.SearchTerm)
+                    || p.Email.Contains(parameters.SearchTerm)
+                    || p.Address.Contains(parameters.SearchTerm)
+                    || p.City.Contains(parameters.SearchTerm)
+                    );
             }
+
+            query = query.ApplySort(parameters.OrderBy);
+
+           
+            return await query.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+         }
             
         public async Task<Person?> GetPersonForReadOnlyAsync(int personID)
         {

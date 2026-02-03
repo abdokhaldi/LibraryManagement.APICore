@@ -6,7 +6,6 @@ using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.CategoryDTOs;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.OperationResults;
-using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.BLL
 {

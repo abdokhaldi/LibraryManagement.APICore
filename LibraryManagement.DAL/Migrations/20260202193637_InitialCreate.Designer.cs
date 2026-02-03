@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagement.DAL.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20260116130430_AddDataSeedingToUser")]
-    partial class AddDataSeedingToUser
+    [Migration("20260202193637_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,11 +81,22 @@ namespace LibraryManagement.DAL.Migrations
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ISBN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImagePath")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(300)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(300)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -96,16 +107,13 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<short>("Quantity")
-                        .HasColumnType("smallint");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<short?>("YearPublished")
+                    b.Property<short>("YearPublished")
                         .HasMaxLength(5)
                         .IsUnicode(false)
                         .HasColumnType("smallint");
@@ -122,10 +130,12 @@ namespace LibraryManagement.DAL.Migrations
                             BookID = 1,
                             Author = "F. Scott Fitzgerald",
                             CategoryID = 1,
-                            ImagePath = "images/gatsby.jpg",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "A classic novel set in the Roaring Twenties, exploring themes of wealth, love, and the American Dream through the mysterious Jay Gatsby.",
+                            ISBN = "9780743273565",
+                            ImagePath = "7766677788.jpg",
                             IsActive = true,
                             Publisher = "Scribner",
-                            Quantity = (short)10,
                             Title = "The Great Gatsby",
                             YearPublished = (short)1925
                         },
@@ -134,10 +144,12 @@ namespace LibraryManagement.DAL.Migrations
                             BookID = 2,
                             Author = "Stephen Hawking",
                             CategoryID = 2,
-                            ImagePath = "images/hawking_brief.jpg",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "A landmark in scientific writing by one of the world's great minds, explaining the complex concepts of cosmology—from the Big Bang to black holes—in simple terms.",
+                            ISBN = "9780553380163",
+                            ImagePath = "7778899900008.jpg",
                             IsActive = true,
                             Publisher = "Bantam Books",
-                            Quantity = (short)5,
                             Title = "A Brief History of Time",
                             YearPublished = (short)1988
                         },
@@ -146,10 +158,12 @@ namespace LibraryManagement.DAL.Migrations
                             BookID = 3,
                             Author = "George Orwell",
                             CategoryID = 1,
-                            ImagePath = "images/1984.jpg",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "A chilling dystopian masterpiece that explores the dangers of totalitarianism, surveillance, and the manipulation of truth in a society ruled by Big Brother.",
+                            ISBN = "9780451524935",
+                            ImagePath = "54456677.jpg",
                             IsActive = true,
                             Publisher = "Secker & Warburg",
-                            Quantity = (short)15,
                             Title = "1984",
                             YearPublished = (short)1949
                         },
@@ -158,10 +172,12 @@ namespace LibraryManagement.DAL.Migrations
                             BookID = 4,
                             Author = "Robert C. Martin",
                             CategoryID = 3,
-                            ImagePath = "images/clean-code.jpg",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "An essential guide for software developers, focusing on best practices, principles, and patterns to write code that is readable, maintainable, and professional.",
+                            ISBN = "9780132350884",
+                            ImagePath = "67778887776.jpg",
                             IsActive = true,
                             Publisher = "Prentice Hall",
-                            Quantity = (short)8,
                             Title = "Clean Code",
                             YearPublished = (short)2008
                         },
@@ -170,12 +186,241 @@ namespace LibraryManagement.DAL.Migrations
                             BookID = 5,
                             Author = "J.R.R. Tolkien",
                             CategoryID = 1,
-                            ImagePath = "images/hobbit.jpg",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "The unforgettable journey of Bilbo Baggins as he travels through Middle-earth to reclaim a treasure guarded by the dragon Smaug. A prelude to The Lord of the Rings.",
+                            ISBN = "9780547928227",
+                            ImagePath = "7776666778.jpg",
                             IsActive = true,
                             Publisher = "George Allen & Unwin",
-                            Quantity = (short)12,
                             Title = "The Hobbit",
                             YearPublished = (short)1937
+                        });
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.BookCopy", b =>
+                {
+                    b.Property<int>("BookCopyID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookCopyID"));
+
+                    b.Property<string>("Barcode")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("BookID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Condition")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("BookCopyID");
+
+                    b.HasIndex("Barcode")
+                        .IsUnique();
+
+                    b.HasIndex("BookID");
+
+                    b.ToTable("BookCopies", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            BookCopyID = 1,
+                            Barcode = "BC-101-01",
+                            BookID = 1,
+                            Condition = "New",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 2,
+                            Barcode = "BC-101-02",
+                            BookID = 1,
+                            Condition = "Good",
+                            IsActive = true,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BookCopyID = 3,
+                            Barcode = "BC-101-03",
+                            BookID = 1,
+                            Condition = "Good",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 4,
+                            Barcode = "BC-101-04",
+                            BookID = 1,
+                            Condition = "Torn Pages",
+                            IsActive = true,
+                            Status = "Damaged"
+                        },
+                        new
+                        {
+                            BookCopyID = 5,
+                            Barcode = "BC-101-05",
+                            BookID = 1,
+                            Condition = "New",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 6,
+                            Barcode = "BC-202-01",
+                            BookID = 2,
+                            Condition = "New",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 7,
+                            Barcode = "BC-202-02",
+                            BookID = 2,
+                            Condition = "Good",
+                            IsActive = true,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BookCopyID = 8,
+                            Barcode = "BC-202-03",
+                            BookID = 2,
+                            Condition = "Excellent",
+                            IsActive = true,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BookCopyID = 9,
+                            Barcode = "BC-202-04",
+                            BookID = 2,
+                            Condition = "Missing",
+                            IsActive = true,
+                            Status = "Lost"
+                        },
+                        new
+                        {
+                            BookCopyID = 10,
+                            Barcode = "BC-202-05",
+                            BookID = 2,
+                            Condition = "Good",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 11,
+                            Barcode = "BC-303-01",
+                            BookID = 3,
+                            Condition = "New",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 12,
+                            Barcode = "BC-303-02",
+                            BookID = 3,
+                            Condition = "Good",
+                            IsActive = true,
+                            Status = "Reserved"
+                        },
+                        new
+                        {
+                            BookCopyID = 13,
+                            Barcode = "BC-303-03",
+                            BookID = 3,
+                            Condition = "New",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 14,
+                            Barcode = "BC-303-04",
+                            BookID = 3,
+                            Condition = "Fair",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 15,
+                            Barcode = "BC-303-05",
+                            BookID = 3,
+                            Condition = "Water Damage",
+                            IsActive = true,
+                            Status = "Damaged"
+                        },
+                        new
+                        {
+                            BookCopyID = 16,
+                            Barcode = "BC-404-01",
+                            BookID = 4,
+                            Condition = "New",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 17,
+                            Barcode = "BC-404-02",
+                            BookID = 4,
+                            Condition = "Good",
+                            IsActive = true,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BookCopyID = 18,
+                            Barcode = "BC-404-03",
+                            BookID = 4,
+                            Condition = "Good",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 19,
+                            Barcode = "BC-404-04",
+                            BookID = 4,
+                            Condition = "New",
+                            IsActive = true,
+                            Status = "Available"
+                        },
+                        new
+                        {
+                            BookCopyID = 20,
+                            Barcode = "BC-404-05",
+                            BookID = 4,
+                            Condition = "New",
+                            IsActive = true,
+                            Status = "Available"
                         });
                 });
 
@@ -187,7 +432,7 @@ namespace LibraryManagement.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BorrowingID"));
 
-                    b.Property<int>("BookID")
+                    b.Property<int>("BookCopyID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("BorrowingDate")
@@ -212,11 +457,74 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.HasKey("BorrowingID");
 
-                    b.HasIndex("BookID");
+                    b.HasIndex("BookCopyID");
 
                     b.HasIndex("MemberID");
 
                     b.ToTable("Borrowings", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            BorrowingID = 1,
+                            BookCopyID = 2,
+                            BorrowingDate = new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2940),
+                            DueDate = new DateTime(2026, 2, 6, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2942),
+                            IsCanceled = false,
+                            MemberID = 1,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BorrowingID = 2,
+                            BookCopyID = 7,
+                            BorrowingDate = new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2948),
+                            DueDate = new DateTime(2026, 2, 7, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2949),
+                            IsCanceled = false,
+                            MemberID = 2,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BorrowingID = 3,
+                            BookCopyID = 8,
+                            BorrowingDate = new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2951),
+                            DueDate = new DateTime(2026, 2, 4, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2951),
+                            IsCanceled = false,
+                            MemberID = 3,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BorrowingID = 4,
+                            BookCopyID = 17,
+                            BorrowingDate = new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2953),
+                            DueDate = new DateTime(2026, 2, 6, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2954),
+                            IsCanceled = false,
+                            MemberID = 3,
+                            Status = "Borrowed"
+                        },
+                        new
+                        {
+                            BorrowingID = 5,
+                            BookCopyID = 2,
+                            BorrowingDate = new DateTime(2026, 1, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2955),
+                            DueDate = new DateTime(2026, 1, 9, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2963),
+                            IsCanceled = false,
+                            MemberID = 7,
+                            ReturnDate = new DateTime(2026, 1, 7, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2964),
+                            Status = "Returned"
+                        },
+                        new
+                        {
+                            BorrowingID = 6,
+                            BookCopyID = 12,
+                            BorrowingDate = new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2968),
+                            DueDate = new DateTime(2026, 2, 8, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2968),
+                            IsCanceled = false,
+                            MemberID = 7,
+                            Status = "Borrowed"
+                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Category", b =>
@@ -286,6 +594,57 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Members", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            MemberID = 1,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(215),
+                            PersonID = 2
+                        },
+                        new
+                        {
+                            MemberID = 2,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(218),
+                            PersonID = 1
+                        },
+                        new
+                        {
+                            MemberID = 3,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(219),
+                            PersonID = 4
+                        },
+                        new
+                        {
+                            MemberID = 4,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(220),
+                            PersonID = 3
+                        },
+                        new
+                        {
+                            MemberID = 5,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(222),
+                            PersonID = 6
+                        },
+                        new
+                        {
+                            MemberID = 6,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(223),
+                            PersonID = 5
+                        },
+                        new
+                        {
+                            MemberID = 7,
+                            IsActive = true,
+                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(224),
+                            PersonID = 7
+                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Person", b =>
@@ -484,6 +843,46 @@ namespace LibraryManagement.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("Revoked")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserRefreshTokens", (string)null);
+                });
+
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Role", b =>
                 {
                     b.Property<int>("RoleID")
@@ -565,30 +964,6 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserID = 1,
-                            CreatedAt = new DateTime(2026, 1, 16, 13, 4, 29, 976, DateTimeKind.Utc).AddTicks(102),
-                            IsActive = true,
-                            IsBlocked = false,
-                            Password = "123456",
-                            PersonID = 11,
-                            RoleID = 1,
-                            Username = "abdokhal12"
-                        },
-                        new
-                        {
-                            UserID = 2,
-                            CreatedAt = new DateTime(2026, 1, 16, 13, 4, 29, 976, DateTimeKind.Utc).AddTicks(105),
-                            IsActive = true,
-                            IsBlocked = false,
-                            Password = "123456",
-                            PersonID = 2,
-                            RoleID = 2,
-                            Username = "fatima12"
-                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Activity", b =>
@@ -613,11 +988,22 @@ namespace LibraryManagement.DAL.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("LibraryManagement.Domain.Entities.Borrowing", b =>
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.BookCopy", b =>
                 {
                     b.HasOne("LibraryManagement.Domain.Entities.Book", "Book")
-                        .WithMany()
+                        .WithMany("BookCopies")
                         .HasForeignKey("BookID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Borrowing", b =>
+                {
+                    b.HasOne("LibraryManagement.Domain.Entities.BookCopy", "BookCopy")
+                        .WithMany("Borrowings")
+                        .HasForeignKey("BookCopyID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -627,7 +1013,7 @@ namespace LibraryManagement.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Book");
+                    b.Navigation("BookCopy");
 
                     b.Navigation("Member");
                 });
@@ -641,6 +1027,17 @@ namespace LibraryManagement.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("LibraryManagement.Domain.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.User", b =>
@@ -660,6 +1057,21 @@ namespace LibraryManagement.DAL.Migrations
                     b.Navigation("Person");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Book", b =>
+                {
+                    b.Navigation("BookCopies");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.BookCopy", b =>
+                {
+                    b.Navigation("Borrowings");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.User", b =>
+                {
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

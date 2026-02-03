@@ -16,7 +16,7 @@ namespace LibraryManagement.API.Common
            ?? throw new InvalidOperationException("User ID not found in claims. Ensure [Authorize] is used.");
        
         protected bool IsAdmin => User.IsInRole("Admin");
-        protected string CurrentUserRole => User.FindFirstValue(ClaimTypes.Role)!;
+        protected string CurrentUserRole => User.FindFirstValue(ClaimTypes.Role)??"Member";
         protected IActionResult HandleErrorResult<T>(T result) where T : IOperationResult
         {
             return result.Status switch

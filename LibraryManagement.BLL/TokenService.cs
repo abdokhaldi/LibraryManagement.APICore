@@ -1,20 +1,22 @@
 ﻿using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.Domain.Entities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Security.Cryptography;
+using Microsoft.Extensions.Options;
+using LibraryManagement.Domain.Settings;
+
 namespace LibraryManagement.BLL
 {
     public class TokenService : ITokenService
     {
-        private readonly IConfiguration _config;
+        private readonly JwtSettings _jwtSettings;
         
-        public TokenService(IConfiguration configuration)
+        public TokenService(IOptions<JwtSettings> jwtSettings)
         {
-            _config = configuration;
+            _jwtSettings = jwtSettings.Value;
         }
         public string GenerateToken(User user)
         {
@@ -27,14 +29,14 @@ namespace LibraryManagement.BLL
             };
 
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["jwt:key"]!)
+                Encoding.UTF8.GetBytes(_jwtSettings.Key)
                 );
             var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
-                issuer: _config["jwt:Issuer"],
-                audience: _config["jwt:Audience"],
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(double.Parse(_config["jwt:DurationInMinutes"])),
+                expires: DateTime.UtcNow.AddMinutes(double.Parse(_jwtSettings.DurationInMinutes.ToString())),
                 signingCredentials: creds
              );
 

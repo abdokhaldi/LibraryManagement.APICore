@@ -26,6 +26,7 @@
     <ProjectReference Include="..\LibraryManagement.DAL\LibraryManagement.DAL.csproj" />
     <ProjectReference Include="..\LibraryManagement.Domain\LibraryManagement.Domain.csproj" />
     <ProjectReference Include="..\LibraryManagement.DTO\LibraryManagement.DTO.csproj" />
+    <ProjectReference Include="..\LibraryManagement.Shared\LibraryManagement.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,11 +3,13 @@ using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 
 namespace LibraryManagement.DAL
 {
     public class ActivityRepository : IActivityRepository
+
     {
         private readonly LibraryDbContext _context;
         public ActivityRepository(LibraryDbContext context)

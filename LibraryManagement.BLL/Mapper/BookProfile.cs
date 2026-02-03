@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.DTO.BookDTOs;
+using LibraryManagement.Shared.Types;
 
 
 namespace LibraryManagement.BLL.Mapper
@@ -14,18 +15,12 @@ namespace LibraryManagement.BLL.Mapper
             var mapping = CreateMap<BookForUpdateDTO, Book>();
             mapping.ForMember(d => d.IsActive,
                   opt => {
-                      opt.PreCondition(
-                          s => s.IsActive.HasValue);
+                      opt.PreCondition(s =>
+                           s.IsActive.HasValue);
                       opt.MapFrom(s => s.IsActive!.Value);
                       opt.UseDestinationValue();
                   });
-            mapping.ForMember(d => d.Quantity,
-                 opt => {
-                     opt.PreCondition(
-                         s => s.Quantity.HasValue);
-                     opt.MapFrom(s => s.Quantity!.Value);
-                     opt.UseDestinationValue();
-                 });
+           
             mapping.ForMember(
                 d => d.CategoryID,
                 opt => {
@@ -42,11 +37,22 @@ namespace LibraryManagement.BLL.Mapper
                     })
             );
 
-            CreateMap<Book, BookForDisplayDTO>()
-             .ForMember(
+         var  mappingFoDisplay = CreateMap<Book, BookForDisplayDTO>();
+            mappingFoDisplay.ForMember(
                     dst => dst.CategoryName,
                     opt => opt.MapFrom(src => src.Category!.CategoryName)
                     );
+
+            mappingFoDisplay.ForMember(
+                 dest =>  dest.TotalCopies,
+                 option => option.MapFrom(src => src.BookCopies.Count)
+                );
+
+            mappingFoDisplay.ForMember(
+                dest => dest.AvailableCopies,
+                option => option.MapFrom(src =>  src.BookCopies.Count(b=>
+                       b.IsActive && b.Status==CopyStatus.Available))
+                );
         }
     }
 }

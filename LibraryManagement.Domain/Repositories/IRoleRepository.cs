@@ -5,8 +5,8 @@ namespace LibraryManagement.Domain.Interfaces
     public interface IRoleRepository
     {
         Task<Role?> GetRoleForReadOnlyAsync(int roleID);
-
-        Task<IQueryable<Role>> GetQueryableRolesAsync();
+        Task<bool> IsRoleExistingAsync(string roleName);
+        Task<List<Role>> GetRolesAsync();
         Task CreateRole(Role role);
     }
 }

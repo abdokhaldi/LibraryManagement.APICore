@@ -7,7 +7,9 @@ using LibraryManagement.DTO.BorrowingDTOs;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.MemberDTOs;
 using LibraryManagement.DTO.OperationResults;
-using Microsoft.EntityFrameworkCore;
+using LibraryManagement.Shared.Helpers;
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.Shared.Types;
 namespace LibraryManagement.BLL
 {  
     public class BorrowingService : IBorrowingService
@@ -24,13 +26,14 @@ namespace LibraryManagement.BLL
 
         public async Task<OperationResult<int>> CreateBorrowingAsync(BorrowingForCreationDTO borrowingDTO)
         {
-            var bookEntity = await _unitOfWork.BookRepository.GetBookForUpdateAsync(borrowingDTO.BookID);
+            var bookCopyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(cb => cb.BookCopyID==borrowingDTO.BookCopyID ,trackChanges:true);
 
-            if (bookEntity == null)
+            if (bookCopyEntity == null)
             {
-                return OperationResult<int>.Failure(OperationStatus.NotFound, $"The book with ID:{borrowingDTO.BookID} was not found for borrowing");
+                return OperationResult<int>.Failure(OperationStatus.NotFound, $"The book with ID:{borrowingDTO.BookCopyID} was not found for borrowing");
             }
-            if (bookEntity.Quantity <= 0)
+            int availableQuantity = await _unitOfWork.BookCopyRepository.GetAvailableBookCopiesQuantityAsync(bookCopyEntity.BookID);
+            if (availableQuantity <= 0)
             {
              return OperationResult<int>.Failure(OperationStatus.Conflict, $"cannot borrow this book , the book quantity is 0");
 
@@ -39,12 +42,12 @@ namespace LibraryManagement.BLL
 
             var memberEntity = await _memberService.CreateMemberAsync(memberToCreate);
 
-            bookEntity.Quantity--;
+            bookCopyEntity.Status = CopyStatus.Borrowed;
 
             var borrowingEntity = _mapper.Map<Borrowing>(borrowingDTO);
 
             borrowingEntity.Member = memberEntity;
-            borrowingEntity.BorrowingDate = DateTime.Now;
+            borrowingEntity.BorrowingDate = DateTime.UtcNow;
             borrowingEntity.Status = "Borrowed";
             borrowingEntity.ReturnDate = null;
             borrowingEntity.IsCanceled = false;
@@ -77,6 +80,7 @@ namespace LibraryManagement.BLL
             var borrowingDTO = _mapper.Map<BorrowingForDisplayDTO>(borrowing);
             return OperationResult<BorrowingForDisplayDTO>.Success(borrowingDTO);
         }
+
         public async Task<OperationResult> ReturnBookAsync(int id)
         {
           
@@ -94,19 +98,22 @@ namespace LibraryManagement.BLL
             {
                return OperationResult.Failure(OperationStatus.Conflict,"This book has already been returned .");
             }
-            var bookEntity = await _unitOfWork.BookRepository.GetBookForUpdateAsync(borrowingEntity.BookID);
-            if (bookEntity == null)
+            var bookCopyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(cb => cb.BookCopyID==borrowingEntity.BookCopyID, trackChanges:true);
+            if (bookCopyEntity == null)
             {
                 return OperationResult.Failure(OperationStatus.Conflict , "Associated book is missing from the system .");
             }
-            bookEntity.Quantity++;
 
-            borrowingEntity.ReturnDate = DateTime.Now;
+            bookCopyEntity.Status = CopyStatus.Available;
+
+            borrowingEntity.ReturnDate = DateTime.UtcNow;
             borrowingEntity.Status = "Returned";
 
             await _unitOfWork.SaveChangesAsync();
             return OperationResult.Success();
         }
+
+
         public async Task<OperationResult> ExtendDueDateAsync(int id, BorrowingForExtendDTO borrowingDTO)
         {
             var borrowingEntity = await _unitOfWork.BorrowingRepository.GetBorrowingForUpdateAsync(id);
@@ -114,6 +121,7 @@ namespace LibraryManagement.BLL
             {
                 return OperationResult.Failure(OperationStatus.NotFound, $"Borrowing record with ID:{id} was not found .");
             }
+
             if (borrowingEntity.IsCanceled)
             {
                 return OperationResult.Failure(OperationStatus.Cancelled, "Cannot extend date for cancelled Borrowing .");
@@ -133,26 +141,26 @@ namespace LibraryManagement.BLL
             return OperationResult.Success();
         }
 
-        public async Task<List<BorrowingForDisplayDTO>> GetBorrowingsAsync()
+        public async Task<PagedList<BorrowingForDisplayDTO>> GetBorrowingsAsync(BorrowingParameters parameters)
         {
-            var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetQueryableBorrowingsAsync();
+            var pagedBorrowings = await _unitOfWork.BorrowingRepository.GetBorrowingsAsync(parameters);
 
-            var borrowingsDTO = await borrowingsQuery
-                .Where(b => b.IsCanceled == false)
-                .ProjectTo<BorrowingForDisplayDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-            return borrowingsDTO;
+            var pagedDTOs = _mapper.Map<List<BorrowingForDisplayDTO>>(pagedBorrowings.Items);
+
+            return pagedBorrowings.MapTo(pagedDTOs);
         }
-        public async Task<List<BorrowingForDisplayDTO>> GetOverdueAsync()
-        {
-            var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetQueryableBorrowingsAsync();
 
-            var borrowingsDTO = await borrowingsQuery
-                .Where(b => b.ReturnDate == null && b.DueDate < DateTime.UtcNow)
-                .ProjectTo<BorrowingForDisplayDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
 
-            return borrowingsDTO;
-        }
+       // public async Task<List<BorrowingForDisplayDTO>> GetOverdueAsync()
+       // {
+         //   var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetBorrowingsAsync();
+         //
+         //   var borrowingsDTO = await borrowingsQuery
+         //       .Where(b => b.ReturnDate == null && b.DueDate < DateTime.UtcNow)
+         //       .ProjectTo<BorrowingForDisplayDTO>(_mapper.ConfigurationProvider)
+         //       .ToListAsync();
+         //
+         //   return borrowingsDTO;
+       // }
     }
 }

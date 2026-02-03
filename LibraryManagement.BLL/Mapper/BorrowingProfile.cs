@@ -16,7 +16,7 @@ namespace LibraryManagement.BLL.Mapper
                    );
             mappingBorrowingForDisplay.ForMember(
                 dst => dst.Title,
-                opt => opt.MapFrom(src => src.Book.Title)
+                opt => opt.MapFrom(src => src.BookCopy.Book!.Title)
                 );
 
 

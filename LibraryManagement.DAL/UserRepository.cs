@@ -3,8 +3,9 @@ using LibraryManagement.Domain.Entities;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagement.Domain.Interfaces;
-
-
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.DAL.Base;
+using LibraryManagement.Shared.Helpers;
 namespace LibraryManagement.DAL
 {
     public class UserRepository : IUserRepository
@@ -56,16 +57,45 @@ namespace LibraryManagement.DAL
             return user;
         }
 
-        public Task<IQueryable<User>> GetQueryableUsersAsync()
+        public async Task<PagedList<User>> GetActiveUsersAsync(UserParameters parameters)
         {
            
                 var query = _context.Users
+                                 .AsNoTracking()
                                  .Include(u => u.Person)
-                                 .Include(u => u.Role).AsNoTracking();
-                                 
-                return Task.FromResult(query);
+                                 .Include(u => u.Role)
+                                 .AsQueryable();
+
+            if (parameters.PersonID.HasValue && parameters.PersonID != 0)
+            {
+                query = query.Where(u => u.PersonID == parameters.PersonID);               
             }
-           
+
+            if (parameters.IsBlocked)
+            {
+                query = query.Where(u => u.IsBlocked == parameters.IsBlocked);
+            }
+
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                string searchTerm = parameters.SearchTerm.Trim();
+                query = query.Where(u =>
+
+                   u.Username.Contains(searchTerm)
+                || u.Person.FirstName.Contains(searchTerm)
+                || u.Person.LastName.Contains(searchTerm)
+                || u.Person.Phone.Contains(searchTerm)
+                || u.Person.Email.Contains(searchTerm)
+                || u.Person.Address.Contains(searchTerm)
+                || u.Person.City.Contains(searchTerm)
+                );
+            }
+
+            query = query.ApplySort(parameters.OrderBy);
+            
+            return await query.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+        }
+
 
         public async Task<bool>  IsUsernameExistsAsync(string username)
         {

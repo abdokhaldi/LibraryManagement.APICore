@@ -2,13 +2,12 @@
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.BookDTOs;
-using System.Data;
 using LibraryManagement.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Common;
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.Shared.Helpers;
 
 
 namespace LibraryManagement.BLL
@@ -97,17 +96,16 @@ namespace LibraryManagement.BLL
             await _unitOfWork.SaveChangesAsync();
             return OperationResult.Success();
         }
-       public async Task<List<BookForDisplayDTO>> GetAllActiveBooksAsync()
+       public async Task<PagedList<BookForDisplayDTO>> GetActiveBooksAsync(BookParameters parameters)
         {
-            var booksQuery = await _unitOfWork.BookRepository.GetQueryableBooksAsync();
+            var pagedBooks = await _unitOfWork.BookRepository.GetActiveBooksAsync(parameters);
 
-            var activeBooksDTO = await booksQuery
-                .Where(b => b.IsActive == true)
-                .ProjectTo<BookForDisplayDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            var booksDTO = _mapper.Map<List<BookForDisplayDTO>>(pagedBooks.Items);
+
+            return  pagedBooks.MapTo(booksDTO);
             
-            return activeBooksDTO;
         }
+
        public async Task<OperationResult<BookForDisplayDTO>> GetBookDetailsAsync (int bookID) 
         {
             var bookEntity = await _unitOfWork.BookRepository.GetBookForReadOnlyAsync(bookID);

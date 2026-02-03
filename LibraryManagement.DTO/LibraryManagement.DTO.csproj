@@ -10,4 +10,8 @@
     <Folder Include="BookDTOs\FilteringAndPaginationDTOs\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LibraryManagement.Shared\LibraryManagement.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

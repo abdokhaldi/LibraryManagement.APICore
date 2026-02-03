@@ -1,14 +1,10 @@
 ﻿using LibraryManagement.DAL.Context;
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
+using LibraryManagement.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace LibraryManagement.DAL
 {
@@ -19,13 +15,16 @@ namespace LibraryManagement.DAL
         {
             _context = context;
         }
-        public Task<IQueryable<Role>> GetQueryableRolesAsync()
+        public async Task<List<Role>> GetRolesAsync()
         {
+
+           return await _context.Roles.AsNoTracking().ToListAsync();
+        }
            
-var            query = _context.Roles.AsQueryable();
-                return Task.FromResult(query);
-            }
-           
+        public async Task<bool> IsRoleExistingAsync(string roleName)
+        {
+            return await _context.Roles.AnyAsync(r => r.RoleName == roleName);
+        }
 
         public async Task<Role?> GetRoleForReadOnlyAsync(int roleID)
         {

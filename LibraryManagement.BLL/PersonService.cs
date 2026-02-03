@@ -9,7 +9,8 @@ using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.PersonDTOs;
 using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Common;
-using Microsoft.EntityFrameworkCore;
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.Shared.Helpers;
 
 namespace LibraryManagement.BLL
 {
@@ -106,13 +107,13 @@ namespace LibraryManagement.BLL
             return OperationResult.Success();
         }
 
-        public async Task<List<PersonForDisplayDTO>> GetAllPeopleAsync()
+        public async Task<PagedList<PersonForDisplayDTO>> GetAllPeopleAsync(PersonParameters parameters)
         {
-            var personsQuery = await _unitOfWork.PersonRepository.GetQueryablePeopleAsync();
-            return await personsQuery
-                .Where(p => p.IsActive)
-                .ProjectTo<PersonForDisplayDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            var pagedPersons = await _unitOfWork.PersonRepository.GetActivePeopleAsync(parameters);
+
+            var personsDTO = _mapper.Map<List<PersonForDisplayDTO>>(pagedPersons);
+
+            return  pagedPersons.MapTo(personsDTO);
         }
     }
 }

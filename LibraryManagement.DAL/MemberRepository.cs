@@ -1,11 +1,13 @@
 ﻿
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
-using System;
 using System.Data;
-using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagement.DAL.Context;
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.Shared.Helpers;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using LibraryManagement.DAL.Base;
 
 namespace LibraryManagement.DAL
 {
@@ -17,12 +19,32 @@ namespace LibraryManagement.DAL
             _context = context;
         }
 
-        public  Task<IQueryable<Member>> GetQueryableMembersAsync()
+        public async Task<PagedList<Member>> GetActiveMembersAsync(MemberParameters parameters)
         {
 
-            var query = _context.Members.Include(m => m.Person).AsNoTracking();
-                                                        
-            return Task.FromResult(query);
+            var query = _context.Members
+                         .Include(m => m.Person)
+                         .AsNoTracking()
+                         .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+             string searchTerm = parameters.SearchTerm.Trim();
+
+             query = query.Where(m =>
+
+                m.Person.FirstName.Contains(searchTerm)
+             || m.Person.LastName.Contains(searchTerm)
+             || m.Person.Phone.Contains(searchTerm)
+             || m.Person.Email.Contains(searchTerm)
+             || m.Person.Address.Contains(searchTerm)
+             || m.Person.City.Contains(searchTerm)
+             );
+            }
+
+            query = query.ApplySort(parameters.OrderBy);
+
+            return await query.ToPagedListAsync(parameters.PageNumber,parameters.PageSize);
             }
             
        

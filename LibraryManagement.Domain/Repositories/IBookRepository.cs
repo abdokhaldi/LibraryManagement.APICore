@@ -1,22 +1,20 @@
 ﻿using LibraryManagement.Domain.Entities;
-using System.Linq;
-using System.Threading.Tasks;
-
+using LibraryManagement.Shared.Parameters;
+using LibraryManagement.Shared.Helpers;
 namespace LibraryManagement.Domain.Interfaces
 {
    
     public interface IBookRepository
     {
-        Task<IQueryable<Book>> GetQueryableBooksAsync();
+        Task<PagedList<Book>> GetActiveBooksAsync(BookParameters parameters);
 
         Task<Book?> GetBookForUpdateAsync(int bookID);
         Task<Book?> GetBookForReadOnlyAsync(int bookID);
         Task<bool> IsTitleExistsAsync(string title);
         Task<bool> IsTitleExistsAsync(int id,string title);
 
-        Task AddNewBookAsync(Book bookEntity);
+        Task AddNewBookAsync(Book bookEntity); 
 
-        Task<int> GetBookQuantityAsync(int bookID);
 
     }
 }

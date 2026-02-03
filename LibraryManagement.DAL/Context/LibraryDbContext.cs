@@ -4,12 +4,13 @@ namespace LibraryManagement.DAL.Context
 {
     public class LibraryDbContext : DbContext
     {
-        public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
+        public LibraryDbContext(DbContextOptions<LibraryDbContext> options)
+                               : base(options)
         {
 
         }
 
-        // DbSets for tables
+       
         public DbSet<Person> People { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Borrowing> Borrowings { get; set; }
@@ -19,13 +20,13 @@ namespace LibraryManagement.DAL.Context
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
-        
+        public DbSet<BookCopy> BookCopies { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
             base.OnModelCreating(modelBuilder);
 
-            //
+            
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(LibraryDbContext).Assembly);
                 

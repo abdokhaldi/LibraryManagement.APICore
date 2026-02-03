@@ -5,11 +5,12 @@ namespace LibraryManagement.Domain.Entities
    
     public class Borrowing
     {
-       
+        
+
         public int BorrowingID { get; set; }
 
       
-        public int BookID { get; set; }
+        public int BookCopyID { get; set; }
        
 
         public int MemberID { get; set; }
@@ -24,8 +25,9 @@ namespace LibraryManagement.Domain.Entities
         public bool IsCanceled { get; set; }
         
 
-        public Book Book { get; set; } = null!;    
+        public BookCopy BookCopy { get; set; } = null!;    
         public Member Member { get; set; } = null!;
 
+        
     }
 }

@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using LibraryManagement.BLL.Interfaces;
-using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.Domain.Entities;
-using LibraryManagement.DTO.UserDTOs;
-using LibraryManagement.DTO.OperationResults;
+using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.Common;
-using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
+using LibraryManagement.DTO.OperationResults;
+using LibraryManagement.DTO.UserDTOs;
+using LibraryManagement.Shared.Helpers;
+using LibraryManagement.Shared.Parameters;
 
 
 
@@ -26,18 +26,17 @@ namespace LibraryManagement.BLL
             _securityService = securityService;
         }
 
-       public async Task<List<UserForDisplayDTO>> GetActiveUsersAsync()
+       public async Task<PagedList<UserForDisplayDTO>> GetActiveUsersAsync(UserParameters parameters)
         {
-            var usersQuery = await _unitOfWork.UserRepository.GetQueryableUsersAsync();
-            var users = await usersQuery
-                .Where(u => u.IsActive == true)
-                .ProjectTo<UserForDisplayDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            var pagedUsers = await _unitOfWork.UserRepository.GetActiveUsersAsync(parameters);
 
-            return users;
+            var usersDTO = _mapper.Map<List<UserForDisplayDTO>>(pagedUsers.Items);
+
+            return pagedUsers.MapTo(usersDTO);
         }
 
         public async Task<OperationResult<int>> RegisterUserAsync(UserForCreationDTO userDTO, string creator)
+
         {
             var role = _unitOfWork.RoleRepository.GetRoleForReadOnlyAsync(userDTO.RoleID);
             if (role == null )
@@ -46,19 +45,19 @@ namespace LibraryManagement.BLL
 
             }
 
-            if (creator != "Admin" && creator != "Librarian")
-            {
-                return OperationResult<int>.Failure(OperationStatus.Forbidden, "You are not allowed  to create users accounts.");
-
+           if (creator != "Admin" && creator != "Librarian")
+           {
+               return OperationResult<int>.Failure(OperationStatus.Forbidden, "You are not allowed  to create users accounts.");
+          
+           }
+          
+           if (creator == "Librarian" && userDTO.RoleName != "Member")
+           {
+               return OperationResult<int>.Failure(
+                   OperationStatus.Forbidden,
+                   "Access Denied: Librarians are only authorized to create Member accounts."
+                   );
             }
-
-            if (creator == "Librarian" && userDTO.RoleName != "User")
-            {
-                return OperationResult<int>.Failure(
-                    OperationStatus.Forbidden,
-                    "Access Denied: Librarians are only authorized to create Member accounts."
-                    );
-             }
 
             
             var personStatus = await _unitOfWork.PersonRepository.CheckPersonStatus(userDTO.PersonID);

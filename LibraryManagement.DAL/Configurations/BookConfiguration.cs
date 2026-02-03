@@ -28,16 +28,14 @@ namespace LibraryManagement.DAL.Configurations
                  .IsUnicode();
 
             builder.Property(b => b.YearPublished)
-                .IsRequired(false)
+                .IsRequired()
                 .HasMaxLength(5)
                 .IsUnicode(false);
 
-            builder.Property(b => b.Quantity)
-                .IsRequired();
 
             builder.Property(b => b.ImagePath)
                 .IsRequired()
-                .HasMaxLength(100)
+                .HasMaxLength(300)
                 .IsUnicode(false);
 
 
@@ -51,69 +49,79 @@ namespace LibraryManagement.DAL.Configurations
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
+           
             builder.HasData(
-                new Book
-                {
-                    BookID = 1,
-                    Title = "The Great Gatsby",
-                    Author = "F. Scott Fitzgerald",
-                    Publisher = "Scribner",
-                    YearPublished = 1925,
-                    Quantity = 10,
-                    ImagePath = "images/gatsby.jpg",
-                    IsActive = true,
-                    CategoryID = 1 // e.g., Fiction
-                },
-new Book
-{
-    BookID = 2,
-    Title = "A Brief History of Time",
-    Author = "Stephen Hawking",
-    Publisher = "Bantam Books",
-    YearPublished = 1988,
-    Quantity = 5,
-    ImagePath = "images/hawking_brief.jpg",
-    IsActive = true,
-    CategoryID = 2 // e.g., Science
-},
-new Book
-{
-    BookID = 3,
-    Title = "1984",
-    Author = "George Orwell",
-    Publisher = "Secker & Warburg",
-    YearPublished = 1949,
-    Quantity = 15,
-    ImagePath = "images/1984.jpg",
-    IsActive = true,
-    CategoryID = 1
-},
-new Book
-{
-    BookID = 4,
-    Title = "Clean Code",
-    Author = "Robert C. Martin",
-    Publisher = "Prentice Hall",
-    YearPublished = 2008,
-    Quantity = 8,
-    ImagePath = "images/clean-code.jpg",
-    IsActive = true,
-    CategoryID = 3 // e.g., Programming
-},
-new Book
-{
-    BookID = 5,
-    Title = "The Hobbit",
-    Author = "J.R.R. Tolkien",
-    Publisher = "George Allen & Unwin",
-    YearPublished = 1937,
-    Quantity = 12,
-    ImagePath = "images/hobbit.jpg",
-    IsActive = true,
-    CategoryID = 1
-}
-                );
-
+    new Book
+    {
+        BookID = 1,
+        Title = "The Great Gatsby",
+        Author = "F. Scott Fitzgerald",
+        ISBN = "9780743273565", 
+        Publisher = "Scribner",
+        YearPublished = 1925,
+        ImagePath = "7766677788.jpg",
+        Description = "A classic novel set in the Roaring Twenties, exploring themes of wealth, love, and the American Dream through the mysterious Jay Gatsby.",
+        IsActive = true,
+        CategoryID = 1,
+        CreatedAt = new DateTime(2024, 1, 1)  
+    },
+    new Book
+    {
+        BookID = 2,
+        Title = "A Brief History of Time",
+        Author = "Stephen Hawking",
+        ISBN = "9780553380163",
+        Publisher = "Bantam Books",
+        YearPublished = 1988,
+        ImagePath = "7778899900008.jpg",
+        Description = "A landmark in scientific writing by one of the world's great minds, explaining the complex concepts of cosmology—from the Big Bang to black holes—in simple terms.",
+        IsActive = true,
+        CategoryID = 2,
+        CreatedAt = new DateTime(2024, 1, 1)
+    },
+    new Book
+    {
+        BookID = 3,
+        Title = "1984",
+        Author = "George Orwell",
+        ISBN = "9780451524935",
+        Publisher = "Secker & Warburg",
+        YearPublished = 1949,
+        ImagePath = "54456677.jpg",
+        Description = "A chilling dystopian masterpiece that explores the dangers of totalitarianism, surveillance, and the manipulation of truth in a society ruled by Big Brother.",
+        IsActive = true,
+        CategoryID = 1,
+        CreatedAt = new DateTime(2024, 1, 1)
+    },
+    new Book
+    {
+        BookID = 4,
+        Title = "Clean Code",
+        Author = "Robert C. Martin",
+        ISBN = "9780132350884",
+        Publisher = "Prentice Hall",
+        YearPublished = 2008,
+        ImagePath = "67778887776.jpg",
+        Description = "An essential guide for software developers, focusing on best practices, principles, and patterns to write code that is readable, maintainable, and professional.",
+        IsActive = true,
+        CategoryID = 3,
+        CreatedAt = new DateTime(2024, 1, 1)
+    },
+    new Book
+    {
+        BookID = 5,
+        Title = "The Hobbit",
+        Author = "J.R.R. Tolkien",
+        ISBN = "9780547928227",
+        Publisher = "George Allen & Unwin",
+        YearPublished = 1937,
+        ImagePath = "7776666778.jpg",
+        Description = "The unforgettable journey of Bilbo Baggins as he travels through Middle-earth to reclaim a treasure guarded by the dragon Smaug. A prelude to The Lord of the Rings.",
+        IsActive = true,
+        CategoryID = 1,
+        CreatedAt = new DateTime(2024, 1, 1)
+    }
+);
         }
     }
 }
