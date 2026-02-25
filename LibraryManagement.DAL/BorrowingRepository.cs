@@ -70,7 +70,7 @@ namespace LibraryManagement.DAL
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
                 query = query.Where(b => 
-                    b.BookCopy.Book.Title.Contains(parameters.SearchTerm)
+                    b.BookCopy.Book!.Title.Contains(parameters.SearchTerm)
                     );
             }
 

@@ -5,6 +5,7 @@ using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.MemberDTOs;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.Shared.Helpers;
+using LibraryManagement.DTO.OperationResults;
 namespace LibraryManagement.BLL
 {
     public class MemberService : IMemberService
@@ -86,6 +87,12 @@ namespace LibraryManagement.BLL
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
+
+  ///    public async  Task<OperationResult<int>> GetMembersCountAsync()
+  ///      {
+  ///          int count = await _unitOfWork.MemberRepository.GetMembersCountAsync();
+  ///          return OperationResult<int>.Success(count);
+  ///      }
 
     }
 }

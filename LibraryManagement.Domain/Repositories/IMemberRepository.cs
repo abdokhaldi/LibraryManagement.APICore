@@ -17,5 +17,7 @@ namespace LibraryManagement.Domain.Interfaces
         Task AddNewMemberAsync(Member memberEntity);
 
         Task<bool> IsMemberExists(int id);
+
+       // Task<int> GetMembersCountAsync();
     }
 }

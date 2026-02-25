@@ -95,5 +95,11 @@ namespace LibraryManagement.DAL
             
         }
 
+
+      //  public async Task<int> GetMembersCountAsync()
+      //  {
+      //      return await _context.Members.CountAsync();
+      //   }
+
     }
 }

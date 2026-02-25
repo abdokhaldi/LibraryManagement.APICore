@@ -16,7 +16,8 @@ using LibraryManagement.Domain.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(
+
+  builder.Services.AddCors(
     options =>
     options.AddPolicy("CorsPolicy", builder =>
 
@@ -26,6 +27,7 @@ builder.Services.AddCors(
                  .WithExposedHeaders("X-Pagination")
           )      
     );
+
 
 // adding primary services
 builder.Services.AddControllers()
@@ -152,7 +154,6 @@ app.UseRouting();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

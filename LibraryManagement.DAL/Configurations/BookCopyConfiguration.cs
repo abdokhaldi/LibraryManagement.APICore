@@ -12,7 +12,7 @@ namespace LibraryManagement.DAL.Configurations
         {
             builder.HasKey(c => c.BookCopyID);
             builder.ToTable("BookCopies");
-
+            
             builder.Property(c => c.Barcode)
                     .IsRequired()
                     .IsUnicode(false)

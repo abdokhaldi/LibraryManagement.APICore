@@ -1,5 +1,6 @@
 ﻿using LibraryManagement.Domain.Entities;
 using LibraryManagement.DTO.MemberDTOs;
+using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.Shared.Helpers;
 using LibraryManagement.Shared.Parameters;
 namespace LibraryManagement.BLL.Interfaces
@@ -12,6 +13,8 @@ namespace LibraryManagement.BLL.Interfaces
         Task<MemberForDisplayDTO?> GetMemberDetails(int id);
         Task<bool> DeactivateMember(int id);
         Task<bool> ActivateMember(int id);
+
+       // Task<OperationResult<int>> GetMembersCountAsync();
 
     }
 }

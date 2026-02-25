@@ -47,6 +47,7 @@ namespace LibraryManagement.BLL
 
             return pagedCopies.MapTo(copiesDTO);
         }
+
       public async  Task<OperationResult<BookCopyForDisplayDTO>> GetBookCopyAsync(int copyID) 
         {
             var copyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(c => c.BookCopyID == copyID);

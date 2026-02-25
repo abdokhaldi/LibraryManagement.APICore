@@ -13,7 +13,7 @@ namespace LibraryManagement.DTO.BookCopyDTO
         public int BookID { get; set; }
         public string BookTitle { get; set; } = null!;
         public string ISBN { get; set; } = null!;
-
+        public string Author { get; set; } = null!;
         public string DateAdded { get; set; } = null!;
         public bool CanBeBorrowed { get; set; }
     }

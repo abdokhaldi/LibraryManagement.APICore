@@ -15,13 +15,15 @@ namespace LibraryManagement.BLL
     public class BookService : IBookService
     {
         private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;  
        public BookService(IUnitOfWork unitOfWork,IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            _unitOfWork = unitOfWork;    
+
+            _mapper = mapper;    
         }
        
+
        public async Task<OperationResult<int>> CreateNewBookAsync(BookForCreationDTO bookDTO)
         {
             
@@ -38,6 +40,7 @@ namespace LibraryManagement.BLL
            
             return OperationResult<int>.Success(bookToCreate.BookID);
         }
+
        public async Task<OperationResult> UpdateBookAsync(int id,BookForUpdateDTO bookDTO)
         {
              var bookToUpdate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(id);
@@ -62,7 +65,7 @@ namespace LibraryManagement.BLL
             return OperationResult.Success();
           }
 
-       public async Task<OperationResult> ActivateBookAsync(int bookID)
+       public async Task<OperationResult> ActivateBookAsync(int bookID) 
         {
             var bookToActivate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(bookID);
             if (bookToActivate == null)
@@ -95,7 +98,8 @@ namespace LibraryManagement.BLL
             bookToActivate.IsActive = false;
             await _unitOfWork.SaveChangesAsync();
             return OperationResult.Success();
-        }
+        } 
+
        public async Task<PagedList<BookForDisplayDTO>> GetActiveBooksAsync(BookParameters parameters)
         {
             var pagedBooks = await _unitOfWork.BookRepository.GetActiveBooksAsync(parameters);
