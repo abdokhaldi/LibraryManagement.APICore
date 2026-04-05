@@ -21,7 +21,7 @@ namespace LibraryManagement.API.Controllers
         }
 
 
-        
+        [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]

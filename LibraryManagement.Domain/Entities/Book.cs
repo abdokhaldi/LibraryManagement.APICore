@@ -16,7 +16,7 @@ namespace LibraryManagement.Domain.Entities
         public bool IsActive { get; set; } = true; 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public string? ImagePath { get; set; }
+        public string? ImagePath { get; set; } = "image.jpg";
         public Category Category { get; set; } = null!;
 
         public ICollection<BookCopy> BookCopies { get; set; } = new List<BookCopy>();

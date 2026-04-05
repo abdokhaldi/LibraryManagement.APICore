@@ -12,6 +12,7 @@ namespace LibraryManagement.DTO.BookDTOs
         [Required(ErrorMessage = "Title is required")]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Title length must be between 3 and 100 characters.")]
         public string Title { get; set; } = null!;
+        public string ISBN { get; set; } = null!;
         public string Description { get; set; } = null!;
         public required string Author { get; set; }
         public string Publisher { get; set; } = null!;

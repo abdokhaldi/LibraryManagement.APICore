@@ -44,6 +44,7 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
         }
 
+        [AllowAnonymous] 
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCategories()
