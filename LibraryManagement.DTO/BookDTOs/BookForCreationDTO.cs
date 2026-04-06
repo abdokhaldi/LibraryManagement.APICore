@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+ 
 
 namespace LibraryManagement.DTO.BookDTOs
 {
@@ -12,14 +10,15 @@ namespace LibraryManagement.DTO.BookDTOs
         [Required(ErrorMessage = "Title is required")]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Title length must be between 3 and 100 characters.")]
         public string Title { get; set; } = null!;
+        [Required(ErrorMessage = "ISBN is required")]
+        [StringLength(13, MinimumLength = 13, ErrorMessage ="ISBN should have 13 digits")]
         public string ISBN { get; set; } = null!;
         public string Description { get; set; } = null!;
         public required string Author { get; set; }
         public string Publisher { get; set; } = null!;
         public short YearPublished { get; set; }
         public required int CategoryID { get; set; }
-        public string? ImagePath { get; set; }
-        public byte[]? Image { get; set; }
+        public IFormFile? Image { get; set; }
 
     }
 }

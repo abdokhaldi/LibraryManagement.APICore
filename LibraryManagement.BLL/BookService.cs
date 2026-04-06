@@ -32,9 +32,33 @@ namespace LibraryManagement.BLL
               {
                 return OperationResult<int>.Failure(OperationStatus.Conflict, "This title is already exists , books must have a unique title.");
               }
+            string savedImagePath = "/images/covers/default.jpg";
+
+            if (bookDTO.Image != null && bookDTO.Image.Length > 0)
+            {
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "images", "covers" );
+                if (!Directory.Exists(savedImagePath))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                string extension = Path.GetExtension(bookDTO.Image.FileName);
+                string uniqueFileName = Guid.NewGuid().ToString() + extension;
+
+                string fullPhysicalPath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(fullPhysicalPath, FileMode.Create))
+                {
+                    await bookDTO.Image.CopyToAsync(fileStream);
+                }
+
+                savedImagePath = $"images/covers/{uniqueFileName}";
+            }
 
             var bookToCreate = _mapper.Map<Book>(bookDTO);
             bookToCreate.IsActive = true;
+            bookToCreate.ImagePath = savedImagePath;
+
             await _unitOfWork.BookRepository.AddNewBookAsync(bookToCreate);
                 await _unitOfWork.SaveChangesAsync();
            

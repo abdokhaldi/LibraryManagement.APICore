@@ -26,7 +26,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateBook([FromBody] BookForCreationDTO bookDTO)
+        public async Task<IActionResult> CreateBook([FromForm] BookForCreationDTO bookDTO)
         {
              var result = await _bookService.CreateNewBookAsync(bookDTO);
               

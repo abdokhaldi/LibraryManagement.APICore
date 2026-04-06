@@ -12,10 +12,24 @@ namespace LibraryManagement.DAL.Configurations
             builder.ToTable("Books");
             builder.HasKey(b => b.BookID);
 
+           
+
             builder.Property(b => b.Title)
                 .IsRequired()
                 .HasMaxLength(200)
                 .IsUnicode();
+
+            builder.HasIndex(b => b.Title)
+                .IsUnique();
+
+            builder.Property(b => b.ISBN)
+               .IsRequired()
+               .HasMaxLength(13)
+               .IsFixedLength()
+               .IsUnicode(false);
+
+            builder.HasIndex(b => b.ISBN)
+                .IsUnique();
 
             builder.Property(b => b.Author)
                 .IsRequired()
@@ -50,7 +64,7 @@ namespace LibraryManagement.DAL.Configurations
                 .IsRequired();
 
            
-            builder.HasData(
+    builder.HasData(
     new Book
     {
         BookID = 1,

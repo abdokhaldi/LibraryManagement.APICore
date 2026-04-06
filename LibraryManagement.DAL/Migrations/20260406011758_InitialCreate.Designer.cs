@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagement.DAL.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20260202193637_InitialCreate")]
+    [Migration("20260406011758_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -90,7 +90,10 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.Property<string>("ISBN")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(13)
+                        .IsUnicode(false)
+                        .HasColumnType("char(13)")
+                        .IsFixedLength();
 
                     b.Property<string>("ImagePath")
                         .IsRequired()
@@ -121,6 +124,12 @@ namespace LibraryManagement.DAL.Migrations
                     b.HasKey("BookID");
 
                     b.HasIndex("CategoryID");
+
+                    b.HasIndex("ISBN")
+                        .IsUnique();
+
+                    b.HasIndex("Title")
+                        .IsUnique();
 
                     b.ToTable("Books", (string)null);
 
@@ -207,16 +216,16 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.Property<string>("Barcode")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(13)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(13)");
 
                     b.Property<int>("BookID")
                         .HasColumnType("int");
 
                     b.Property<string>("Condition")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -468,8 +477,8 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             BorrowingID = 1,
                             BookCopyID = 2,
-                            BorrowingDate = new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2940),
-                            DueDate = new DateTime(2026, 2, 6, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2942),
+                            BorrowingDate = new DateTime(2026, 4, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4364),
+                            DueDate = new DateTime(2026, 4, 10, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4366),
                             IsCanceled = false,
                             MemberID = 1,
                             Status = "Borrowed"
@@ -478,8 +487,8 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             BorrowingID = 2,
                             BookCopyID = 7,
-                            BorrowingDate = new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2948),
-                            DueDate = new DateTime(2026, 2, 7, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2949),
+                            BorrowingDate = new DateTime(2026, 4, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4373),
+                            DueDate = new DateTime(2026, 4, 11, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4373),
                             IsCanceled = false,
                             MemberID = 2,
                             Status = "Borrowed"
@@ -488,8 +497,8 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             BorrowingID = 3,
                             BookCopyID = 8,
-                            BorrowingDate = new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2951),
-                            DueDate = new DateTime(2026, 2, 4, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2951),
+                            BorrowingDate = new DateTime(2026, 4, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4376),
+                            DueDate = new DateTime(2026, 4, 8, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4376),
                             IsCanceled = false,
                             MemberID = 3,
                             Status = "Borrowed"
@@ -498,8 +507,8 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             BorrowingID = 4,
                             BookCopyID = 17,
-                            BorrowingDate = new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2953),
-                            DueDate = new DateTime(2026, 2, 6, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2954),
+                            BorrowingDate = new DateTime(2026, 4, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4378),
+                            DueDate = new DateTime(2026, 4, 10, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4379),
                             IsCanceled = false,
                             MemberID = 3,
                             Status = "Borrowed"
@@ -508,19 +517,19 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             BorrowingID = 5,
                             BookCopyID = 2,
-                            BorrowingDate = new DateTime(2026, 1, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2955),
-                            DueDate = new DateTime(2026, 1, 9, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2963),
+                            BorrowingDate = new DateTime(2026, 3, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4381),
+                            DueDate = new DateTime(2026, 3, 13, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4388),
                             IsCanceled = false,
                             MemberID = 7,
-                            ReturnDate = new DateTime(2026, 1, 7, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2964),
+                            ReturnDate = new DateTime(2026, 3, 11, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4389),
                             Status = "Returned"
                         },
                         new
                         {
                             BorrowingID = 6,
                             BookCopyID = 12,
-                            BorrowingDate = new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2968),
-                            DueDate = new DateTime(2026, 2, 8, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2968),
+                            BorrowingDate = new DateTime(2026, 4, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4398),
+                            DueDate = new DateTime(2026, 4, 12, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4399),
                             IsCanceled = false,
                             MemberID = 7,
                             Status = "Borrowed"
@@ -600,49 +609,49 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             MemberID = 1,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(215),
+                            JoinDate = new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4718),
                             PersonID = 2
                         },
                         new
                         {
                             MemberID = 2,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(218),
+                            JoinDate = new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4723),
                             PersonID = 1
                         },
                         new
                         {
                             MemberID = 3,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(219),
+                            JoinDate = new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4724),
                             PersonID = 4
                         },
                         new
                         {
                             MemberID = 4,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(220),
+                            JoinDate = new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4726),
                             PersonID = 3
                         },
                         new
                         {
                             MemberID = 5,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(222),
+                            JoinDate = new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4728),
                             PersonID = 6
                         },
                         new
                         {
                             MemberID = 6,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(223),
+                            JoinDate = new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4729),
                             PersonID = 5
                         },
                         new
                         {
                             MemberID = 7,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(224),
+                            JoinDate = new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4731),
                             PersonID = 7
                         });
                 });

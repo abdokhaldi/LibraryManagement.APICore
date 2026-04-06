@@ -68,7 +68,7 @@ namespace LibraryManagement.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Author = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ISBN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ISBN = table.Column<string>(type: "char(13)", unicode: false, fixedLength: true, maxLength: 13, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Publisher = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     YearPublished = table.Column<short>(type: "smallint", unicode: false, maxLength: 5, nullable: false),
@@ -146,9 +146,9 @@ namespace LibraryManagement.DAL.Migrations
                 {
                     BookCopyID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Barcode = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
+                    Barcode = table.Column<string>(type: "varchar(13)", unicode: false, maxLength: 13, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Condition = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Condition = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     BookID = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
@@ -298,13 +298,13 @@ namespace LibraryManagement.DAL.Migrations
                 columns: new[] { "MemberID", "IsActive", "JoinDate", "PersonID" },
                 values: new object[,]
                 {
-                    { 1, true, new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(215), 2 },
-                    { 2, true, new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(218), 1 },
-                    { 3, true, new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(219), 4 },
-                    { 4, true, new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(220), 3 },
-                    { 5, true, new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(222), 6 },
-                    { 6, true, new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(223), 5 },
-                    { 7, true, new DateTime(2026, 2, 2, 19, 36, 36, 513, DateTimeKind.Utc).AddTicks(224), 7 }
+                    { 1, true, new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4718), 2 },
+                    { 2, true, new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4723), 1 },
+                    { 3, true, new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4724), 4 },
+                    { 4, true, new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4726), 3 },
+                    { 5, true, new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4728), 6 },
+                    { 6, true, new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4729), 5 },
+                    { 7, true, new DateTime(2026, 4, 6, 1, 17, 57, 389, DateTimeKind.Utc).AddTicks(4731), 7 }
                 });
 
             migrationBuilder.InsertData(
@@ -339,12 +339,12 @@ namespace LibraryManagement.DAL.Migrations
                 columns: new[] { "BorrowingID", "BookCopyID", "BorrowingDate", "DueDate", "IsCanceled", "MemberID", "ReturnDate", "Status" },
                 values: new object[,]
                 {
-                    { 1, 2, new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2940), new DateTime(2026, 2, 6, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2942), false, 1, null, "Borrowed" },
-                    { 2, 7, new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2948), new DateTime(2026, 2, 7, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2949), false, 2, null, "Borrowed" },
-                    { 3, 8, new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2951), new DateTime(2026, 2, 4, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2951), false, 3, null, "Borrowed" },
-                    { 4, 17, new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2953), new DateTime(2026, 2, 6, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2954), false, 3, null, "Borrowed" },
-                    { 5, 2, new DateTime(2026, 1, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2955), new DateTime(2026, 1, 9, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2963), false, 7, new DateTime(2026, 1, 7, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2964), "Returned" },
-                    { 6, 12, new DateTime(2026, 2, 2, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2968), new DateTime(2026, 2, 8, 19, 36, 36, 512, DateTimeKind.Utc).AddTicks(2968), false, 7, null, "Borrowed" }
+                    { 1, 2, new DateTime(2026, 4, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4364), new DateTime(2026, 4, 10, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4366), false, 1, null, "Borrowed" },
+                    { 2, 7, new DateTime(2026, 4, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4373), new DateTime(2026, 4, 11, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4373), false, 2, null, "Borrowed" },
+                    { 3, 8, new DateTime(2026, 4, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4376), new DateTime(2026, 4, 8, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4376), false, 3, null, "Borrowed" },
+                    { 4, 17, new DateTime(2026, 4, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4378), new DateTime(2026, 4, 10, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4379), false, 3, null, "Borrowed" },
+                    { 5, 2, new DateTime(2026, 3, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4381), new DateTime(2026, 3, 13, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4388), false, 7, new DateTime(2026, 3, 11, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4389), "Returned" },
+                    { 6, 12, new DateTime(2026, 4, 6, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4398), new DateTime(2026, 4, 12, 1, 17, 57, 388, DateTimeKind.Utc).AddTicks(4399), false, 7, null, "Borrowed" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -367,6 +367,18 @@ namespace LibraryManagement.DAL.Migrations
                 name: "IX_Books_CategoryID",
                 table: "Books",
                 column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_ISBN",
+                table: "Books",
+                column: "ISBN",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_Title",
+                table: "Books",
+                column: "Title",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Borrowings_BookCopyID",

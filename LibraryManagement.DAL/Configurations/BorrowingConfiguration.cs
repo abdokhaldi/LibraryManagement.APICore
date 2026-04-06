@@ -44,7 +44,7 @@ namespace LibraryManagement.DAL.Configurations
 
             builder.HasQueryFilter(b => b.BookCopy.IsActive);
 
-            builder.HasData(
+    builder.HasData(
     new Borrowing()
     {
         BorrowingID = 1,

@@ -16,7 +16,7 @@ namespace LibraryManagement.DAL.Configurations
             builder.Property(c => c.Barcode)
                     .IsRequired()
                     .IsUnicode(false)
-                    .HasMaxLength(100);
+                    .HasMaxLength(13);
 
             builder.HasIndex(c => c.Barcode)
                     .IsUnique();
@@ -30,7 +30,7 @@ namespace LibraryManagement.DAL.Configurations
                 .HasConversion<string>();
 
             builder.Property(c => c.Condition)
-                .HasMaxLength(500)
+                .HasMaxLength(100)
                 .IsRequired(false);
             
             builder.Property(c => c.IsActive)
