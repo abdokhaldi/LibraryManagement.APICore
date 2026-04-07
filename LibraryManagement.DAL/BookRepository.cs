@@ -26,6 +26,7 @@ namespace LibraryManagement.DAL
             var query = _context.Books
                 .Include(b=>b.BookCopies)
                 .Include(b => b.Category)
+                .Where(b=>b.IsActive)
                 .AsNoTracking() ;
 
             if (parameters.CategoryID.HasValue && parameters.CategoryID != 0)

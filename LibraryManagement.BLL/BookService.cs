@@ -65,14 +65,43 @@ namespace LibraryManagement.BLL
             return OperationResult<int>.Success(bookToCreate.BookID);
         }
 
-       public async Task<OperationResult> UpdateBookAsync(int id,BookForUpdateDTO bookDTO)
+       public async Task<OperationResult> UpdateBookAsync(int id,BookForUpdateDTO bookDTO, string webRootPath)
         {
              var bookToUpdate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(id);
 
+           
              if (bookToUpdate == null)
              {
                 return OperationResult.Failure(OperationStatus.NotFound, $"The book with ID:{id} was not found for update .");
              }
+
+            string filePath = "images/covers/default.jpg";
+            if (bookDTO.Image != null)
+            {
+                if (!string.IsNullOrEmpty(bookToUpdate.ImagePath))
+                {
+                    string oldFilePath = Path.Combine(webRootPath,"images","covers",bookToUpdate.ImagePath);
+                    if (File.Exists(oldFilePath))
+                    {
+                        File.Delete(oldFilePath);
+                    }
+                }
+
+                string newFileName = Guid.NewGuid().ToString() + Path.GetExtension(bookDTO.Image.FileName);
+               
+                filePath = Path.Combine(webRootPath, "images", "covers",newFileName);
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                   await bookDTO.Image.CopyToAsync(stream);
+                }
+            }
+
+
             if (bookDTO.Title != null && bookDTO.Title !=bookToUpdate.Title)
             {
                 bool titleExists = await _unitOfWork.BookRepository.IsTitleExistsAsync(bookDTO.Title);
@@ -83,7 +112,9 @@ namespace LibraryManagement.BLL
                 }
             }
             _mapper.Map(bookDTO, bookToUpdate);
-            
+            bookToUpdate.ImagePath = filePath ;
+
+
             await _unitOfWork.SaveChangesAsync();
 
             return OperationResult.Success();

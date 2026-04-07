@@ -5,7 +5,7 @@ using System.Security.Claims;
 using LibraryManagement.DTO.OperationResults;
 namespace LibraryManagement.API.Common
 {
-    [Authorize]   
+   // [Authorize]   
     
     [ApiController]
    

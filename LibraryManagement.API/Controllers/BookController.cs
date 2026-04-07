@@ -7,17 +7,21 @@ using LibraryManagement.API.Common;
 using LibraryManagement.Shared.Parameters;
 using System.Text.Json;
 using LibraryManagement.Shared.HEADER_KEYS;
+using Microsoft.AspNetCore.Hosting;
+
 namespace LibraryManagement.API.Controllers
 {
-    [Authorize(Roles = "Admin,Librarian")]
+   // [Authorize(Roles = "Admin,Librarian")]
     [Route("api/[controller]")]
     [ApiController]
     public class BookController : BaseController
     {
         private readonly IBookService _bookService;
-        public BookController(IBookService bookService)
+        private readonly IWebHostEnvironment _env;
+        public BookController(IBookService bookService, IWebHostEnvironment env)
         {
             _bookService = bookService;
+            _env = env;
         }
 
 
@@ -54,10 +58,10 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int) StatusCodes.Status204NoContent)]
         [ProducesResponseType((int)StatusCodes.Status400BadRequest)]
 
-        public async Task<IActionResult> UpdateBook(int id,[FromBody] BookForUpdateDTO bookDTO)
+        public async Task<IActionResult> UpdateBook(int id,[FromForm] BookForUpdateDTO bookDTO)
         {
-            
-            var result = await _bookService.UpdateBookAsync(id, bookDTO);
+           
+            var result = await _bookService.UpdateBookAsync(id, bookDTO, _env.WebRootPath);
             if (result.IsSuccess)
                 return NoContent();
 

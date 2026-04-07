@@ -14,7 +14,7 @@ namespace LibraryManagement.BLL.Interfaces
 
         Task<OperationResult<int>> CreateNewBookAsync(BookForCreationDTO bookDTO);
 
-        Task<OperationResult> UpdateBookAsync(int id,BookForUpdateDTO bookDTO);
+        Task<OperationResult> UpdateBookAsync(int id,BookForUpdateDTO bookDTO, string webRootPath);
         Task<OperationResult> ActivateBookAsync(int bookID);
         Task<OperationResult> DeactivateBookAsync(int bookID);
 

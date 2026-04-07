@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,13 +12,13 @@ namespace LibraryManagement.DTO.BookDTOs
     {
         [StringLength(100,MinimumLength =3,ErrorMessage = "Title must be at lest 3 characters long")]
         public  string? Title { get; set; }
-      //  public string? ISBN { get; set; } 
+        public string? ISBN { get; set; } 
         public string? Description { get; set; } 
         public  string? Author { get; set; }
         public  string? Publisher { get; set; }
         public short? YearPublished { get; set; }
         public  int? CategoryID { get; set; }
-        public string? ImagePath { get; set; }
+        public IFormFile? Image { get; set; }
         public bool? IsActive { get; set; }
 
     }
