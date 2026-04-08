@@ -48,6 +48,7 @@ namespace LibraryManagement.BLL
             return pagedCopies.MapTo(copiesDTO);
         }
 
+
       public async  Task<OperationResult<BookCopyForDisplayDTO>> GetBookCopyAsync(int copyID) 
         {
             var copyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(c => c.BookCopyID == copyID);
@@ -62,7 +63,20 @@ namespace LibraryManagement.BLL
             return OperationResult<BookCopyForDisplayDTO>.Success(copyDTO);
 
         }
+        public async Task<OperationResult<BookCopyForDisplayDTO>> GetBookCopyAsync(string barcode)
+        {
+            var copyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(bc => bc.Barcode == barcode);
 
+            if (copyEntity == null)
+            {
+                return OperationResult<BookCopyForDisplayDTO>.Failure(OperationStatus.NotFound, $"The book copy with id : {barcode} was not found .");
+            }
+
+            var copyDTO = _mapper.Map<BookCopyForDisplayDTO>(copyEntity);
+
+            return OperationResult<BookCopyForDisplayDTO>.Success(copyDTO);
+
+        }
 
         public async  Task<OperationResult> UpdateCopyAsync(int copyID, BookCopyForUpdateDTO bookCopyDTO) 
         {

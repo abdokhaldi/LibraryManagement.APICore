@@ -15,5 +15,7 @@ namespace LibraryManagement.BLL.Interfaces
         Task<OperationResult> ActivateCopyAsync(int copyID);
         Task<OperationResult> DeactivateCopyAsync(int copyID);
         Task<OperationResult<BookCopyForDisplayDTO>> GetBookCopyAsync(int copyID);
+        Task<OperationResult<BookCopyForDisplayDTO>> GetBookCopyAsync(string barcode);
+
     }
 }

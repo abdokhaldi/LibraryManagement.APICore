@@ -23,8 +23,6 @@ namespace LibraryManagement.Domain.Repositories
             var query = _context.BookCopies
                                 .IgnoreQueryFilters()
                                 .AsNoTracking()
-                                .Include(cb => cb.Book)
-                                .ThenInclude(cb => cb!.Category)
                                 .AsQueryable();
             if (parameters.IsActive.HasValue)
             {

@@ -11,10 +11,8 @@ namespace LibraryManagement.Shared.Parameters
 {
     public class BookCopyParameters : RequestParameters
     {
-     public int? BookID { get; set; }
+        public int? BookID { get; set; }
         public CopyStatus? Status { get; set; } = null;
         public bool? IsActive { get; set; } = null;
-
-
-    }
+      }
 }

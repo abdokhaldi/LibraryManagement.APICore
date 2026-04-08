@@ -33,17 +33,18 @@ namespace LibraryManagement.BLL
                 return OperationResult<int>.Failure(OperationStatus.Conflict, "This title is already exists , books must have a unique title.");
               }
             string savedImagePath = "/images/covers/default.jpg";
+            string uniqueFileName = "";
 
             if (bookDTO.Image != null && bookDTO.Image.Length > 0)
             {
                 string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "images", "covers" );
-                if (!Directory.Exists(savedImagePath))
+                if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
                 string extension = Path.GetExtension(bookDTO.Image.FileName);
-                string uniqueFileName = Guid.NewGuid().ToString() + extension;
+                uniqueFileName = Guid.NewGuid().ToString() + extension;
 
                 string fullPhysicalPath = Path.Combine(uploadsFolder, uniqueFileName);
 
@@ -57,7 +58,7 @@ namespace LibraryManagement.BLL
 
             var bookToCreate = _mapper.Map<Book>(bookDTO);
             bookToCreate.IsActive = true;
-            bookToCreate.ImagePath = savedImagePath;
+            bookToCreate.ImagePath = uniqueFileName;
 
             await _unitOfWork.BookRepository.AddNewBookAsync(bookToCreate);
                 await _unitOfWork.SaveChangesAsync();
@@ -75,7 +76,9 @@ namespace LibraryManagement.BLL
                 return OperationResult.Failure(OperationStatus.NotFound, $"The book with ID:{id} was not found for update .");
              }
 
-            string filePath = "images/covers/default.jpg";
+            string savedImagePath = "images/covers/default.jpg";
+            string newFileName = "";
+
             if (bookDTO.Image != null)
             {
                 if (!string.IsNullOrEmpty(bookToUpdate.ImagePath))
@@ -87,15 +90,17 @@ namespace LibraryManagement.BLL
                     }
                 }
 
-                string newFileName = Guid.NewGuid().ToString() + Path.GetExtension(bookDTO.Image.FileName);
+                newFileName = Guid.NewGuid().ToString() + Path.GetExtension(bookDTO.Image.FileName);
+                string uploadsFolder = Path.Combine(webRootPath, "images", "covers");
                
-                filePath = Path.Combine(webRootPath, "images", "covers",newFileName);
-                if (!Directory.Exists(filePath))
+               
+                if (!Directory.Exists(uploadsFolder))
                 {
-                    Directory.CreateDirectory(filePath);
+                    Directory.CreateDirectory(uploadsFolder);
                 }
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                savedImagePath = Path.Combine(uploadsFolder,newFileName);
+                using (var stream = new FileStream(savedImagePath, FileMode.Create))
                 {
                    await bookDTO.Image.CopyToAsync(stream);
                 }
@@ -112,7 +117,7 @@ namespace LibraryManagement.BLL
                 }
             }
             _mapper.Map(bookDTO, bookToUpdate);
-            bookToUpdate.ImagePath = filePath ;
+            bookToUpdate.ImagePath = newFileName ;
 
 
             await _unitOfWork.SaveChangesAsync();

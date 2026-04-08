@@ -48,9 +48,11 @@ namespace LibraryManagement.DAL
 
         public  Task<PagedList<Borrowing>> GetBorrowingsAsync(BorrowingParameters parameters)
         {
-            var query =  _context.Borrowings
+            var query = _context.Borrowings.AsNoTracking()
+                                 .Include(b => b.BookCopy)
+                                 .ThenInclude(bc => bc.Book)
                                  .Include(b => b.Member)
-                                 .Include(c => c.BookCopy)
+                                 .ThenInclude(p => p.Person)
                                  .AsQueryable();
 
             query = query.Where(b => b.IsCanceled == parameters.IsCanceled);

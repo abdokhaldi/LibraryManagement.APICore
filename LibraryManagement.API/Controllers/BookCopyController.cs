@@ -36,6 +36,20 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
         }
 
+        [HttpGet("{barcode}/GetBookCopyByBarcode")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetBookCopyByBarcode(string barcode)
+        {
+            var result = await _bookCopyService.GetBookCopyAsync(barcode);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            return HandleErrorResult(result);
+        }
+
         [HttpGet]
         [ProducesResponseType((int) HttpStatusCode.OK)]
         public async Task<IActionResult> GetBookCopies([FromQuery] BookCopyParameters parameters)

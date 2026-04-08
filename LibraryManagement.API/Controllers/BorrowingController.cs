@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using LibraryManagement.API.Common;
 using LibraryManagement.Shared.Parameters;
+using LibraryManagement.Shared.HEADER_KEYS;
+using System.Text.Json;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Authorize(Roles ="Admin,Librarian")]
-
+    // [Authorize(Roles ="Admin,Librarian")]
+    [AllowAnonymous]
     [ApiController] 
     [Route("api/[controller]")]
     
@@ -76,10 +78,11 @@ namespace LibraryManagement.API.Controllers
 
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetBorrowings(BorrowingParameters parameters)
+        public async Task<IActionResult> GetBorrowings([FromQuery]BorrowingParameters parameters)
         {
-            var borrowings = await _borrowingService.GetBorrowingsAsync(parameters);
-            return Ok(borrowings);
+            var pagedBorrowings = await _borrowingService.GetBorrowingsAsync(parameters);
+            Response.Headers.Append(HeaderKeys.Pagination, JsonSerializer.Serialize(pagedBorrowings.Metadata));
+            return Ok(pagedBorrowings.Items);
          }
         
       //  [HttpGet("/GetOverdue")]

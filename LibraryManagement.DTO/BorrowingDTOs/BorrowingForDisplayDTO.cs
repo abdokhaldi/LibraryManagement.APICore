@@ -11,6 +11,7 @@ namespace LibraryManagement.DTO.BorrowingDTOs
        
             public required int BorrowingID { get; set; }
             public required string Title { get; set; }
+            public required string Barcode { get; set; }
             public required string FullName { get; set; }
             public required DateTime BorrowingDate { get; set; }
             public required DateTime DueDate { get; set; }
