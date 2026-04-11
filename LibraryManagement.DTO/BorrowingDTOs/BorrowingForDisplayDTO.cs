@@ -17,5 +17,6 @@ namespace LibraryManagement.DTO.BorrowingDTOs
             public required DateTime DueDate { get; set; }
             public DateTime? ReturnDate { get; set; }
             public required string Status { get; set; }
+            
     }
 }
