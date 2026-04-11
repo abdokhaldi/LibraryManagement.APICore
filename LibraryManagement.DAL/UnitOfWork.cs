@@ -20,6 +20,7 @@ namespace LibraryManagement.DAL
         public IPersonRepository PersonRepository { get; }
         public IRoleRepository RoleRepository { get; }
         public IUserRepository UserRepository { get; }
+        public IFineRepository FineRepository { get; }
 
         private readonly LibraryDbContext _context;
         private IDbContextTransaction? _currentTransaction;
@@ -37,6 +38,7 @@ namespace LibraryManagement.DAL
             PersonRepository = new PersonRepository(_context);
             RoleRepository = new RoleRepository(_context);
             UserRepository = new UserRepository(_context);
+            FineRepository = new FineRepository(_context);
         }
 
 

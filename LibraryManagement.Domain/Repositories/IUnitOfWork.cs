@@ -15,6 +15,8 @@ namespace LibraryManagement.Domain.Interfaces
         IPersonRepository PersonRepository { get; }
         IRoleRepository RoleRepository { get; }
         IUserRepository UserRepository { get; }
+        IFineRepository FineRepository { get; }
+
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();
         Task CommitAsync();

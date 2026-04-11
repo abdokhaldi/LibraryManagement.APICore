@@ -16,5 +16,7 @@ namespace LibraryManagement.Domain.Entities
         public DateTime JoinDate { get; set; }
        
         public bool IsActive { get; set; }
+
+        public ICollection<Fine> Fines { get; set; } = new List<Fine>();
     }
 }
