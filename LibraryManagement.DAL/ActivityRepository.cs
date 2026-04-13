@@ -14,21 +14,20 @@ namespace LibraryManagement.DAL
         {
             _context = context;
         }
-        public Task AddActivityAsync(Activity activityEntity)
-        {
-            
-               _context.Activities.Add(activityEntity);
-            return Task.CompletedTask;
-            }
-            
-  
-      public  Task<IQueryable<Activity>> GetQueryableAllActivitiesAsync()
-      {
-          
-              var query = _context.Activities.AsNoTracking();
-                                                           
-              return Task.FromResult(query);
-          }
+     //   public Task AddActivityAsync(Activity activityEntity)
+     //   {
+     //       
+     //          _context.Activities.Add(activityEntity);
+     //       return Task.CompletedTask;
+     //   }
+     //
+     //
+     //   public Task<IQueryable<Activity>> GetQueryableAllActivitiesAsync()
+     //   {
+     //       var query = _context.Activities.AsNoTracking();
+     //                                                      
+     //         return Task.FromResult(query);
+     //     }
             
     
     }

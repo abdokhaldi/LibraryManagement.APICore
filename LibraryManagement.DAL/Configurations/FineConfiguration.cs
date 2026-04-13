@@ -24,7 +24,7 @@ namespace LibraryManagement.DAL.Configurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(f => f.Borrowing)
-                .WithOne()
+                .WithOne(b => b.Fine)
                 .HasForeignKey<Fine>(f => f.BorrowingID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);

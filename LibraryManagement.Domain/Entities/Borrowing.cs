@@ -24,10 +24,11 @@ namespace LibraryManagement.Domain.Entities
         public string Status { get; set; } = null!;
        
         public bool IsCanceled { get; set; }
-        
-        
-        public BookCopy BookCopy { get; set; } = null!;    
-        public Member Member  { get; set; } = null!;
+
+
+        public BookCopy BookCopy { get; set; } = null!;
+        public Member Member { get; set; } = null!;
+        public Fine? Fine { get; set; }
 
         
     }

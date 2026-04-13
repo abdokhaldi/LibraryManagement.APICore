@@ -53,6 +53,7 @@ namespace LibraryManagement.DAL
                                  .ThenInclude(bc => bc.Book)
                                  .Include(b => b.Member)
                                  .ThenInclude(p => p.Person)
+                                 .Include(b=>b.Fine)
                                  .AsQueryable();
 
             query = query.Where(b => b.IsCanceled == parameters.IsCanceled);
