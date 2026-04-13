@@ -26,11 +26,10 @@ namespace LibraryManagement.DAL
             
         public async Task<Borrowing?> GetBorrowingForUpdateAsync(int borrowingID)
         {
-           
-                var borrowing = await _context.Borrowings
-                                      .FindAsync(borrowingID);
-                return borrowing;
-            }
+            var borrowing = await _context.Borrowings
+                                  .FindAsync(borrowingID);
+            return borrowing;
+        }
 
         public async Task<Borrowing?> GetBorrowingForReadOnlyAsync(int borrowingID)
         {

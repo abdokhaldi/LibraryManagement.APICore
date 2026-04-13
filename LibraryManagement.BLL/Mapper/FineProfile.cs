@@ -12,9 +12,15 @@ namespace LibraryManagement.BLL.Mapper
     public class FineProfile : Profile
     {
         public FineProfile()
-        {
-            CreateMap<Fine, FineDtoForDisplay>();
+        { 
             CreateMap<FineDtoForDisplay, Fine>();
+
+            CreateMap<Fine, FineDtoForDisplay>().ForMember(
+                des => des.FullName,
+                opt => opt.MapFrom(src => 
+                src.Member.Person.FirstName + " " + src.Member.Person.LastName)
+                );
+          
 
         }
     }

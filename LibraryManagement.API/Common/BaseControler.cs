@@ -21,9 +21,9 @@ namespace LibraryManagement.API.Common
         {
             return result.Status switch
             {
-                OperationStatus.NotFound => NotFound(result.Message),
-                OperationStatus.Conflict => Conflict(result.Message),
-                OperationStatus.Blocked => Conflict(result.Message),
+                OperationStatus.NotFound => NotFound(new { Message = result.Message }),
+                OperationStatus.Conflict => Conflict(new { Message = result.Message }),
+                OperationStatus.Blocked => Conflict(new { Message = result.Message }),
                 OperationStatus.Forbidden => Forbid(result.Message),
                 _ => BadRequest("An unexpected error occurred .")
             };

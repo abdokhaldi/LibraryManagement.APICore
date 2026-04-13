@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace LibraryManagement.DTO.FineDTO
 {
@@ -10,11 +6,11 @@ namespace LibraryManagement.DTO.FineDTO
     {
         public int FineID { get; set; }
         public int BorrowingID { get; set; }
-        public int MemberID { get; set; }
-        public DateTime PaidAt { get; set; }
+        public string FullName { get; set; } = null!;
+        public DateTime? PaidAt { get; set; } = null;
         public decimal Amount { get; set; }
         public string Status { get; set; } = null!;
-
-
+        public DateTime CreatedAt { get; set; }
+         public string WaiveReason { get; set; } = null!;
     }
 }

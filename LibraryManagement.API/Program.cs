@@ -88,6 +88,7 @@ builder.Services.AddScoped<ISecurityService,SecurityService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
 builder.Services.AddScoped<IFineRepository, FineRepository>();
+builder.Services.AddScoped<IFineService, FineService>();
 // 4. Setup AutoMapper
 
 

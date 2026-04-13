@@ -10,7 +10,7 @@ using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.Shared.Helpers;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.Shared.Types;
-using LibraryManagement.Domain.Entities;
+
 namespace LibraryManagement.BLL
 {  
     public class BorrowingService : IBorrowingService
@@ -109,9 +109,12 @@ namespace LibraryManagement.BLL
             
             bookCopyEntity.Status = CopyStatus.Available;
 
-            if(DateTime.UtcNow > borrowingEntity.DueDate)
+            DateTime returnedDate = DateTime.UtcNow;
+
+            var days = (returnedDate - borrowingEntity.DueDate).Days;
+
+            if (days > 0)
             {
-                var days = (DateTime.UtcNow - borrowingEntity.DueDate).Days;
                 var fineEntity = new Fine
                 {
                     BorrowingID = borrowingEntity.BorrowingID,
@@ -123,7 +126,7 @@ namespace LibraryManagement.BLL
                     WaiveReason = null
                 };
 
-                await _unitOfWork.FineRepository.AddNewFineAsync(fineEntity); 
+                await _unitOfWork.FineRepository.AddNewFineAsync(fineEntity);
             }
 
             borrowingEntity.ReturnDate = DateTime.UtcNow;
