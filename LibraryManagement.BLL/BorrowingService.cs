@@ -10,6 +10,7 @@ using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.Shared.Helpers;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.Shared.Types;
+using LibraryManagement.Domain.Entities;
 namespace LibraryManagement.BLL
 {  
     public class BorrowingService : IBorrowingService
@@ -49,6 +50,7 @@ namespace LibraryManagement.BLL
             borrowingEntity.Member = memberEntity;
             borrowingEntity.BorrowingDate = DateTime.UtcNow;
             borrowingEntity.Status = "Borrowed";
+            borrowingEntity.InitialFees = 15.0m; // default value while i create settings
             borrowingEntity.ReturnDate = null;
             borrowingEntity.IsCanceled = false;
 
@@ -98,23 +100,41 @@ namespace LibraryManagement.BLL
             {
                return OperationResult.Failure(OperationStatus.Conflict,"This book has already been returned .");
             }
+
             var bookCopyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(cb => cb.BookCopyID==borrowingEntity.BookCopyID, trackChanges:true);
             if (bookCopyEntity == null)
             {
                 return OperationResult.Failure(OperationStatus.Conflict , "Associated book is missing from the system .");
             }
-
+            
             bookCopyEntity.Status = CopyStatus.Available;
 
+            if(DateTime.UtcNow > borrowingEntity.DueDate)
+            {
+                var days = (DateTime.UtcNow - borrowingEntity.DueDate).Days;
+                var fineEntity = new Fine
+                {
+                    BorrowingID = borrowingEntity.BorrowingID,
+                    MemberID = borrowingEntity.MemberID,
+                    Amount = days * 0.5m, // default value while i create settings value
+                    Status = "Pending",
+                    CreatedAt = DateTime.UtcNow,
+                    PaidAt = null ,
+                    WaiveReason = null
+                };
+
+                await _unitOfWork.FineRepository.AddNewFineAsync(fineEntity); 
+            }
+
             borrowingEntity.ReturnDate = DateTime.UtcNow;
+            
             borrowingEntity.Status = "Returned";
 
             await _unitOfWork.SaveChangesAsync();
             return OperationResult.Success();
         }
 
-
-        public async Task<OperationResult> ExtendDueDateAsync(int id, BorrowingForExtendDTO borrowingDTO)
+       public async Task<OperationResult> ExtendDueDateAsync(int id, BorrowingForExtendDTO borrowingDTO)
         {
             var borrowingEntity = await _unitOfWork.BorrowingRepository.GetBorrowingForUpdateAsync(id);
             if (borrowingEntity == null)
@@ -151,16 +171,6 @@ namespace LibraryManagement.BLL
         }
 
 
-       // public async Task<List<BorrowingForDisplayDTO>> GetOverdueAsync()
-       // {
-         //   var borrowingsQuery = await _unitOfWork.BorrowingRepository.GetBorrowingsAsync();
-         //
-         //   var borrowingsDTO = await borrowingsQuery
-         //       .Where(b => b.ReturnDate == null && b.DueDate < DateTime.UtcNow)
-         //       .ProjectTo<BorrowingForDisplayDTO>(_mapper.ConfigurationProvider)
-         //       .ToListAsync();
-         //
-         //   return borrowingsDTO;
-       // }
+       
     }
 }

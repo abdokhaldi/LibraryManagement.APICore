@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibraryManagement.DTO.MemberDTOs;
 using LibraryManagement.Domain.Entities;
+using LibraryManagement.DTO.FineDTO;
 
 
 namespace LibraryManagement.BLL.Mapper
@@ -9,13 +10,16 @@ namespace LibraryManagement.BLL.Mapper
     {
         public MemberProfile()
         {
+            
+
             CreateMap<MemberForCreationDTO, Member>();
-            CreateMap<Member, MemberForDisplayDTO>()
+          var mappingForDisplay = CreateMap<Member, MemberForDisplayDTO>()
                 .ForMember(dst => dst.FullName,
                 opt => opt.MapFrom(src =>
                    src.Person.FirstName + " " + src.Person.LastName
                     ));
 
+            
         }
     }
 }

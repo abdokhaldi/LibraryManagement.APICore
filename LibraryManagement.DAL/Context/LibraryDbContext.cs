@@ -21,6 +21,7 @@ namespace LibraryManagement.DAL.Context
         public DbSet<Member> Members { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<BookCopy> BookCopies { get; set; }
+        public DbSet<Fine> Fines { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             

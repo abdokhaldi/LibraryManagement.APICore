@@ -12,6 +12,7 @@ namespace LibraryManagement.DTO.BorrowingDTOs
             
             public required int BookCopyID { get; set; }
             public required int PersonID { get; set; }
+            
             public required DateTime DueDate { get; set; }
         }
 

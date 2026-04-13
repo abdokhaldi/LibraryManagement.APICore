@@ -5,14 +5,15 @@ using LibraryManagement.BLL.Mapper;
 using LibraryManagement.DAL;
 using LibraryManagement.DAL.Context;
 using LibraryManagement.Domain.Interfaces;
+using LibraryManagement.Domain.Repositories;
+using LibraryManagement.Domain.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
-using LibraryManagement.Domain.Settings;
-using LibraryManagement.Domain.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,6 +87,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ISecurityService,SecurityService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
+builder.Services.AddScoped<IFineRepository, FineRepository>();
 // 4. Setup AutoMapper
 
 

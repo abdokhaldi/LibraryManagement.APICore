@@ -2,13 +2,12 @@
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
 using System.Data;
-using Microsoft.EntityFrameworkCore;
+
 using LibraryManagement.DAL.Context;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.Shared.Helpers;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using LibraryManagement.DAL.Base;
-
+using Microsoft.EntityFrameworkCore;
 namespace LibraryManagement.DAL
 {
     public class MemberRepository : IMemberRepository
@@ -19,11 +18,12 @@ namespace LibraryManagement.DAL
             _context = context;
         }
 
-        public async Task<PagedList<Member>> GetActiveMembersAsync(MemberParameters parameters)
+        public Task<PagedList<Member>> GetActiveMembersAsync(MemberParameters parameters)
         {
 
             var query = _context.Members
                          .Include(m => m.Person)
+                         .Include(m => m.Fines )
                          .AsNoTracking()
                          .AsQueryable();
 
@@ -44,7 +44,7 @@ namespace LibraryManagement.DAL
 
             query = query.ApplySort(parameters.OrderBy);
 
-            return await query.ToPagedListAsync(parameters.PageNumber,parameters.PageSize);
+            return query.ToPagedListAsync(parameters.PageNumber,parameters.PageSize);
             }
             
        
@@ -63,6 +63,7 @@ namespace LibraryManagement.DAL
             var member = await _context.Members
                 .AsNoTracking()
                 .Include(m => m.Person)
+                .Include(m => m.Fines)
                 .Where(m => m.MemberID == memberID && m.IsActive==true)
                 .FirstOrDefaultAsync();
             return member;

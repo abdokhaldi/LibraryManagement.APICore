@@ -1,5 +1,5 @@
 ﻿
-
+using LibraryManagement.Domain.Entities;
 namespace LibraryManagement.Domain.Entities
 {
    
@@ -19,14 +19,15 @@ namespace LibraryManagement.Domain.Entities
         public DateTime DueDate { get; set; }
        
         public DateTime? ReturnDate { get; set; }
-       
+        
+        public decimal InitialFees { get; set; }
         public string Status { get; set; } = null!;
        
         public bool IsCanceled { get; set; }
         
-
+        
         public BookCopy BookCopy { get; set; } = null!;    
-        public Member Member { get; set; } = null!;
+        public Member Member  { get; set; } = null!;
 
         
     }

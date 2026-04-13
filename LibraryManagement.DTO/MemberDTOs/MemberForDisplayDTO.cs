@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibraryManagement.DTO.FineDTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,7 @@ namespace LibraryManagement.DTO.MemberDTOs
         public required string FullName { get; set; }
         public required DateTime JoinDate { get; set; }
         public required bool IsActive { get; set; }
+        public ICollection<FineDtoForDisplay> Fines { get; set; } = new List<FineDtoForDisplay> { };
+
     }
 }

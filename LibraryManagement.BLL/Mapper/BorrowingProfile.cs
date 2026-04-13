@@ -25,7 +25,7 @@ namespace LibraryManagement.BLL.Mapper
                 );
            mappingBorrowingForDisplay.ForMember(
                dest => dest.Status,
-               opt => opt.MapFrom(src => src.DueDate > DateTime.UtcNow? "Overdue" : src.Status)
+               opt => opt.MapFrom(src => ( src.DueDate < DateTime.UtcNow ) && (src.ReturnDate==null)? "Overdue" : src.Status)
                );
             CreateMap<BorrowingForExtendDTO, Borrowing>();
         }

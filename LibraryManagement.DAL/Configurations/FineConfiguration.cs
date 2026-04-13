@@ -14,10 +14,38 @@ namespace LibraryManagement.DAL.Configurations
         public void Configure(EntityTypeBuilder<Fine> builder)
         {
             builder.ToTable("Fines");
+
             builder.HasKey(f => f.FineID);
+
             builder.HasOne(f => f.Member)
                 .WithMany(m => m.Fines)
-                .HasForeignKey(f=> f.)
+                .HasForeignKey(f => f.MemberID)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(f => f.Borrowing)
+                .WithOne()
+                .HasForeignKey<Fine>(f => f.BorrowingID)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Property(f => f.Amount)
+                .HasColumnType("decimal(18,2)")
+                .IsRequired();
+
+
+            builder.Property(f => f.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()")
+                .IsRequired();
+
+            builder.Property(f => f.PaidAt)
+                .IsRequired(false);
+            builder.Property(f => f.WaiveReason)
+                .IsRequired(false)
+                .HasMaxLength(200)
+                .IsUnicode();
+    
+
         }
     }
    

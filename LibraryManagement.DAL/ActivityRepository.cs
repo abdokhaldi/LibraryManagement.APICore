@@ -1,9 +1,7 @@
 ﻿using LibraryManagement.DAL.Context;
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
-
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 
 namespace LibraryManagement.DAL
@@ -24,13 +22,13 @@ namespace LibraryManagement.DAL
             }
             
   
-        public  Task<IQueryable<Activity>> GetQueryableAllActivitiesAsync()
-        {
-            
-                var query = _context.Activities.AsNoTracking();
-                                                             
-                return Task.FromResult(query);
-            }
+      public  Task<IQueryable<Activity>> GetQueryableAllActivitiesAsync()
+      {
+          
+              var query = _context.Activities.AsNoTracking();
+                                                           
+              return Task.FromResult(query);
+          }
             
     
     }

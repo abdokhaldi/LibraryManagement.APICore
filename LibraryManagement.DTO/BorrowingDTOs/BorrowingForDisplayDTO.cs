@@ -15,6 +15,7 @@ namespace LibraryManagement.DTO.BorrowingDTOs
             public required string FullName { get; set; }
             public required DateTime BorrowingDate { get; set; }
             public required DateTime DueDate { get; set; }
+            public required decimal InitialFees {get;set;}
             public DateTime? ReturnDate { get; set; }
             public required string Status { get; set; }
             

@@ -1,12 +1,15 @@
 ﻿using LibraryManagement.BLL.Interfaces;
+using LibraryManagement.Shared.HEADER_KEYS;
 using LibraryManagement.Shared.Parameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Authorize(Roles = "Admin,Librarian")]
+    //[Authorize(Roles = "Admin,Librarian")]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
 
@@ -33,13 +36,14 @@ namespace LibraryManagement.API.Controllers
 
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetActiveMembers(MemberParameters parameters)
+        public async Task<IActionResult> GetActiveMembers([FromQuery]MemberParameters parameters)
         {
-            var members = await _memberService.GetActiveMembersAsync(parameters);
-            return Ok(members);
+            var pagedList = await _memberService.GetActiveMembersAsync(parameters);
+            Response.Headers.Append(HeaderKeys.Pagination, JsonSerializer.Serialize(pagedList.Metadata));
+            return Ok(pagedList.Items);
         }
 
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/ActivateMember")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -55,7 +59,7 @@ namespace LibraryManagement.API.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPatch("{id}/DeactivateMember")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

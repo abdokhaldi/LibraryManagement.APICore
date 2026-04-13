@@ -20,10 +20,10 @@ namespace LibraryManagement.BLL
         {
             
         }
-        public async Task<List<ActivityForDisplayDTO>> GetQueryableAllActivitiesAsync()
-        {
-            return new List<ActivityForDisplayDTO>();
-        }
+       // public Task<List<ActivityForDisplayDTO>> GetQueryableAllActivitiesAsync()
+       // {
+       //   //  return await new List<ActivityForDisplayDTO>()();
+       // }
 
     }
 }
