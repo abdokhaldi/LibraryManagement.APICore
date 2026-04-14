@@ -111,7 +111,7 @@ namespace LibraryManagement.BLL
         {
             var pagedPersons = await _unitOfWork.PersonRepository.GetActivePeopleAsync(parameters);
 
-            var personsDTO = _mapper.Map<List<PersonForDisplayDTO>>(pagedPersons);
+            var personsDTO = _mapper.Map<List<PersonForDisplayDTO>>(pagedPersons.Items);
 
             return  pagedPersons.MapTo(personsDTO);
         }

@@ -33,8 +33,10 @@ namespace LibraryManagement.BLL
             {
                 return OperationResult<int>.Failure(OperationStatus.NotFound, $"The book with ID:{borrowingDTO.BookCopyID} was not found for borrowing");
             }
+            
             int availableQuantity = await _unitOfWork.BookCopyRepository.GetAvailableBookCopiesQuantityAsync(bookCopyEntity.BookID);
-            if (availableQuantity <= 0)
+           
+            if ( availableQuantity <= 0 )
             {
              return OperationResult<int>.Failure(OperationStatus.Conflict, $"cannot borrow this book , the book quantity is 0");
 
@@ -42,6 +44,32 @@ namespace LibraryManagement.BLL
             var memberToCreate = new MemberForCreationDTO { PersonID = borrowingDTO.PersonID, JoinDate = DateTime.Now, IsActive = true };
 
             var memberEntity = await _memberService.CreateMemberAsync(memberToCreate);
+           
+            if (memberEntity.JoinDate < memberToCreate.JoinDate) {
+
+                decimal maxFineAllowed = 14; // default value while i create settings value
+                if (memberEntity.Fines != null) {
+                    var pendingFines = memberEntity.Fines.Where(f => f.Status.Equals("Pending",StringComparison.OrdinalIgnoreCase));
+                    if (pendingFines.Count() > 0)
+                    {
+                        decimal fineAmount = pendingFines.Sum(f => f.Amount);
+                        if (fineAmount >= maxFineAllowed && memberEntity.IsActive)
+                        {
+                            memberEntity.IsActive = false;
+                        }
+                        if (fineAmount < maxFineAllowed && !memberEntity.IsActive)
+                        {
+                            memberEntity.IsActive = true;
+                        }
+                    }
+                }
+            }
+            
+            
+            if (!memberEntity.IsActive)
+            {
+                return OperationResult<int>.Failure(OperationStatus.Forbidden, "Your account is inactive. Please settle your fines first.");
+            }
 
             bookCopyEntity.Status = CopyStatus.Borrowed;
 
@@ -112,7 +140,7 @@ namespace LibraryManagement.BLL
             DateTime returnedDate = DateTime.UtcNow;
 
             var days = (returnedDate - borrowingEntity.DueDate).Days;
-
+            
             if (days > 0)
             {
                 var fineEntity = new Fine
@@ -121,15 +149,24 @@ namespace LibraryManagement.BLL
                     MemberID = borrowingEntity.MemberID,
                     Amount = days * 0.5m, // default value while i create settings value
                     Status = "Pending",
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = returnedDate,
                     PaidAt = null ,
                     WaiveReason = null
                 };
 
                 await _unitOfWork.FineRepository.AddNewFineAsync(fineEntity);
+                decimal MaxFineAmount = 14;
+                if (fineEntity.Amount > MaxFineAmount)
+                {
+                 var memberForDeactivate =  await _unitOfWork.MemberRepository.GetMemberForUpdateAsync(fineEntity.MemberID);
+                    if (memberForDeactivate!.IsActive)
+                    {
+                        memberForDeactivate.IsActive = false;
+                    }
+                }
             }
 
-            borrowingEntity.ReturnDate = DateTime.UtcNow;
+            borrowingEntity.ReturnDate = returnedDate;
             
             borrowingEntity.Status = "Returned";
 

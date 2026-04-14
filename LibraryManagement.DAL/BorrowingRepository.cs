@@ -38,7 +38,7 @@ namespace LibraryManagement.DAL
                                     .AsNoTracking()
                                     .Include(b => b.BookCopy)
                                     .ThenInclude(b => b.Book)
-                                    .ThenInclude(b => b.Category)
+                                    .ThenInclude(b => b!.Category)
                                     .Include(m => m.Member)
                                     .ThenInclude(m=>m.Person)
                                     .FirstOrDefaultAsync(b => b.BorrowingID == borrowingID);

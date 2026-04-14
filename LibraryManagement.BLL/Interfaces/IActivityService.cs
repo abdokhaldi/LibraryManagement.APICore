@@ -9,7 +9,7 @@ namespace LibraryManagement.BLL.Interfaces
 {
     public interface IActivityService
     {
-        Task AddActivityAsync(ActivityForCreationDTO activityDTO);
+      //  Task AddActivityAsync(ActivityForCreationDTO activityDTO);
        // Task<List<ActivityForDisplayDTO>> GetQueryableAllActivitiesAsync();
     }
 }

@@ -30,7 +30,7 @@ namespace LibraryManagement.BLL
             var person = await _unitOfWork.PersonRepository.GetPersonForReadOnlyAsync(memberDTO.PersonID);
             if (person == null)
             {
-                throw new Exception("The person associated with this member ID does not exist.");
+                return null!;
             }
             var memberEntity = _mapper.Map<Member>(memberDTO);
             await _unitOfWork.MemberRepository.AddNewMemberAsync(memberEntity);
@@ -70,9 +70,10 @@ namespace LibraryManagement.BLL
                 return true;
             }
             memberForDeactivate.IsActive = false;
-
+            
             return true;
         }
+
       public async Task<bool> ActivateMember(int id) 
         {
             var memberForActivate = await _unitOfWork.MemberRepository.GetMemberForUpdateAsync(id);

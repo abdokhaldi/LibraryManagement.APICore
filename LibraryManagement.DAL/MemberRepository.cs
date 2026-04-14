@@ -81,8 +81,9 @@ namespace LibraryManagement.DAL
         public async Task<Member?> GetMemberByPersonIDAsync(int personID)
         {
             
-              var member = await _context.Members
+              var member = await _context.Members.AsTracking()
                 .Include(m => m.Person)
+                 .Include(m=> m.Fines)
                 .Where(m => m.PersonID == personID)
                 .FirstOrDefaultAsync();
 

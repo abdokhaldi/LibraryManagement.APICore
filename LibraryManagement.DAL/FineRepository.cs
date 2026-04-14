@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using LibraryManagement.DAL.Base;
 using LibraryManagement.DAL.Context;
 using LibraryManagement.Domain.Entities;
@@ -11,8 +6,7 @@ using LibraryManagement.Domain.Repositories;
 using LibraryManagement.Shared.Helpers;
 using LibraryManagement.Shared.Parameters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.IdentityModel.Tokens;
+
 namespace LibraryManagement.DAL
 {
     public class FineRepository : IFineRepository
