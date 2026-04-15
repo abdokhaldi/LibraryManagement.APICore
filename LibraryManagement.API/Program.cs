@@ -89,6 +89,9 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
 builder.Services.AddScoped<IFineRepository, FineRepository>();
 builder.Services.AddScoped<IFineService, FineService>();
+builder.Services.AddScoped<IGlobalSettingsRepository, GlobalSettingsRepository>();
+builder.Services.AddScoped<IGlobalSettingsService, GlobalSettingsService>();
+
 // 4. Setup AutoMapper
 
 

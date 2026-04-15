@@ -48,6 +48,7 @@ namespace LibraryManagement.DAL
         public  Task<PagedList<Borrowing>> GetBorrowingsAsync(BorrowingParameters parameters)
         {
             var query = _context.Borrowings.AsNoTracking()
+                                 
                                  .Include(b => b.BookCopy)
                                  .ThenInclude(bc => bc.Book)
                                  .Include(b => b.Member)

@@ -1,11 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LibraryManagement.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Identity.Client;
+
 
 namespace LibraryManagement.DAL.Configurations
 {
@@ -44,8 +40,8 @@ namespace LibraryManagement.DAL.Configurations
                 .IsRequired(false)
                 .HasMaxLength(200)
                 .IsUnicode();
-    
 
+            builder.HasQueryFilter(f => f.Borrowing.BookCopy.IsActive);
         }
     }
    

@@ -77,7 +77,7 @@ namespace LibraryManagement.DAL.Configurations
             new Borrowing()
             {
                 BorrowingID = 3,
-                BookCopyID = 8, // نسخة كتاب 2 (كانت Borrowed في Seed النسخ)
+                BookCopyID = 8, 
                 MemberID = 3,
                 BorrowingDate = DateTime.UtcNow,
                 DueDate = DateTime.UtcNow.AddDays(2),
@@ -89,7 +89,7 @@ namespace LibraryManagement.DAL.Configurations
             new Borrowing()
             {
                 BorrowingID = 4,
-                BookCopyID = 17, // نسخة كتاب 4 (كانت Borrowed في Seed النسخ)
+                BookCopyID = 17, 
                 MemberID = 3,
                 BorrowingDate = DateTime.UtcNow,
                 DueDate = DateTime.UtcNow.AddDays(4),
@@ -101,13 +101,13 @@ namespace LibraryManagement.DAL.Configurations
             new Borrowing()
             {
                 BorrowingID = 5,
-                BookCopyID = 2, // استعارة تاريخية منتهية لنفس النسخة رقم 2 (مثال)
+                BookCopyID = 2, 
                 MemberID = 7,
                 BorrowingDate = DateTime.UtcNow.AddMonths(-1),
                 DueDate = DateTime.UtcNow.AddMonths(-1).AddDays(7),
                 InitialFees = 15.0m,
                 ReturnDate = DateTime.UtcNow.AddMonths(-1).AddDays(5),
-                Status = "Returned", // حالة مكتملة
+                Status = "Returned", 
                 IsCanceled = false
             },
             new Borrowing()

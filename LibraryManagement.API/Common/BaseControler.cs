@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LibraryManagement.DTO.Common;
-using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using LibraryManagement.DTO.OperationResults;
 namespace LibraryManagement.API.Common
@@ -24,7 +23,7 @@ namespace LibraryManagement.API.Common
                 OperationStatus.NotFound => NotFound(new { Message = result.Message }),
                 OperationStatus.Conflict => Conflict(new { Message = result.Message }),
                 OperationStatus.Blocked => Conflict(new { Message = result.Message }),
-                OperationStatus.Forbidden => Forbid(result.Message),
+                OperationStatus.Forbidden => StatusCode(StatusCodes.Status403Forbidden,new { Message = result.Message }),
                 _ => BadRequest("An unexpected error occurred .")
             };
         }

@@ -21,6 +21,7 @@ namespace LibraryManagement.DAL
         public IRoleRepository RoleRepository { get; }
         public IUserRepository UserRepository { get; }
         public IFineRepository FineRepository { get; }
+        public IGlobalSettingsRepository GlobalSettingsRepository { get; }
 
         private readonly LibraryDbContext _context;
         private IDbContextTransaction? _currentTransaction;
@@ -39,6 +40,7 @@ namespace LibraryManagement.DAL
             RoleRepository = new RoleRepository(_context);
             UserRepository = new UserRepository(_context);
             FineRepository = new FineRepository(_context);
+            GlobalSettingsRepository = new GlobalSettingsRepository(_context);
         }
 
 
