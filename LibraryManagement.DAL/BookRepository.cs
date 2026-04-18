@@ -16,9 +16,11 @@ namespace LibraryManagement.DAL
     public class BookRepository : IBookRepository
     {
         private readonly LibraryDbContext _context;
+       
        public  BookRepository(LibraryDbContext context)
         {
             _context = context;
+           
         }
         public async Task<PagedList<Book>> GetActiveBooksAsync(BookParameters parameters)
 

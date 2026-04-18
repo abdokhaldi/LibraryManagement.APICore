@@ -33,6 +33,10 @@ namespace LibraryManagement.DAL.Context
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(LibraryDbContext).Assembly);
                 
         }
+      //  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+      //  {
+      //     // optionsBuilder.AddInterceptors();
+      //  }
 
     }
 }

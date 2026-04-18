@@ -3,6 +3,7 @@ using LibraryManagement.DAL.Context;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.Domain.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryManagement.DAL
@@ -29,7 +30,7 @@ namespace LibraryManagement.DAL
         public UnitOfWork(LibraryDbContext context)
         {
             _context = context;
-
+           
             BookRepository = new BookRepository(_context);
             BookCopyRepository = new BookCopyRepository(_context);
             MemberRepository = new MemberRepository(_context);
