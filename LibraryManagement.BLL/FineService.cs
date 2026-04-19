@@ -38,6 +38,7 @@ namespace LibraryManagement.BLL
            return OperationResult.Success("Fine waived successfully");
         }
         public async Task<OperationResult> PayAsync(int id) {
+            
             var fineToPay = await _unitOfWork.FineRepository.GetFineByIdAsync(id);
 
             if (fineToPay == null)
@@ -49,7 +50,7 @@ namespace LibraryManagement.BLL
             {
                 return OperationResult.Failure(OperationStatus.Conflict, "Fine was already completed (Paid/Waived");
             }
-
+             
             fineToPay.Status = "Paid";
             fineToPay.PaidAt = DateTime.UtcNow;
 

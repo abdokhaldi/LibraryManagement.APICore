@@ -23,7 +23,7 @@ namespace LibraryManagement.DTO.BorrowingDTOs
                 return overdueDays * 15m;
             }
             }
-            public int current { get; set; } = 0;
+           
             public DateTime? ReturnDate { get; set; }
             public required string Status { get; set; }
             
