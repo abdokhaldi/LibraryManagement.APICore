@@ -48,7 +48,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
-        public async Task<IActionResult> Waive(int id, string waiveReason)
+        public async Task<IActionResult> Waive(int id, [FromBody] string waiveReason)
         {
             var result = await _fineService.WaiveAsync(id, waiveReason);
             if (result.IsSuccess)
