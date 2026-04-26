@@ -27,6 +27,13 @@ namespace LibraryManagement.DAL.Configurations
                 .HasMaxLength(50)
                 .IsUnicode(true);
 
+            builder.HasIndex(p => p.NationalNumber)
+                .IsUnique();
+
+            builder.Property(p => p.NationalNumber)
+                .IsRequired()
+                .HasMaxLength(20);
+                
             builder.Property(p => p.Email)
                 .IsRequired()
                 .HasMaxLength(50)
@@ -64,6 +71,7 @@ namespace LibraryManagement.DAL.Configurations
                     PersonID = 1,
                     FirstName = "Ahmed",
                     LastName = "Alami",
+                    NationalNumber = "IC122065",
                     Email = "ahmed.alami@gmail.com",
                     Phone = "0612345678",
                     Address = "Agdal, Rabat",
@@ -76,6 +84,7 @@ new Person
     PersonID = 2,
     FirstName = "Fatima",
     LastName = "Zahra",
+    NationalNumber = "IC122068",
     Email = "fatima.ezzahra@outlook.com",
     Phone = "0623456789",
     Address = "Gueliz, Marrakech",
@@ -89,6 +98,7 @@ new Person
     FirstName = "Youssef",
     LastName = "Idrissi",
     Email = "youssef.idrissi@yahoo.com",
+    NationalNumber = "IC922065",
     Phone = "0634567890",
     Address = "Maarif, Casablanca",
     City = "Casablanca",
@@ -100,6 +110,7 @@ new Person
     PersonID = 4,
     FirstName = "Sanaa",
     LastName = "Bennani",
+    NationalNumber = "IC922965",
     Email = "sanaa.bennani@gmail.com",
     Phone = "0645678901",
     Address = "Ville Nouvelle, Fes",
@@ -112,6 +123,7 @@ new Person
     PersonID = 5,
     FirstName = "Omar",
     LastName = "Mansouri",
+    NationalNumber = "IC128493",
     Email = "omar.mansouri@hotmail.com",
     Phone = "0656789012",
     Address = "Malabata, Tanger",
@@ -124,6 +136,7 @@ new Person
     PersonID = 6,
     FirstName = "Laila",
     LastName = "Tazi",
+    NationalNumber = "I907065",
     Email = "laila.tazi@gmail.com",
     Phone = "0667890123",
     Address = "Hay Salam, Agadir",
@@ -136,6 +149,7 @@ new Person
     PersonID = 7,
     FirstName = "Karim",
     LastName = "Sabbahi",
+    NationalNumber = "IC87409",
     Email = "karim.sabbahi@icloud.com",
     Phone = "0678901234",
     Address = "Ouled Ayad, Beni Mellal",
@@ -148,6 +162,7 @@ new Person
     PersonID = 8,
     FirstName = "Meryem",
     LastName = "Fassi",
+    NationalNumber = "IC008571",
     Email = "meryem.fassi@gmail.com",
     Phone = "0689012345",
     Address = "Nansria, Oujda",
@@ -160,6 +175,7 @@ new Person
     PersonID = 9,
     FirstName = "Hamza",
     LastName = "Radi",
+    NationalNumber = "IC124598",
     Email = "hamza.radi@live.com",
     Phone = "0690123456",
     Address = "Dakhla, Meknes",
@@ -172,6 +188,7 @@ new Person
     PersonID = 10,
     FirstName = "Salma",
     LastName = "Amrani",
+    NationalNumber = "IC248382",
     Email = "salma.amrani@gmail.com",
     Phone = "0601234567",
     Address = "Mohammedia Center",
@@ -184,6 +201,7 @@ new Person
                      PersonID = 11,
                      FirstName = "Abdenabi",
                      LastName = "Khaldi",
+                     NationalNumber = "IC188555",
                      Email = "Freeh11@gmail.com",
                      Phone = "0644353219",
                      Address = "Ait Alla , Tabia , Azilal",
