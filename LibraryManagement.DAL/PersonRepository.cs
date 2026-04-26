@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.DAL.Base;
 using LibraryManagement.Shared.Helpers;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace LibraryManagement.DAL
 {
@@ -16,9 +18,28 @@ namespace LibraryManagement.DAL
         {
             _context = context;
         }
+        
+        public async Task<Person?> GetPersonAsync(Expression<Func<Person, bool>> predicate, bool trackChanges = false)
+        {
+            IQueryable<Person> query = _context.People;
+            if (!trackChanges)
+            {
+                query = query.AsNoTracking();
+            }
 
+            var person = await query.Where(predicate)
+                         .FirstOrDefaultAsync();
+            return person;
+        }
 
-         public async Task<PagedList<Person>> GetActivePeopleAsync(PersonParameters parameters)
+        public async Task<bool> CheckPersonExistenceAsync(Expression<Func<Person, bool>> predicate)
+        {
+            bool isFound = await _context.People.AnyAsync(predicate);
+
+            return isFound; 
+        }
+
+        public async Task<PagedList<Person>> GetActivePeopleAsync(PersonParameters parameters)
           {
             
                 var query = _context.People.AsNoTracking();
@@ -63,6 +84,8 @@ namespace LibraryManagement.DAL
             _context.People.Add(personEntity);
             return Task.CompletedTask;
         }
+
+
 
         public async Task<(bool isNotFound,bool isNotActive)> CheckPersonStatus(int id)
         {

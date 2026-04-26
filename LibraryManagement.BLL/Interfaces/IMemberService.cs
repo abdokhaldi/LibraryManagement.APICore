@@ -1,13 +1,13 @@
 ﻿using LibraryManagement.Domain.Entities;
 using LibraryManagement.DTO.MemberDTOs;
-using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.Shared.Helpers;
 using LibraryManagement.Shared.Parameters;
+
 namespace LibraryManagement.BLL.Interfaces
 {
     public interface IMemberService
     {
-       internal Task<Member> CreateMemberAsync(MemberForCreationDTO memberDTO );
+       internal Task<Member> CreateMemberAsync(Person person, MemberForCreationDTO memberDTO );
         Task<PagedList<MemberForDisplayDTO>> GetActiveMembersAsync(MemberParameters parameters);
 
         Task<MemberForDisplayDTO?> GetMemberDetails(int id);

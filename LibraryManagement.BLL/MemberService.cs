@@ -6,6 +6,7 @@ using LibraryManagement.DTO.MemberDTOs;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.Shared.Helpers;
 using LibraryManagement.DTO.OperationResults;
+using System.Diagnostics.Contracts;
 namespace LibraryManagement.BLL
 {
     public class MemberService : IMemberService
@@ -19,7 +20,8 @@ namespace LibraryManagement.BLL
         }
 
         
-      public async Task<Member> CreateMemberAsync(MemberForCreationDTO memberDTO)
+
+      public async Task<Member> CreateMemberAsync(Person person, MemberForCreationDTO memberDTO)
         {
             var existingMember = await _unitOfWork.MemberRepository.GetMemberByPersonIDAsync(memberDTO.PersonID);
               
@@ -27,11 +29,13 @@ namespace LibraryManagement.BLL
             {
                 return existingMember;
             }
-            var person = await _unitOfWork.PersonRepository.GetPersonForReadOnlyAsync(memberDTO.PersonID);
-            if (person == null)
-            {
-                return null!;
-            }
+
+           // var person = await _unitOfWork.PersonRepository.GetPersonForReadOnlyAsync(memberDTO.PersonID);
+           // if (person == null)
+           // {
+           //     return null!;
+           // }
+
             var memberEntity = _mapper.Map<Member>(memberDTO);
             await _unitOfWork.MemberRepository.AddNewMemberAsync(memberEntity);
              

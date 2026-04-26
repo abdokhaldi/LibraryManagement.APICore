@@ -8,6 +8,7 @@ using LibraryManagement.Shared.Parameters;
 using LibraryManagement.Shared.Helpers;
 using LibraryManagement.DAL.Base;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 namespace LibraryManagement.DAL
 {
     public class MemberRepository : IMemberRepository
@@ -17,6 +18,21 @@ namespace LibraryManagement.DAL
         {
             _context = context;
         }
+
+        // this is a generic method to get member by ID and NationalNumber
+        public async Task<Member?> GetMemberAsync(Expression<Func<Member,bool>> predicate, bool isTracked=false)
+        {
+            IQueryable<Member> query = _context.Members;
+            if (!isTracked)
+            {
+                query = query.AsNoTracking();
+            }
+            var member = await query.Where(predicate)
+                    .FirstOrDefaultAsync();
+            return member;    
+        }
+
+
 
         public Task<PagedList<Member>> GetActiveMembersAsync(MemberParameters parameters)
         {
@@ -97,11 +113,6 @@ namespace LibraryManagement.DAL
             
         }
 
-
-      //  public async Task<int> GetMembersCountAsync()
-      //  {
-      //      return await _context.Members.CountAsync();
-      //   }
 
     }
 }
