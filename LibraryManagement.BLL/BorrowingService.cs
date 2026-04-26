@@ -27,11 +27,11 @@ namespace LibraryManagement.BLL
 
         public async Task<OperationResult<int>> CreateBorrowingAsync(BorrowingForCreationDTO borrowingDTO)
         {
-            var bookCopyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(cb => cb.BookCopyID==borrowingDTO.BookCopyID ,trackChanges:true);
+            var bookCopyEntity = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(cb => cb.Barcode == borrowingDTO.Barcode ,trackChanges:true);
 
             if (bookCopyEntity == null)
             {
-                return OperationResult<int>.Failure(OperationStatus.NotFound, $"The book with ID:{borrowingDTO.BookCopyID} was not found for borrowing");
+                return OperationResult<int>.Failure(OperationStatus.NotFound, $"The book with Barcode:{borrowingDTO.Barcode} was not found for borrowing");
             }
             
             int availableQuantity = await _unitOfWork.BookCopyRepository.GetAvailableBookCopiesQuantityAsync(bookCopyEntity.BookID);
@@ -41,9 +41,16 @@ namespace LibraryManagement.BLL
              return OperationResult<int>.Failure(OperationStatus.Conflict, $"cannot borrow this book , the book quantity is 0");
 
             }
-            var memberToCreate = new MemberForCreationDTO { PersonID = borrowingDTO.PersonID, JoinDate = DateTime.Now, IsActive = true };
+            var person = await _unitOfWork.PersonRepository.GetPersonAsync(p => p.NationalNumber==borrowingDTO.NationalNumber, false);
+          
+            if(person == null)
+            {
+                return OperationResult<int>.Failure(OperationStatus.NotFound, "The person with target national number not exist!");
+            }
 
-            var memberEntity = await _memberService.CreateMemberAsync(memberToCreate);
+            var memberToCreate = new MemberForCreationDTO { PersonID = person.PersonID, JoinDate = DateTime.Now, IsActive = true };
+
+            var memberEntity = await _memberService.CreateMemberAsync(person, memberToCreate);
            
             if (memberEntity.JoinDate < memberToCreate.JoinDate) {
 
@@ -73,9 +80,10 @@ namespace LibraryManagement.BLL
 
             bookCopyEntity.Status = CopyStatus.Borrowed;
 
-            var borrowingEntity = _mapper.Map<Borrowing>(borrowingDTO);
+            var borrowingEntity = _mapper.Map<Borrowing>(new BorrowingForCreationDTO {DueDate=borrowingDTO.DueDate, InitialFees=borrowingDTO.InitialFees, Barcode="",NationalNumber=""});
 
             borrowingEntity.Member = memberEntity;
+            borrowingEntity.BookCopy = bookCopyEntity;
             borrowingEntity.BorrowingDate = DateTime.UtcNow;
             borrowingEntity.Status = "Borrowed";
             borrowingEntity.InitialFees = 15.0m; // default value while i create settings

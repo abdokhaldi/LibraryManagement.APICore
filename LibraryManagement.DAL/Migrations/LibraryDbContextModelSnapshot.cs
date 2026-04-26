@@ -477,8 +477,8 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             BorrowingID = 1,
                             BookCopyID = 2,
-                            BorrowingDate = new DateTime(2026, 4, 15, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3864),
-                            DueDate = new DateTime(2026, 4, 19, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3866),
+                            BorrowingDate = new DateTime(2026, 4, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6763),
+                            DueDate = new DateTime(2026, 4, 28, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6765),
                             InitialFees = 15.0m,
                             IsCanceled = false,
                             MemberID = 1,
@@ -488,8 +488,8 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             BorrowingID = 2,
                             BookCopyID = 7,
-                            BorrowingDate = new DateTime(2026, 4, 15, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3873),
-                            DueDate = new DateTime(2026, 4, 20, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3874),
+                            BorrowingDate = new DateTime(2026, 4, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6775),
+                            DueDate = new DateTime(2026, 4, 29, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6775),
                             InitialFees = 15.0m,
                             IsCanceled = false,
                             MemberID = 2,
@@ -499,8 +499,8 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             BorrowingID = 3,
                             BookCopyID = 8,
-                            BorrowingDate = new DateTime(2026, 4, 15, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3877),
-                            DueDate = new DateTime(2026, 4, 17, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3877),
+                            BorrowingDate = new DateTime(2026, 4, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6778),
+                            DueDate = new DateTime(2026, 4, 26, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6778),
                             InitialFees = 15.0m,
                             IsCanceled = false,
                             MemberID = 3,
@@ -510,8 +510,8 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             BorrowingID = 4,
                             BookCopyID = 17,
-                            BorrowingDate = new DateTime(2026, 4, 15, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3880),
-                            DueDate = new DateTime(2026, 4, 19, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3880),
+                            BorrowingDate = new DateTime(2026, 4, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6781),
+                            DueDate = new DateTime(2026, 4, 28, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6781),
                             InitialFees = 15.0m,
                             IsCanceled = false,
                             MemberID = 3,
@@ -521,20 +521,20 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             BorrowingID = 5,
                             BookCopyID = 2,
-                            BorrowingDate = new DateTime(2026, 3, 15, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3883),
-                            DueDate = new DateTime(2026, 3, 22, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3888),
+                            BorrowingDate = new DateTime(2026, 3, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6784),
+                            DueDate = new DateTime(2026, 3, 31, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6790),
                             InitialFees = 15.0m,
                             IsCanceled = false,
                             MemberID = 7,
-                            ReturnDate = new DateTime(2026, 3, 20, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3890),
+                            ReturnDate = new DateTime(2026, 3, 29, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6791),
                             Status = "Returned"
                         },
                         new
                         {
                             BorrowingID = 6,
                             BookCopyID = 12,
-                            BorrowingDate = new DateTime(2026, 4, 15, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3895),
-                            DueDate = new DateTime(2026, 4, 21, 12, 22, 48, 870, DateTimeKind.Utc).AddTicks(3895),
+                            BorrowingDate = new DateTime(2026, 4, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6796),
+                            DueDate = new DateTime(2026, 4, 30, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6797),
                             InitialFees = 15.0m,
                             IsCanceled = false,
                             MemberID = 7,
@@ -683,7 +683,7 @@ namespace LibraryManagement.DAL.Migrations
                             DefaultBorrowingDays = 14,
                             DefaultFinePerDay = 10.0m,
                             IsLibraryOpen = true,
-                            LastUpdated = new DateTime(2026, 4, 15, 12, 22, 48, 874, DateTimeKind.Utc).AddTicks(1621),
+                            LastUpdated = new DateTime(2026, 4, 24, 21, 3, 54, 252, DateTimeKind.Utc).AddTicks(7396),
                             MaxBooksPerMember = 5,
                             MaxFineLimit = 100.0m,
                             UpdatedBy = "System"
@@ -719,49 +719,49 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             MemberID = 1,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 15, 12, 22, 48, 872, DateTimeKind.Utc).AddTicks(1198),
+                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4409),
                             PersonID = 2
                         },
                         new
                         {
                             MemberID = 2,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 15, 12, 22, 48, 872, DateTimeKind.Utc).AddTicks(1202),
+                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4413),
                             PersonID = 1
                         },
                         new
                         {
                             MemberID = 3,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 15, 12, 22, 48, 872, DateTimeKind.Utc).AddTicks(1203),
+                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4415),
                             PersonID = 4
                         },
                         new
                         {
                             MemberID = 4,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 15, 12, 22, 48, 872, DateTimeKind.Utc).AddTicks(1205),
+                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4416),
                             PersonID = 3
                         },
                         new
                         {
                             MemberID = 5,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 15, 12, 22, 48, 872, DateTimeKind.Utc).AddTicks(1206),
+                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4418),
                             PersonID = 6
                         },
                         new
                         {
                             MemberID = 6,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 15, 12, 22, 48, 872, DateTimeKind.Utc).AddTicks(1208),
+                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4419),
                             PersonID = 5
                         },
                         new
                         {
                             MemberID = 7,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 15, 12, 22, 48, 872, DateTimeKind.Utc).AddTicks(1209),
+                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4421),
                             PersonID = 7
                         });
                 });
@@ -811,6 +811,11 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("NationalNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -820,6 +825,9 @@ namespace LibraryManagement.DAL.Migrations
                     b.HasKey("PersonID");
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("NationalNumber")
                         .IsUnique();
 
                     b.HasIndex("Phone")
@@ -838,6 +846,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "M",
                             IsActive = true,
                             LastName = "Alami",
+                            NationalNumber = "IC122065",
                             Phone = "0612345678"
                         },
                         new
@@ -850,6 +859,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "F",
                             IsActive = true,
                             LastName = "Zahra",
+                            NationalNumber = "IC122068",
                             Phone = "0623456789"
                         },
                         new
@@ -862,6 +872,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "M",
                             IsActive = true,
                             LastName = "Idrissi",
+                            NationalNumber = "IC922065",
                             Phone = "0634567890"
                         },
                         new
@@ -874,6 +885,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "F",
                             IsActive = true,
                             LastName = "Bennani",
+                            NationalNumber = "IC922965",
                             Phone = "0645678901"
                         },
                         new
@@ -886,6 +898,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "M",
                             IsActive = true,
                             LastName = "Mansouri",
+                            NationalNumber = "IC128493",
                             Phone = "0656789012"
                         },
                         new
@@ -898,6 +911,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "F",
                             IsActive = true,
                             LastName = "Tazi",
+                            NationalNumber = "I907065",
                             Phone = "0667890123"
                         },
                         new
@@ -910,6 +924,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "M",
                             IsActive = true,
                             LastName = "Sabbahi",
+                            NationalNumber = "IC87409",
                             Phone = "0678901234"
                         },
                         new
@@ -922,6 +937,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "F",
                             IsActive = true,
                             LastName = "Fassi",
+                            NationalNumber = "IC008571",
                             Phone = "0689012345"
                         },
                         new
@@ -934,6 +950,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "M",
                             IsActive = true,
                             LastName = "Radi",
+                            NationalNumber = "IC124598",
                             Phone = "0690123456"
                         },
                         new
@@ -946,6 +963,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "F",
                             IsActive = true,
                             LastName = "Amrani",
+                            NationalNumber = "IC248382",
                             Phone = "0601234567"
                         },
                         new
@@ -958,6 +976,7 @@ namespace LibraryManagement.DAL.Migrations
                             Gender = "M",
                             IsActive = true,
                             LastName = "Khaldi",
+                            NationalNumber = "IC188555",
                             Phone = "0644353219"
                         });
                 });

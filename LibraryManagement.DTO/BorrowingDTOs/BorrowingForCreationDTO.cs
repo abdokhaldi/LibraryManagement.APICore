@@ -10,9 +10,9 @@ namespace LibraryManagement.DTO.BorrowingDTOs
     public class BorrowingForCreationDTO
     {
             
-            public required int BookCopyID { get; set; }
-            public required int PersonID { get; set; }
-            
+            public required string Barcode { get; set; }
+            public required string NationalNumber { get; set; }
+            public required decimal InitialFees { get; set; }
             public required DateTime DueDate { get; set; }
         }
 

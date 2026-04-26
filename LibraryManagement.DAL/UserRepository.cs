@@ -6,6 +6,7 @@ using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.DAL.Base;
 using LibraryManagement.Shared.Helpers;
+using System.Linq.Expressions;
 namespace LibraryManagement.DAL
 {
     public class UserRepository : IUserRepository
@@ -44,6 +45,8 @@ namespace LibraryManagement.DAL
                                .FirstOrDefaultAsync(u =>u.Username==username);
                 return user;
          }
+
+      
 
       public async Task<User?> GetUserForLoginAsync(string identifier)
         {
