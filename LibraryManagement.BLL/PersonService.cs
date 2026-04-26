@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Interfaces;
-using LibraryManagement.DTO.PersonDTOs;
-using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Common;
-using LibraryManagement.Shared.Parameters;
+using LibraryManagement.DTO.OperationResults;
+using LibraryManagement.DTO.PersonDTOs;
 using LibraryManagement.Shared.Helpers;
+using LibraryManagement.Shared.Parameters;
+using System.Linq.Expressions;
 
 namespace LibraryManagement.BLL
 {
@@ -43,6 +41,16 @@ namespace LibraryManagement.BLL
             await _unitOfWork.SaveChangesAsync();
 
             return OperationResult<int>.Success(personEntity.PersonID);
+        }
+
+        public async Task<OperationResult<bool>> CheckPersonExistenceAsync(string nationalNumber)
+        {
+            bool isFound = await _unitOfWork.PersonRepository.CheckPersonExistenceAsync(p => p.NationalNumber == nationalNumber);
+            if (!isFound)
+                return OperationResult<bool>.Failure(OperationStatus.NotFound, "Not found");
+          
+            return OperationResult<bool>.Success(true);
+
         }
 
         public async Task<OperationResult<PersonForDisplayDTO>> GetPersonDetailsAsync(int id)

@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace LibraryManagement.API.Controllers
 {
-    [Authorize(Roles = "Admin,Librarian")]
+   // [Authorize(Roles = "Admin,Librarian")]
     [Route("api/[controller]")]
     [ApiController]
     public class PersonController : BaseController
@@ -34,7 +34,20 @@ namespace LibraryManagement.API.Controllers
                 return CreatedAtAction(nameof(GetPersonDetails), new { id = result.Data }, result.Data);
                        return HandleErrorResult(result);
       }
-        
+
+        [HttpGet("{nationalNumber}/CheckPersonExistence")]
+        [ProducesResponseType((int)StatusCodes.Status400BadRequest)]
+        [ProducesResponseType((int)StatusCodes.Status404NotFound)]
+        [ProducesResponseType((int)StatusCodes.Status200OK)]
+        public async Task<IActionResult> CheckPersonExistence(string nationalNumber)
+        {
+            
+            var result = await _personService.CheckPersonExistenceAsync(nationalNumber);
+            if (result.IsSuccess)
+                return Ok(result.Data);
+            return HandleErrorResult(result);
+        }
+
 
         [HttpGet("{id}")]
         [ProducesResponseType((int)StatusCodes.Status404NotFound)]

@@ -7,6 +7,7 @@ namespace LibraryManagement.BLL.Interfaces
 {
     public interface IPersonService
     {
+        Task<OperationResult<bool>> CheckPersonExistenceAsync(string nationalNumber);
         Task<OperationResult<PersonForDisplayDTO>> GetPersonDetailsAsync(int id);
         Task<PagedList<PersonForDisplayDTO>> GetAllPeopleAsync(PersonParameters parameters);
         Task<OperationResult> UpdatePersonAsync(int id, PersonForUpdateDTO personDTO);
