@@ -1,8 +1,8 @@
 ﻿namespace LibraryManagement.Shared.Tenant.TenantContract
 {
-    public interface ITenantProvider
+    public interface ITenantGetter
     {
-        Guid TenantID { get; }
+        Guid GetTenantId();
         }
     }
 

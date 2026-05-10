@@ -1,13 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
-using  LibraryManagement.Domain.Entities;
+﻿using  LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.TenantContract;
+using LibraryManagement.Shared.Tenant.TenantContract;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 namespace LibraryManagement.DAL.Context
 {
     public class LibraryDbContext : DbContext
     {
-        public LibraryDbContext(DbContextOptions<LibraryDbContext> options)
+        private readonly ITenantGetter _tenantGetter;
+        public LibraryDbContext(DbContextOptions<LibraryDbContext> options, ITenantGetter tenant)
                                : base(options)
         {
-
+            _tenantGetter = tenant;
         }
 
        
@@ -29,14 +33,52 @@ namespace LibraryManagement.DAL.Context
             base.OnModelCreating(modelBuilder);
 
             
-
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(LibraryDbContext).Assembly);
-                
+
+            
+            var currentTenantId = _tenantGetter.GetTenantId();
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+               
+                if (typeof(IMustHaveTenant).IsAssignableFrom(entityType.ClrType))
+                {
+                    modelBuilder.Entity(entityType.ClrType)
+                        .HasQueryFilter(CreateTenantFilterExpression(entityType.ClrType, currentTenantId));
+                }
+            }
         }
-      //  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-      //  {
-      //     // optionsBuilder.AddInterceptors();
-      //  }
+
+        private LambdaExpression CreateTenantFilterExpression(Type type , Guid tenantId)
+        {
+            var parameter = Expression.Parameter(type , "x");
+            var property = Expression.Property(parameter, nameof(IMustHaveTenant.TenantID));
+            var condition = Expression.Equal(property, Expression.Constant(tenantId));
+
+            return Expression.Lambda(condition, parameter);
+        }
+
+
+       
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var currentTenantId = _tenantGetter.GetTenantId();
+
+            foreach (var entry in ChangeTracker.Entries<IMustHaveTenant>())
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.TenantID = currentTenantId;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        //  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //  {
+        //     // optionsBuilder.AddInterceptors();
+        //  }
 
     }
 }

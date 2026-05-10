@@ -4,12 +4,16 @@ using LibraryManagement.Shared.Tenant.TenantContract;
 
 namespace LibraryManagement.Shared.Tenant.TenantService
 {
-    internal class TenantService : ITenantProvider, ITenantSetter
+    internal class TenantService : ITenantGetter, ITenantSetter
     {
         public Guid TenantID { get; private set; }
-        public void SetTenant(Guid tenantId)
+        public void SetTenantId(Guid tenantId)
         {
             TenantID = tenantId;
+        }
+        public Guid GetTenantId()
+        {
+           return TenantID ;
         }
     }
 }

@@ -8,6 +8,6 @@ namespace LibraryManagement.Shared.Tenant.TenantContract
 {
     public interface ITenantSetter
     {
-        void SetTenant(Guid tenantId);
+        void SetTenantId(Guid tenantId);
     }
 }
