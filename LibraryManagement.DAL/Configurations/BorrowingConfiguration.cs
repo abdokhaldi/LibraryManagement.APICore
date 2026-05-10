@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -47,6 +48,11 @@ namespace LibraryManagement.DAL.Configurations
                  .IsRequired();
 
             builder.HasQueryFilter(b => b.BookCopy.IsActive);
+
+            builder.HasOne<Tenant>()
+                .WithMany()
+                .HasForeignKey(b => b.TenantID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasData(
             new Borrowing()

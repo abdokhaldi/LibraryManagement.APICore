@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -26,6 +27,11 @@ namespace LibraryManagement.DAL.Configurations
                 .WithOne()
                 .HasForeignKey<Member>(m => m.PersonID)
                 .IsRequired();
+
+            builder.HasOne<Tenant>()
+                .WithMany()
+                .HasForeignKey(m => m.TenantID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasData(
                 new Member()

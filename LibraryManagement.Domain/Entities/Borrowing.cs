@@ -1,21 +1,18 @@
 ﻿
 using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.TenantContract;
 namespace LibraryManagement.Domain.Entities
 {
    
-    public class Borrowing
+    public class Borrowing : IMustHaveTenant
     {
         
 
         public int BorrowingID { get; set; }
-
-      
         public int BookCopyID { get; set; }
-       
-
+        public Guid TenantID { get; set; }
         public int MemberID { get; set; }
         public DateTime BorrowingDate { get; set; }
-       
         public DateTime DueDate { get; set; }
        
         public DateTime? ReturnDate { get; set; }

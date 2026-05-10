@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,7 +13,10 @@ namespace LibraryManagement.DAL.Configurations
             builder.ToTable("Books");
             builder.HasKey(b => b.BookID);
 
-           
+            builder.HasOne<Tenant>()
+              .WithMany()
+              .HasForeignKey(b => b.TenantID)
+              .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(b => b.Title)
                 .IsRequired()

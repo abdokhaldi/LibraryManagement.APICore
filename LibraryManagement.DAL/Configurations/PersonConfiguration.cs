@@ -1,12 +1,13 @@
-﻿using System;
+﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Identity.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LibraryManagement.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Identity.Client;
 
 namespace LibraryManagement.DAL.Configurations
 {
@@ -65,6 +66,12 @@ namespace LibraryManagement.DAL.Configurations
 
             builder.HasIndex(p => p.Phone)
                 .IsUnique();
+
+            builder.HasOne<Tenant>()
+                .WithMany()
+                .HasForeignKey(p => p.TenantID)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasData(
                 new Person
                 {

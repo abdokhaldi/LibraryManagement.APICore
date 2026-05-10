@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -43,6 +44,10 @@ namespace LibraryManagement.DAL.Configurations
             builder.HasIndex(u=>u.Username)
                 .IsUnique();
 
+            builder.HasOne<Tenant>()
+                .WithMany()
+                .HasForeignKey(u => u.TenantID)
+                .OnDelete(DeleteBehavior.Restrict);
            
         }
 

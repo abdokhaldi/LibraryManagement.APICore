@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+
+using LibraryManagement.Domain.TenantContract;
 
 namespace LibraryManagement.Domain.Entities
 {
    
-    public class Person
+    public class Person :IMustHaveTenant
     {
        
         public int PersonID { get; set; }
-       
+        public Guid TenantID { get; set; }
         public string FirstName { get; set; } = null!;
        
         public string LastName { get; set; } = null!;

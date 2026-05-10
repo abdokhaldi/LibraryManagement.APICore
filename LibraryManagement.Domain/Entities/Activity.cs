@@ -1,11 +1,14 @@
 ﻿
 
+using LibraryManagement.Domain.TenantContract;
+
 namespace LibraryManagement.Domain.Entities
 {
     
-    public class Activity
+    public class Activity : IMustHaveTenant
     {
         public int  ActivityID { get; set; }
+        public Guid TenantID { get; set; }
         public string ActivityType { get; set; } = null!;
         public string Description { get; set; } = null!;
         public DateTime CreatedAt { get; set; }

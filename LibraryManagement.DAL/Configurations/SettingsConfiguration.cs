@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -41,6 +42,12 @@ namespace LibraryManagement.DAL.Configurations
                    .IsRequired()
                    .HasMaxLength(100)
                    .IsUnicode(false);
+
+            builder.HasOne<Tenant>()
+                .WithMany()
+                .HasForeignKey(g => g.TenantID)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             builder.HasData(new GlobalSettings
             {

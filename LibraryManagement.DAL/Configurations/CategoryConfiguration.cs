@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -21,6 +22,7 @@ namespace LibraryManagement.DAL.Configurations
                 .HasMaxLength(300)
                 .IsUnicode();
 
+           
             builder.HasData(
             new Category { CategoryID = 1, CategoryName = "Programming", Description = "Software development books" },
             new Category { CategoryID = 2, CategoryName = "History", Description = "World history and biographies" },

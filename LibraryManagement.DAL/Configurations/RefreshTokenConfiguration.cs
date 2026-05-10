@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -35,7 +36,12 @@ namespace LibraryManagement.DAL.Configurations
                    .WithMany(u => u.RefreshTokens)
                    .HasForeignKey(rt => rt.UserID)
                    .OnDelete(DeleteBehavior.Cascade);
-            
+
+            builder.HasOne<Tenant>()
+                .WithMany()
+                .HasForeignKey(rt => rt.TenantID)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

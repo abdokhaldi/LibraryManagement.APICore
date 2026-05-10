@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using LibraryManagement.Domain.Entities;
 
 namespace LibraryManagement.DAL.Configurations
 {
@@ -36,11 +37,15 @@ namespace LibraryManagement.DAL.Configurations
                 .IsRequired();
 
             builder.HasIndex(a => new {a.UserID, a.CreatedAt });
-                
 
-            
+            builder.HasOne<Tenant>()
+                   .WithMany()
+                   .HasForeignKey(u => u.TenantID)
+                   .OnDelete(DeleteBehavior.Restrict);
 
-                
+
+
+
         }
     }
 }

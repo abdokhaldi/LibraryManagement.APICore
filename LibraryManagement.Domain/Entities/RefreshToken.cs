@@ -1,13 +1,16 @@
 ﻿
 
+using LibraryManagement.Domain.TenantContract;
+
 namespace LibraryManagement.Domain.Entities
 {
     
-        public class RefreshToken
-        {
-            public int ID { get; set; }
-            public string Token { get; set; } = string.Empty;
-
+        public class RefreshToken : IMustHaveTenant
+    {
+           public int ID { get; set; }
+           public Guid TenantID { get; set; }
+           public string Token { get; set; } = string.Empty;
+          
             public DateTime Expires { get; set; }
 
             public DateTime Created { get; set; }

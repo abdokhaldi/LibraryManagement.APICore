@@ -1,14 +1,16 @@
-﻿using LibraryManagement.Shared.Types;
+﻿using LibraryManagement.Domain.TenantContract;
+using LibraryManagement.Shared.Types;
 
 namespace LibraryManagement.Domain.Entities
 {
    
         
-        public class BookCopy
-        {
+        public class BookCopy : IMustHaveTenant
+    {
             public int BookCopyID { get; set; }
-
-        public string Barcode { get; set; } = null!;
+            public Guid TenantID { get; set; }
+           
+           public string Barcode { get; set; } = null!;
 
             public CopyStatus Status { get; set; } = CopyStatus.Available;
 

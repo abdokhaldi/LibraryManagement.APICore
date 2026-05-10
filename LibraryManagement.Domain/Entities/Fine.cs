@@ -1,8 +1,12 @@
 
+using LibraryManagement.Domain.TenantContract;
+
 namespace LibraryManagement.Domain.Entities
 {
-public class Fine {
+public class Fine : IMustHaveTenant
+    {
     public int FineID {get;set;}
+    public Guid TenantID { get; set; }
     public int BorrowingID {get;set;}
     public int MemberID {get;set;}
     public decimal Amount { get; set; }

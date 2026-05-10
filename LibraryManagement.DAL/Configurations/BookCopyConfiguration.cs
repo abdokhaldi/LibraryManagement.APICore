@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
 using LibraryManagement.Shared.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -44,6 +45,10 @@ namespace LibraryManagement.DAL.Configurations
 
             builder.HasQueryFilter(c => c.IsActive);
 
+            builder.HasOne<Tenant>()
+               .WithMany()
+               .HasForeignKey(c => c.TenantID)
+               .OnDelete(DeleteBehavior.Restrict);
 
             // data seeding
 
