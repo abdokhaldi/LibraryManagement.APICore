@@ -7,7 +7,6 @@ using LibraryManagement.Shared.Parameters;
 using LibraryManagement.DAL.Base;
 using LibraryManagement.Shared.Helpers;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace LibraryManagement.DAL
 {
@@ -64,7 +63,7 @@ namespace LibraryManagement.DAL
             return await query.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
          }
             
-        public async Task<Person?> GetPersonForReadOnlyAsync(int personID)
+        public async Task<Person?> GetPersonForReadOnlyAsync(Guid personID)
         {
                var person = await _context.People
                 .AsNoTracking()
@@ -73,7 +72,7 @@ namespace LibraryManagement.DAL
                 return person;
             }
 
-        public async Task<Person?> GetPersonForUpdateAsync(int personID)
+        public async Task<Person?> GetPersonForUpdateAsync(Guid personID)
         {
             var person = await _context.People
                     .FindAsync(personID);
@@ -87,7 +86,7 @@ namespace LibraryManagement.DAL
 
 
 
-        public async Task<(bool isNotFound,bool isNotActive)> CheckPersonStatus(int id)
+        public async Task<(bool isNotFound,bool isNotActive)> CheckPersonStatus(Guid id)
         {
             var personStatus = await _context.People
                     .AsNoTracking()

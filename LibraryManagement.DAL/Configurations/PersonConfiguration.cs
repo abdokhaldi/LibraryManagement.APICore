@@ -1,14 +1,8 @@
-﻿using LibraryManagement.DAL.Configurations.Seed_Data_Constants;
-using LibraryManagement.Domain.Entities;
+﻿using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace LibraryManagement.DAL.Configurations
 {
@@ -18,6 +12,9 @@ namespace LibraryManagement.DAL.Configurations
         {
             builder.ToTable("People");
             builder.HasKey(p=>p.PersonID);
+
+            builder.Property(p => p.PersonID)
+                .ValueGeneratedNever();
 
             builder.Property(p => p.FirstName)
                 .IsRequired()
@@ -73,163 +70,7 @@ namespace LibraryManagement.DAL.Configurations
                 .HasForeignKey(p => p.TenantID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasData(
-                new Person
-                {
-                    PersonID = 1,
-                    TenantID = SeedDataConstants.RabatTenantId,
-                    FirstName = "Ahmed",
-                    LastName = "Alami",
-                    NationalNumber = "IC122065",
-                    Email = "ahmed.alami@gmail.com",
-                    Phone = "0612345678",
-                    Address = "Agdal, Rabat",
-                    City = "Rabat",
-                    Gender = 'M',
-                    IsActive = true
-                },
-new Person
-{
-    PersonID = 2,
-    TenantID = SeedDataConstants.RabatTenantId,
-    FirstName = "Fatima",
-    LastName = "Zahra",
-    NationalNumber = "IC122068",
-    Email = "fatima.ezzahra@outlook.com",
-    Phone = "0623456789",
-    Address = "Gueliz, Marrakech",
-    City = "Marrakech",
-    Gender = 'F',
-    IsActive = true
-},
-new Person
-{
-    PersonID = 3,
-    TenantID = SeedDataConstants.RabatTenantId,
-    FirstName = "Youssef",
-    LastName = "Idrissi",
-    Email = "youssef.idrissi@yahoo.com",
-    NationalNumber = "IC922065",
-    Phone = "0634567890",
-    Address = "Maarif, Casablanca",
-    City = "Casablanca",
-    Gender = 'M',
-    IsActive = true
-},
-new Person
-{
-    PersonID = 4,
-    TenantID = SeedDataConstants.RabatTenantId,
-    FirstName = "Sanaa",
-    LastName = "Bennani",
-    NationalNumber = "IC922965",
-    Email = "sanaa.bennani@gmail.com",
-    Phone = "0645678901",
-    Address = "Ville Nouvelle, Fes",
-    City = "Fes",
-    Gender = 'F',
-    IsActive = true
-},
-new Person
-{
-    PersonID = 5,
-    TenantID = SeedDataConstants.CasaTenantId,
-    FirstName = "Omar",
-    LastName = "Mansouri",
-    NationalNumber = "IC128493",
-    Email = "omar.mansouri@hotmail.com",
-    Phone = "0656789012",
-    Address = "Malabata, Tanger",
-    City = "Tanger",
-    Gender = 'M',
-    IsActive = true
-},
-new Person
-{
-    PersonID = 6,
-    TenantID = SeedDataConstants.CasaTenantId,
-    FirstName = "Laila",
-    LastName = "Tazi",
-    NationalNumber = "I907065",
-    Email = "laila.tazi@gmail.com",
-    Phone = "0667890123",
-    Address = "Hay Salam, Agadir",
-    City = "Agadir",
-    Gender = 'F',
-    IsActive = true
-},
-new Person
-{
-    PersonID = 7,
-    TenantID = SeedDataConstants.CasaTenantId,
-    FirstName = "Karim",
-    LastName = "Sabbahi",
-    NationalNumber = "IC87409",
-    Email = "karim.sabbahi@icloud.com",
-    Phone = "0678901234",
-    Address = "Ouled Ayad, Beni Mellal",
-    City = "Beni Mellal",
-    Gender = 'M',
-    IsActive = true
-},
-new Person
-{
-    PersonID = 8,
-    TenantID = SeedDataConstants.CasaTenantId,
-    FirstName = "Meryem",
-    LastName = "Fassi",
-    NationalNumber = "IC008571",
-    Email = "meryem.fassi@gmail.com",
-    Phone = "0689012345",
-    Address = "Nansria, Oujda",
-    City = "Oujda",
-    Gender = 'F',
-    IsActive = true
-},
-new Person
-{
-    PersonID = 9,
-    TenantID = SeedDataConstants.CasaTenantId,
-    FirstName = "Hamza",
-    LastName = "Radi",
-    NationalNumber = "IC124598",
-    Email = "hamza.radi@live.com",
-    Phone = "0690123456",
-    Address = "Dakhla, Meknes",
-    City = "Meknes",
-    Gender = 'M',
-    IsActive = true
-},
-new Person
-{
-    PersonID = 10,
-    TenantID = SeedDataConstants.CasaTenantId,
-    FirstName = "Salma",
-    LastName = "Amrani",
-    NationalNumber = "IC248382",
-    Email = "salma.amrani@gmail.com",
-    Phone = "0601234567",
-    Address = "Mohammedia Center",
-    City = "Mohammedia",
-    Gender = 'F',
-    IsActive = true
-},
-                 new Person
-                 {
-                     PersonID = 11,
-                     TenantID = SeedDataConstants.CasaTenantId,
-                     FirstName = "Abdenabi",
-                     LastName = "Khaldi",
-                     NationalNumber = "IC188555",
-                     Email = "Freeh11@gmail.com",
-                     Phone = "0644353219",
-                     Address = "Ait Alla , Tabia , Azilal",
-                     City = "Azilal",
-                     Gender = 'M',
-                     IsActive = true
-                 }
-
-                );
+           
         }
 
         

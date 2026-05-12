@@ -53,7 +53,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)StatusCodes.Status404NotFound)]
         [ProducesResponseType((int)StatusCodes.Status200OK)]
 
-        public async Task<IActionResult> GetPersonDetails(int id)
+        public async Task<IActionResult> GetPersonDetails(Guid id)
         {
             
             var result = await _personService.GetPersonDetailsAsync(id);
@@ -70,7 +70,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)StatusCodes.Status400BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
 
-        public async Task<IActionResult> UpdatePerson(int id, [FromBody]PersonForUpdateDTO personDTO)
+        public async Task<IActionResult> UpdatePerson(Guid id, [FromBody]PersonForUpdateDTO personDTO)
         {
             
             var result = await _personService.UpdatePersonAsync(id,personDTO);
@@ -87,7 +87,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)StatusCodes.Status204NoContent)]
         [ProducesResponseType((int)StatusCodes.Status400BadRequest)]
 
-        public async Task<IActionResult> ActivatePerson(int id)
+        public async Task<IActionResult> ActivatePerson(Guid id)
         {
            
             var result = await _personService.ActivatePersonAsync(id);
@@ -101,7 +101,7 @@ namespace LibraryManagement.API.Controllers
         [HttpPatch("{id}/DeactivatePerson")]
         [ProducesResponseType((int)StatusCodes.Status404NotFound)]
         [ProducesResponseType((int)StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeactivatePerson(int id)
+        public async Task<IActionResult> DeactivatePerson(Guid id)
         {
             
             var result = await _personService.DeactivatePersonAsync(id);

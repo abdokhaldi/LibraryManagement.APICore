@@ -7,9 +7,9 @@ namespace LibraryManagement.Domain.Entities
 {
     public class User : IMustHaveTenant
     {
-        public int UserID { get; set; }
+        public Guid UserID { get; set; }
         public Guid TenantID { get; set; } 
-        public int PersonID { get; set; }
+        public Guid PersonID { get; set; }
        
         public Person Person { get; set; } = null!;
         

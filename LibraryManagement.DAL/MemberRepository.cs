@@ -94,7 +94,7 @@ namespace LibraryManagement.DAL
        
 
     
-        public async Task<Member?> GetMemberByPersonIDAsync(int personID)
+        public async Task<Member?> GetMemberByPersonIDAsync(Guid personID)
         {
             
               var member = await _context.Members.AsTracking()
@@ -105,11 +105,11 @@ namespace LibraryManagement.DAL
 
                 return member;
             }
-        public async Task<bool> IsMemberExists(int id)
+        public async Task<bool> IsMemberExists(Guid personID)
         {
             return await _context.Members
                 .AsNoTracking()
-                .AnyAsync(m => m.PersonID == id && m.IsActive==true);
+                .AnyAsync(m => m.PersonID == personID && m.IsActive==true);
             
         }
 

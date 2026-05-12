@@ -40,7 +40,7 @@ namespace LibraryManagement.API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetUserDetails(int id)
+        public async Task<IActionResult> GetUserDetails(Guid id)
         {
             var result = await _userService.GetUserDetailsAsync(id);
             
@@ -54,7 +54,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserForUpdateDTO userDTO)
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserForUpdateDTO userDTO)
         {
             var result = await _userService.UpdateUserAsync(id, userDTO);
 
@@ -82,7 +82,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
 
-        public async Task<IActionResult> DeactivateUser(int id)
+        public async Task<IActionResult> DeactivateUser(Guid id)
         {
             var result = await _userService.DeactivateUserAsync(id);
 
@@ -97,7 +97,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ActiveUser(int id)
+        public async Task<IActionResult> ActiveUser(Guid id)
         {
             var result = await _userService.ActivateUserAsync(id);
             if (result.IsSuccess) 
@@ -111,7 +111,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int) HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> BlockUser(int id)
+        public async Task<IActionResult> BlockUser(Guid id)
         {
             var result = await _userService.BlockUserAsync(id);
             if (result.IsSuccess)
@@ -125,7 +125,7 @@ namespace LibraryManagement.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UnblockUser(int id)
+        public async Task<IActionResult> UnblockUser(Guid id)
         {
             var result = await _userService.UnblockUserAsync(id);
             if (result.IsSuccess)

@@ -4,7 +4,7 @@ namespace LibraryManagement.DTO.UserDTOs
 {
     public class UserForDisplayDTO
     {
-        public required int UserID { get; set; }
+        public required Guid UserID { get; set; }
         public required string FullName { get; set; }
         public required string Username { get; set; }
         public required string RoleName { get; set; }

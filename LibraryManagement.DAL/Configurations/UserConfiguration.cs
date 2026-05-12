@@ -12,6 +12,10 @@ namespace LibraryManagement.DAL.Configurations
         {
             builder.ToTable("Users");
             builder.HasKey(u=>u.UserID);
+
+            builder.Property(u => u.UserID)
+                .ValueGeneratedNever();
+
             builder.Property(u => u.Username)
                 .IsRequired()
                 .HasMaxLength(50)

@@ -8,7 +8,7 @@ namespace LibraryManagement.DTO.MemberDTOs
 {
     public class MemberForCreationDTO
     {
-        public required int PersonID { get; set; }
+        public required Guid PersonID { get; set; }
         public required DateTime JoinDate { get; set; }
         public required bool IsActive { get; set; }
     }

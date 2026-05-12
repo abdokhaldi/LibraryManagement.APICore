@@ -12,11 +12,11 @@ namespace LibraryManagement.Domain.Interfaces
         Task<Member?> GetMemberForUpdateAsync(int memberID);
         Task<Member?> GetMemberForReadOnlyAsync(int memberID);
 
-        Task<Member?> GetMemberByPersonIDAsync(int personID);
+        Task<Member?> GetMemberByPersonIDAsync(Guid personID);
 
         Task AddNewMemberAsync(Member memberEntity);
 
-        Task<bool> IsMemberExists(int id);
+        Task<bool> IsMemberExists(Guid personID);
 
        // Task<int> GetMembersCountAsync();
     }

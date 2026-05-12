@@ -17,7 +17,7 @@ namespace LibraryManagement.DAL
             _context = context;
         }
 
-        public async Task<User?> GetUserForUpdateAsync(int userID)
+        public async Task<User?> GetUserForUpdateAsync(Guid userID)
         {
             
             var user = await _context.Users
@@ -27,7 +27,7 @@ namespace LibraryManagement.DAL
                 return user;
             }
 
-        public async Task<User?> GetUserForReadOnlyAsync(int userID)
+        public async Task<User?> GetUserForReadOnlyAsync(Guid userID)
         {
 
             var user = await _context.Users.AsNoTracking()
@@ -69,7 +69,7 @@ namespace LibraryManagement.DAL
                                  .Include(u => u.Role)
                                  .AsQueryable();
 
-            if (parameters.PersonID.HasValue && parameters.PersonID != 0)
+            if (parameters.PersonID != null && parameters.PersonID != Guid.Empty)
             {
                 query = query.Where(u => u.PersonID == parameters.PersonID);               
             }
@@ -107,7 +107,7 @@ namespace LibraryManagement.DAL
            
         }
 
-        public async Task<bool> IsUsernameExistsForUpdateAsync(int id, string username)
+        public async Task<bool> IsUsernameExistsForUpdateAsync(Guid id, string username)
 
         {
 
@@ -131,7 +131,7 @@ namespace LibraryManagement.DAL
                return Task.CompletedTask;
         }
 
-        public async Task<User?> GetUserAsPersonAsync(int personID)
+        public async Task<User?> GetUserAsPersonAsync(Guid personID)
         {
             return await _context.Users.AsNoTracking()
                                            .Where(u => u.PersonID == personID)

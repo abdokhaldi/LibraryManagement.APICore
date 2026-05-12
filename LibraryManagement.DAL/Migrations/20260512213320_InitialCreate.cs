@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LibraryManagement.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialState : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -123,8 +123,7 @@ namespace LibraryManagement.DAL.Migrations
                 name: "People",
                 columns: table => new
                 {
-                    PersonID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PersonID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TenantID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -184,7 +183,7 @@ namespace LibraryManagement.DAL.Migrations
                 {
                     MemberID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PersonID = table.Column<int>(type: "int", nullable: false),
+                    PersonID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TenantID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     JoinDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
@@ -210,10 +209,9 @@ namespace LibraryManagement.DAL.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TenantID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PersonID = table.Column<int>(type: "int", nullable: false),
+                    PersonID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Username = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     RoleID = table.Column<int>(type: "int", nullable: false),
@@ -295,7 +293,7 @@ namespace LibraryManagement.DAL.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EntityName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     EntityID = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false)
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -326,7 +324,7 @@ namespace LibraryManagement.DAL.Migrations
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     IsUsed = table.Column<bool>(type: "bit", nullable: false),
                     Revoked = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UserID = table.Column<int>(type: "int", nullable: false)
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -427,40 +425,8 @@ namespace LibraryManagement.DAL.Migrations
                 columns: new[] { "SettingsID", "DefaultBorrowingDays", "DefaultFinePerDay", "IsLibraryOpen", "LastUpdated", "MaxBooksPerMember", "MaxFineLimit", "Name", "TenantID", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, 14, 10.0m, true, new DateTime(2026, 5, 12, 0, 0, 35, 687, DateTimeKind.Utc).AddTicks(454), 5, 100.0m, "LibCore", new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"), "System" },
-                    { 2, 14, 15.0m, true, new DateTime(2026, 5, 12, 0, 0, 35, 687, DateTimeKind.Utc).AddTicks(459), 10, 200.0m, "LibCore", new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"), "System" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "People",
-                columns: new[] { "PersonID", "Address", "City", "Email", "FirstName", "Gender", "IsActive", "LastName", "NationalNumber", "Phone", "TenantID" },
-                values: new object[,]
-                {
-                    { 1, "Agdal, Rabat", "Rabat", "ahmed.alami@gmail.com", "Ahmed", "M", true, "Alami", "IC122065", "0612345678", new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e") },
-                    { 2, "Gueliz, Marrakech", "Marrakech", "fatima.ezzahra@outlook.com", "Fatima", "F", true, "Zahra", "IC122068", "0623456789", new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e") },
-                    { 3, "Maarif, Casablanca", "Casablanca", "youssef.idrissi@yahoo.com", "Youssef", "M", true, "Idrissi", "IC922065", "0634567890", new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e") },
-                    { 4, "Ville Nouvelle, Fes", "Fes", "sanaa.bennani@gmail.com", "Sanaa", "F", true, "Bennani", "IC922965", "0645678901", new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e") },
-                    { 5, "Malabata, Tanger", "Tanger", "omar.mansouri@hotmail.com", "Omar", "M", true, "Mansouri", "IC128493", "0656789012", new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") },
-                    { 6, "Hay Salam, Agadir", "Agadir", "laila.tazi@gmail.com", "Laila", "F", true, "Tazi", "I907065", "0667890123", new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") },
-                    { 7, "Ouled Ayad, Beni Mellal", "Beni Mellal", "karim.sabbahi@icloud.com", "Karim", "M", true, "Sabbahi", "IC87409", "0678901234", new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") },
-                    { 8, "Nansria, Oujda", "Oujda", "meryem.fassi@gmail.com", "Meryem", "F", true, "Fassi", "IC008571", "0689012345", new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") },
-                    { 9, "Dakhla, Meknes", "Meknes", "hamza.radi@live.com", "Hamza", "M", true, "Radi", "IC124598", "0690123456", new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") },
-                    { 10, "Mohammedia Center", "Mohammedia", "salma.amrani@gmail.com", "Salma", "F", true, "Amrani", "IC248382", "0601234567", new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") },
-                    { 11, "Ait Alla , Tabia , Azilal", "Azilal", "Freeh11@gmail.com", "Abdenabi", "M", true, "Khaldi", "IC188555", "0644353219", new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Members",
-                columns: new[] { "MemberID", "IsActive", "JoinDate", "PersonID", "TenantID" },
-                values: new object[,]
-                {
-                    { 1, true, new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7261), 2, new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") },
-                    { 2, true, new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7266), 1, new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") },
-                    { 3, true, new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7268), 4, new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") },
-                    { 4, true, new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7270), 3, new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d") },
-                    { 5, true, new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7271), 6, new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e") },
-                    { 6, true, new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7273), 5, new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e") },
-                    { 7, true, new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7275), 7, new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e") }
+                    { 1, 14, 10.0m, true, new DateTime(2026, 5, 12, 21, 33, 19, 253, DateTimeKind.Utc).AddTicks(2258), 5, 100.0m, "LibCore", new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"), "System" },
+                    { 2, 14, 15.0m, true, new DateTime(2026, 5, 12, 21, 33, 19, 253, DateTimeKind.Utc).AddTicks(2264), 10, 200.0m, "LibCore", new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"), "System" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -54,10 +54,6 @@ namespace LibraryManagement.DAL.Configurations
                 .WithMany()
                 .HasForeignKey(b => b.TenantID)
                 .OnDelete(DeleteBehavior.Restrict);
-
-           
-
-
         }
     }
 }

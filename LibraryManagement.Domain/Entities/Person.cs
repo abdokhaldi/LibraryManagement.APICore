@@ -8,7 +8,7 @@ namespace LibraryManagement.Domain.Entities
     public class Person :IMustHaveTenant
     {
        
-        public int PersonID { get; set; }
+        public Guid PersonID { get; set; }
         public Guid TenantID { get; set; }
         public string FirstName { get; set; } = null!;
        

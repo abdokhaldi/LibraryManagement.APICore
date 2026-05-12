@@ -10,7 +10,7 @@ namespace LibraryManagement.Domain.Entities
     public class Member : IMustHaveTenant
     {
         public int MemberID { get; set; }
-        public int PersonID { get; set; }
+        public Guid PersonID { get; set; }
         public Guid TenantID { get; set; }
         public DateTime JoinDate { get; set; }
         public bool IsActive { get; set; }

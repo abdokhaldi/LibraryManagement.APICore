@@ -8,7 +8,7 @@ namespace LibraryManagement.DTO.PersonDTOs
 {
     public class PersonForDisplayDTO
     {
-        public required int PersonID { get; set; }
+        public required Guid PersonID { get; set; }
         public required string FullName { get; set; }
         public required string Phone { get; set; }
         public string? Email { get; set; }

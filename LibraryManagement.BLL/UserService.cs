@@ -35,25 +35,25 @@ namespace LibraryManagement.BLL
             return pagedUsers.MapTo(usersDTO);
         }
 
-        public async Task<OperationResult<int>> RegisterUserAsync(UserForCreationDTO userDTO, string creator)
+        public async Task<OperationResult<Guid>> RegisterUserAsync(UserForCreationDTO userDTO, string creator)
 
         {
             var role = _unitOfWork.RoleRepository.GetRoleForReadOnlyAsync(userDTO.RoleID);
             if (role == null )
             {
-                return OperationResult<int>.Failure(OperationStatus.Conflict, "The role not existing");
+                return OperationResult<Guid>.Failure(OperationStatus.Conflict, "The role not existing");
 
             }
 
            if (creator != "Admin" && creator != "Librarian")
            {
-               return OperationResult<int>.Failure(OperationStatus.Forbidden, "You are not allowed  to create users accounts.");
+               return OperationResult<Guid>.Failure(OperationStatus.Forbidden, "You are not allowed  to create users accounts.");
           
            }
           
            if (creator == "Librarian" && userDTO.RoleName != "Member")
            {
-               return OperationResult<int>.Failure(
+               return OperationResult<Guid>.Failure(
                    OperationStatus.Forbidden,
                    "Access Denied: Librarians are only authorized to create Member accounts."
                    );
@@ -63,28 +63,29 @@ namespace LibraryManagement.BLL
             var personStatus = await _unitOfWork.PersonRepository.CheckPersonStatus(userDTO.PersonID);
             if (personStatus.isNotFound)
             {
-                return OperationResult<int>.Failure(OperationStatus.Conflict, $"The person with SettingsID: {userDTO.PersonID} is not exists .");
+                return OperationResult<Guid>.Failure(OperationStatus.Conflict, $"The person with SettingsID: {userDTO.PersonID} is not exists .");
             }
             if (personStatus.isNotActive)
             {
-                return OperationResult<int>.Failure(OperationStatus.Conflict, "Cannot create a user for an inactive person .");
+                return OperationResult<Guid>.Failure(OperationStatus.Conflict, "Cannot create a user for an inactive person .");
 
             }
 
             var personAsUser = await _unitOfWork.UserRepository.GetUserAsPersonAsync(userDTO.PersonID);
             if (personAsUser!= null)
             {
-                return OperationResult<int>.Failure(OperationStatus.Conflict,$"The person with SettingsID:{personAsUser.PersonID} is already created as a user .");
+                return OperationResult<Guid>.Failure(OperationStatus.Conflict,$"The person with SettingsID:{personAsUser.PersonID} is already created as a user .");
             }
             bool isUserExists = await _unitOfWork.UserRepository. IsUsernameExistsAsync(userDTO.Username);
             if (isUserExists)
             {
-                return OperationResult<int>.Failure(OperationStatus.Conflict, "This username is already Used , try another one ."); 
+                return OperationResult<Guid>.Failure(OperationStatus.Conflict, "This username is already Used , try another one ."); 
             }
             
 
             var userEntity = _mapper.Map<User>(userDTO);
             string passwordHashed = _securityService.HashPassword(userEntity.Password);
+            userEntity.UserID = Guid.NewGuid();
             userEntity.Password = passwordHashed;
             userEntity.CreatedAt = DateTime.UtcNow;
             userEntity.IsBlocked = false;
@@ -93,9 +94,9 @@ namespace LibraryManagement.BLL
         await _unitOfWork.UserRepository.AddNewUserAsync(userEntity);
             await _unitOfWork.SaveChangesAsync();
 
-            return OperationResult<int>.Success(userEntity.UserID);
+            return OperationResult<Guid>.Success(userEntity.UserID);
         }
-        public async Task<OperationResult<UserForDisplayDTO>> GetUserDetailsAsync(int id)
+        public async Task<OperationResult<UserForDisplayDTO>> GetUserDetailsAsync(Guid id)
         {
             var user = await _unitOfWork.UserRepository.GetUserForReadOnlyAsync(id);
             if (user == null)
@@ -106,7 +107,7 @@ namespace LibraryManagement.BLL
             
             return OperationResult<UserForDisplayDTO>.Success(userDTO);
         }
-        public async Task<OperationResult> UpdateUserAsync(int id, UserForUpdateDTO userDTO)
+        public async Task<OperationResult> UpdateUserAsync(Guid id, UserForUpdateDTO userDTO)
         {
             
             var user = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
@@ -115,7 +116,7 @@ namespace LibraryManagement.BLL
                     return OperationResult.Failure(OperationStatus.NotFound, $"The user with SettingsID:{id} was not found for update.");
             }
 
-            if (userDTO.PersonID.HasValue && userDTO.PersonID.Value!= user.PersonID)
+            if (userDTO.PersonID.HasValue && userDTO.PersonID.Value != user.PersonID)
             {
                 var personStatus = await _unitOfWork.PersonRepository.CheckPersonStatus(userDTO.PersonID.Value);
                 if (personStatus.isNotFound)
@@ -152,7 +153,7 @@ namespace LibraryManagement.BLL
             return OperationResult.Success();
         }
         // //
-        public async Task<OperationResult> DeactivateUserAsync(int id){
+        public async Task<OperationResult> DeactivateUserAsync(Guid id){
             var userForDeactivate = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForDeactivate==null)
             {
@@ -171,7 +172,7 @@ namespace LibraryManagement.BLL
             await _unitOfWork.SaveChangesAsync();
             return OperationResult.Success();
         }
-        public async Task<OperationResult> ActivateUserAsync(int id){
+        public async Task<OperationResult> ActivateUserAsync(Guid id){
             var userForActivate = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForActivate == null)
             {
@@ -191,7 +192,7 @@ namespace LibraryManagement.BLL
             return OperationResult.Success();
 
         }
-        public async Task<OperationResult> BlockUserAsync(int id){
+        public async Task<OperationResult> BlockUserAsync(Guid id){
             var userForBlock = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForBlock==null)
             {
@@ -207,7 +208,7 @@ namespace LibraryManagement.BLL
                 return OperationResult.Success();
             }
         
-        public async Task<OperationResult> UnblockUserAsync(int id) {
+        public async Task<OperationResult> UnblockUserAsync(Guid id) {
             var userForUnBlock = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForUnBlock == null)
             {

@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.DTO.ActivityDTOs
 {
-    public class ActivityForDisplayDTO
+    public class ActivityForDisplayDTO <TId> : ActivityBaseDto<TId>
     {
         public required int ActivityID { get; set; }
-        public string? ActivityType { get; set; }
-        public string? Description { get; set; }
-        public DateTime? CreatedAt { get; set; }
-        public string? Username { get; set; }
-        public string? EntityName { get; set; }
-        public int EntityID { get; set; }
+        
     }
 }

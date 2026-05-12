@@ -15,7 +15,7 @@ namespace LibraryManagement.Domain.Entities
         public string EntityName { get; set; } = null!;
         public int EntityID { get; set; }
 
-        public int UserID { get; set; }
+        public Guid UserID { get; set; }
         public User User { get; set; } = null!;
     }
 }

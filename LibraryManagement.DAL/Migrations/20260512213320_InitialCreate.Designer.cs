@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagement.DAL.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20260512000036_InitialState")]
-    partial class InitialState
+    [Migration("20260512213320_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,8 +57,8 @@ namespace LibraryManagement.DAL.Migrations
                     b.Property<Guid>("TenantID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ActivityID");
 
@@ -458,7 +458,7 @@ namespace LibraryManagement.DAL.Migrations
                             DefaultBorrowingDays = 14,
                             DefaultFinePerDay = 10.0m,
                             IsLibraryOpen = true,
-                            LastUpdated = new DateTime(2026, 5, 12, 0, 0, 35, 687, DateTimeKind.Utc).AddTicks(454),
+                            LastUpdated = new DateTime(2026, 5, 12, 21, 33, 19, 253, DateTimeKind.Utc).AddTicks(2258),
                             MaxBooksPerMember = 5,
                             MaxFineLimit = 100.0m,
                             Name = "LibCore",
@@ -471,7 +471,7 @@ namespace LibraryManagement.DAL.Migrations
                             DefaultBorrowingDays = 14,
                             DefaultFinePerDay = 15.0m,
                             IsLibraryOpen = true,
-                            LastUpdated = new DateTime(2026, 5, 12, 0, 0, 35, 687, DateTimeKind.Utc).AddTicks(459),
+                            LastUpdated = new DateTime(2026, 5, 12, 21, 33, 19, 253, DateTimeKind.Utc).AddTicks(2264),
                             MaxBooksPerMember = 10,
                             MaxFineLimit = 200.0m,
                             Name = "LibCore",
@@ -494,8 +494,8 @@ namespace LibraryManagement.DAL.Migrations
                     b.Property<DateTime>("JoinDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PersonID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PersonID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TenantID")
                         .HasColumnType("uniqueidentifier");
@@ -508,73 +508,12 @@ namespace LibraryManagement.DAL.Migrations
                     b.HasIndex("TenantID");
 
                     b.ToTable("Members", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            MemberID = 1,
-                            IsActive = true,
-                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7261),
-                            PersonID = 2,
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        },
-                        new
-                        {
-                            MemberID = 2,
-                            IsActive = true,
-                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7266),
-                            PersonID = 1,
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        },
-                        new
-                        {
-                            MemberID = 3,
-                            IsActive = true,
-                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7268),
-                            PersonID = 4,
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        },
-                        new
-                        {
-                            MemberID = 4,
-                            IsActive = true,
-                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7270),
-                            PersonID = 3,
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        },
-                        new
-                        {
-                            MemberID = 5,
-                            IsActive = true,
-                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7271),
-                            PersonID = 6,
-                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
-                        },
-                        new
-                        {
-                            MemberID = 6,
-                            IsActive = true,
-                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7273),
-                            PersonID = 5,
-                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
-                        },
-                        new
-                        {
-                            MemberID = 7,
-                            IsActive = true,
-                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7275),
-                            PersonID = 7,
-                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
-                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Person", b =>
                 {
-                    b.Property<int>("PersonID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PersonID"));
+                    b.Property<Guid>("PersonID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -641,162 +580,6 @@ namespace LibraryManagement.DAL.Migrations
                     b.HasIndex("TenantID");
 
                     b.ToTable("People", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            PersonID = 1,
-                            Address = "Agdal, Rabat",
-                            City = "Rabat",
-                            Email = "ahmed.alami@gmail.com",
-                            FirstName = "Ahmed",
-                            Gender = "M",
-                            IsActive = true,
-                            LastName = "Alami",
-                            NationalNumber = "IC122065",
-                            Phone = "0612345678",
-                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
-                        },
-                        new
-                        {
-                            PersonID = 2,
-                            Address = "Gueliz, Marrakech",
-                            City = "Marrakech",
-                            Email = "fatima.ezzahra@outlook.com",
-                            FirstName = "Fatima",
-                            Gender = "F",
-                            IsActive = true,
-                            LastName = "Zahra",
-                            NationalNumber = "IC122068",
-                            Phone = "0623456789",
-                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
-                        },
-                        new
-                        {
-                            PersonID = 3,
-                            Address = "Maarif, Casablanca",
-                            City = "Casablanca",
-                            Email = "youssef.idrissi@yahoo.com",
-                            FirstName = "Youssef",
-                            Gender = "M",
-                            IsActive = true,
-                            LastName = "Idrissi",
-                            NationalNumber = "IC922065",
-                            Phone = "0634567890",
-                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
-                        },
-                        new
-                        {
-                            PersonID = 4,
-                            Address = "Ville Nouvelle, Fes",
-                            City = "Fes",
-                            Email = "sanaa.bennani@gmail.com",
-                            FirstName = "Sanaa",
-                            Gender = "F",
-                            IsActive = true,
-                            LastName = "Bennani",
-                            NationalNumber = "IC922965",
-                            Phone = "0645678901",
-                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
-                        },
-                        new
-                        {
-                            PersonID = 5,
-                            Address = "Malabata, Tanger",
-                            City = "Tanger",
-                            Email = "omar.mansouri@hotmail.com",
-                            FirstName = "Omar",
-                            Gender = "M",
-                            IsActive = true,
-                            LastName = "Mansouri",
-                            NationalNumber = "IC128493",
-                            Phone = "0656789012",
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        },
-                        new
-                        {
-                            PersonID = 6,
-                            Address = "Hay Salam, Agadir",
-                            City = "Agadir",
-                            Email = "laila.tazi@gmail.com",
-                            FirstName = "Laila",
-                            Gender = "F",
-                            IsActive = true,
-                            LastName = "Tazi",
-                            NationalNumber = "I907065",
-                            Phone = "0667890123",
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        },
-                        new
-                        {
-                            PersonID = 7,
-                            Address = "Ouled Ayad, Beni Mellal",
-                            City = "Beni Mellal",
-                            Email = "karim.sabbahi@icloud.com",
-                            FirstName = "Karim",
-                            Gender = "M",
-                            IsActive = true,
-                            LastName = "Sabbahi",
-                            NationalNumber = "IC87409",
-                            Phone = "0678901234",
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        },
-                        new
-                        {
-                            PersonID = 8,
-                            Address = "Nansria, Oujda",
-                            City = "Oujda",
-                            Email = "meryem.fassi@gmail.com",
-                            FirstName = "Meryem",
-                            Gender = "F",
-                            IsActive = true,
-                            LastName = "Fassi",
-                            NationalNumber = "IC008571",
-                            Phone = "0689012345",
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        },
-                        new
-                        {
-                            PersonID = 9,
-                            Address = "Dakhla, Meknes",
-                            City = "Meknes",
-                            Email = "hamza.radi@live.com",
-                            FirstName = "Hamza",
-                            Gender = "M",
-                            IsActive = true,
-                            LastName = "Radi",
-                            NationalNumber = "IC124598",
-                            Phone = "0690123456",
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        },
-                        new
-                        {
-                            PersonID = 10,
-                            Address = "Mohammedia Center",
-                            City = "Mohammedia",
-                            Email = "salma.amrani@gmail.com",
-                            FirstName = "Salma",
-                            Gender = "F",
-                            IsActive = true,
-                            LastName = "Amrani",
-                            NationalNumber = "IC248382",
-                            Phone = "0601234567",
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        },
-                        new
-                        {
-                            PersonID = 11,
-                            Address = "Ait Alla , Tabia , Azilal",
-                            City = "Azilal",
-                            Email = "Freeh11@gmail.com",
-                            FirstName = "Abdenabi",
-                            Gender = "M",
-                            IsActive = true,
-                            LastName = "Khaldi",
-                            NationalNumber = "IC188555",
-                            Phone = "0644353219",
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
-                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.RefreshToken", b =>
@@ -829,8 +612,8 @@ namespace LibraryManagement.DAL.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
@@ -954,11 +737,8 @@ namespace LibraryManagement.DAL.Migrations
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("UserID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .IsUnicode(false)
@@ -975,8 +755,8 @@ namespace LibraryManagement.DAL.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("PersonID")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PersonID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("RoleID")
                         .HasColumnType("int");

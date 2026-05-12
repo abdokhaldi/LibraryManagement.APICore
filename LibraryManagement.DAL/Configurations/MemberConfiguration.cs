@@ -34,65 +34,7 @@ namespace LibraryManagement.DAL.Configurations
                 .HasForeignKey(m => m.TenantID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasData(
-                new Member()
-                {
-                    MemberID = 1,
-
-                    PersonID = 2,
-                    TenantID = SeedDataConstants.CasaTenantId,
-                    JoinDate = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Member()
-                {
-                    MemberID = 2,
-                    PersonID = 1,
-                    TenantID = SeedDataConstants.CasaTenantId,
-                    JoinDate = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Member()
-                {
-                    MemberID = 3,
-                    PersonID = 4,
-                    TenantID = SeedDataConstants.CasaTenantId,
-                    JoinDate = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Member()
-                {
-                    MemberID = 4,
-                    PersonID = 3,
-                    TenantID = SeedDataConstants.CasaTenantId,
-                    JoinDate = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Member()
-                {
-                    MemberID = 5,
-                    PersonID = 6,
-                    TenantID = SeedDataConstants.RabatTenantId,
-                    JoinDate = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Member()
-                {
-                    MemberID = 6,
-                    PersonID = 5,
-                    TenantID = SeedDataConstants.RabatTenantId,
-                    JoinDate = DateTime.UtcNow,
-                    IsActive = true
-                },
-                 new Member()
-                 {
-                     MemberID = 7,
-                     PersonID = 7,
-                     TenantID = SeedDataConstants.RabatTenantId,
-                     JoinDate = DateTime.UtcNow,
-                     IsActive = true
-                 }
-                );
+            
         }
     }
 }
