@@ -29,7 +29,7 @@ namespace LibraryManagement.API.Controllers
             var member = await _memberService.GetMemberDetails(id);
             if (member == null)
             {
-                return NotFound($"The book with ID:{id} not found .");
+                return NotFound($"The book with SettingsID:{id} not found .");
             }
             return Ok(member);
         }
@@ -53,7 +53,7 @@ namespace LibraryManagement.API.Controllers
             bool activateResult = await _memberService.ActivateMember(id);
             if (activateResult==false)
             {
-                return NotFound($"The member with ID :{id} not found to activate .");
+                return NotFound($"The member with SettingsID :{id} not found to activate .");
             }
             
             return NoContent();
@@ -70,7 +70,7 @@ namespace LibraryManagement.API.Controllers
 
             if (deactivateResult == false)
             {
-                return NotFound($"The member with ID :{id} not found to deactivate");
+                return NotFound($"The member with SettingsID :{id} not found to deactivate");
             }
             return NoContent();
         }

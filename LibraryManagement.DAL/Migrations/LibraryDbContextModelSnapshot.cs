@@ -51,10 +51,15 @@ namespace LibraryManagement.DAL.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<Guid>("TenantID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("ActivityID");
+
+                    b.HasIndex("TenantID");
 
                     b.HasIndex("UserID", "CreatedAt");
 
@@ -107,6 +112,9 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<Guid>("TenantID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -125,82 +133,12 @@ namespace LibraryManagement.DAL.Migrations
                     b.HasIndex("ISBN")
                         .IsUnique();
 
+                    b.HasIndex("TenantID");
+
                     b.HasIndex("Title")
                         .IsUnique();
 
                     b.ToTable("Books", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            BookID = 1,
-                            Author = "F. Scott Fitzgerald",
-                            CategoryID = 1,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "A classic novel set in the Roaring Twenties, exploring themes of wealth, love, and the American Dream through the mysterious Jay Gatsby.",
-                            ISBN = "9780743273565",
-                            ImagePath = "7766677788.jpg",
-                            IsActive = true,
-                            Publisher = "Scribner",
-                            Title = "The Great Gatsby",
-                            YearPublished = (short)1925
-                        },
-                        new
-                        {
-                            BookID = 2,
-                            Author = "Stephen Hawking",
-                            CategoryID = 2,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "A landmark in scientific writing by one of the world's great minds, explaining the complex concepts of cosmology—from the Big Bang to black holes—in simple terms.",
-                            ISBN = "9780553380163",
-                            ImagePath = "7778899900008.jpg",
-                            IsActive = true,
-                            Publisher = "Bantam Books",
-                            Title = "A Brief History of Time",
-                            YearPublished = (short)1988
-                        },
-                        new
-                        {
-                            BookID = 3,
-                            Author = "George Orwell",
-                            CategoryID = 1,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "A chilling dystopian masterpiece that explores the dangers of totalitarianism, surveillance, and the manipulation of truth in a society ruled by Big Brother.",
-                            ISBN = "9780451524935",
-                            ImagePath = "54456677.jpg",
-                            IsActive = true,
-                            Publisher = "Secker & Warburg",
-                            Title = "1984",
-                            YearPublished = (short)1949
-                        },
-                        new
-                        {
-                            BookID = 4,
-                            Author = "Robert C. Martin",
-                            CategoryID = 3,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "An essential guide for software developers, focusing on best practices, principles, and patterns to write code that is readable, maintainable, and professional.",
-                            ISBN = "9780132350884",
-                            ImagePath = "67778887776.jpg",
-                            IsActive = true,
-                            Publisher = "Prentice Hall",
-                            Title = "Clean Code",
-                            YearPublished = (short)2008
-                        },
-                        new
-                        {
-                            BookID = 5,
-                            Author = "J.R.R. Tolkien",
-                            CategoryID = 1,
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "The unforgettable journey of Bilbo Baggins as he travels through Middle-earth to reclaim a treasure guarded by the dragon Smaug. A prelude to The Lord of the Rings.",
-                            ISBN = "9780547928227",
-                            ImagePath = "7776666778.jpg",
-                            IsActive = true,
-                            Publisher = "George Allen & Unwin",
-                            Title = "The Hobbit",
-                            YearPublished = (short)1937
-                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.BookCopy", b =>
@@ -238,6 +176,9 @@ namespace LibraryManagement.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("TenantID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("BookCopyID");
 
                     b.HasIndex("Barcode")
@@ -245,189 +186,9 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.HasIndex("BookID");
 
-                    b.ToTable("BookCopies", (string)null);
+                    b.HasIndex("TenantID");
 
-                    b.HasData(
-                        new
-                        {
-                            BookCopyID = 1,
-                            Barcode = "BC-101-01",
-                            BookID = 1,
-                            Condition = "New",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 2,
-                            Barcode = "BC-101-02",
-                            BookID = 1,
-                            Condition = "Good",
-                            IsActive = true,
-                            Status = "Borrowed"
-                        },
-                        new
-                        {
-                            BookCopyID = 3,
-                            Barcode = "BC-101-03",
-                            BookID = 1,
-                            Condition = "Good",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 4,
-                            Barcode = "BC-101-04",
-                            BookID = 1,
-                            Condition = "Torn Pages",
-                            IsActive = true,
-                            Status = "Damaged"
-                        },
-                        new
-                        {
-                            BookCopyID = 5,
-                            Barcode = "BC-101-05",
-                            BookID = 1,
-                            Condition = "New",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 6,
-                            Barcode = "BC-202-01",
-                            BookID = 2,
-                            Condition = "New",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 7,
-                            Barcode = "BC-202-02",
-                            BookID = 2,
-                            Condition = "Good",
-                            IsActive = true,
-                            Status = "Borrowed"
-                        },
-                        new
-                        {
-                            BookCopyID = 8,
-                            Barcode = "BC-202-03",
-                            BookID = 2,
-                            Condition = "Excellent",
-                            IsActive = true,
-                            Status = "Borrowed"
-                        },
-                        new
-                        {
-                            BookCopyID = 9,
-                            Barcode = "BC-202-04",
-                            BookID = 2,
-                            Condition = "Missing",
-                            IsActive = true,
-                            Status = "Lost"
-                        },
-                        new
-                        {
-                            BookCopyID = 10,
-                            Barcode = "BC-202-05",
-                            BookID = 2,
-                            Condition = "Good",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 11,
-                            Barcode = "BC-303-01",
-                            BookID = 3,
-                            Condition = "New",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 12,
-                            Barcode = "BC-303-02",
-                            BookID = 3,
-                            Condition = "Good",
-                            IsActive = true,
-                            Status = "Reserved"
-                        },
-                        new
-                        {
-                            BookCopyID = 13,
-                            Barcode = "BC-303-03",
-                            BookID = 3,
-                            Condition = "New",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 14,
-                            Barcode = "BC-303-04",
-                            BookID = 3,
-                            Condition = "Fair",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 15,
-                            Barcode = "BC-303-05",
-                            BookID = 3,
-                            Condition = "Water Damage",
-                            IsActive = true,
-                            Status = "Damaged"
-                        },
-                        new
-                        {
-                            BookCopyID = 16,
-                            Barcode = "BC-404-01",
-                            BookID = 4,
-                            Condition = "New",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 17,
-                            Barcode = "BC-404-02",
-                            BookID = 4,
-                            Condition = "Good",
-                            IsActive = true,
-                            Status = "Borrowed"
-                        },
-                        new
-                        {
-                            BookCopyID = 18,
-                            Barcode = "BC-404-03",
-                            BookID = 4,
-                            Condition = "Good",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 19,
-                            Barcode = "BC-404-04",
-                            BookID = 4,
-                            Condition = "New",
-                            IsActive = true,
-                            Status = "Available"
-                        },
-                        new
-                        {
-                            BookCopyID = 20,
-                            Barcode = "BC-404-05",
-                            BookID = 4,
-                            Condition = "New",
-                            IsActive = true,
-                            Status = "Available"
-                        });
+                    b.ToTable("BookCopies", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Borrowing", b =>
@@ -464,82 +225,18 @@ namespace LibraryManagement.DAL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<Guid>("TenantID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("BorrowingID");
 
                     b.HasIndex("BookCopyID");
 
                     b.HasIndex("MemberID");
 
-                    b.ToTable("Borrowings", (string)null);
+                    b.HasIndex("TenantID");
 
-                    b.HasData(
-                        new
-                        {
-                            BorrowingID = 1,
-                            BookCopyID = 2,
-                            BorrowingDate = new DateTime(2026, 4, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6763),
-                            DueDate = new DateTime(2026, 4, 28, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6765),
-                            InitialFees = 15.0m,
-                            IsCanceled = false,
-                            MemberID = 1,
-                            Status = "Borrowed"
-                        },
-                        new
-                        {
-                            BorrowingID = 2,
-                            BookCopyID = 7,
-                            BorrowingDate = new DateTime(2026, 4, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6775),
-                            DueDate = new DateTime(2026, 4, 29, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6775),
-                            InitialFees = 15.0m,
-                            IsCanceled = false,
-                            MemberID = 2,
-                            Status = "Borrowed"
-                        },
-                        new
-                        {
-                            BorrowingID = 3,
-                            BookCopyID = 8,
-                            BorrowingDate = new DateTime(2026, 4, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6778),
-                            DueDate = new DateTime(2026, 4, 26, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6778),
-                            InitialFees = 15.0m,
-                            IsCanceled = false,
-                            MemberID = 3,
-                            Status = "Borrowed"
-                        },
-                        new
-                        {
-                            BorrowingID = 4,
-                            BookCopyID = 17,
-                            BorrowingDate = new DateTime(2026, 4, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6781),
-                            DueDate = new DateTime(2026, 4, 28, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6781),
-                            InitialFees = 15.0m,
-                            IsCanceled = false,
-                            MemberID = 3,
-                            Status = "Borrowed"
-                        },
-                        new
-                        {
-                            BorrowingID = 5,
-                            BookCopyID = 2,
-                            BorrowingDate = new DateTime(2026, 3, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6784),
-                            DueDate = new DateTime(2026, 3, 31, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6790),
-                            InitialFees = 15.0m,
-                            IsCanceled = false,
-                            MemberID = 7,
-                            ReturnDate = new DateTime(2026, 3, 29, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6791),
-                            Status = "Returned"
-                        },
-                        new
-                        {
-                            BorrowingID = 6,
-                            BookCopyID = 12,
-                            BorrowingDate = new DateTime(2026, 4, 24, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6796),
-                            DueDate = new DateTime(2026, 4, 30, 21, 3, 54, 248, DateTimeKind.Utc).AddTicks(6797),
-                            InitialFees = 15.0m,
-                            IsCanceled = false,
-                            MemberID = 7,
-                            Status = "Borrowed"
-                        });
+                    b.ToTable("Borrowings", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Category", b =>
@@ -570,19 +267,79 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             CategoryID = 1,
                             CategoryName = "Programming",
-                            Description = "Software development books"
+                            Description = "Software development, languages, and tools"
                         },
                         new
                         {
                             CategoryID = 2,
-                            CategoryName = "History",
-                            Description = "World history and biographies"
+                            CategoryName = "Computer Science",
+                            Description = "Theoretical foundations, algorithms, and AI"
                         },
                         new
                         {
                             CategoryID = 3,
+                            CategoryName = "Cybersecurity",
+                            Description = "Network security, ethical hacking, and cryptography"
+                        },
+                        new
+                        {
+                            CategoryID = 4,
+                            CategoryName = "History",
+                            Description = "World history, civilizations, and biographies"
+                        },
+                        new
+                        {
+                            CategoryID = 5,
+                            CategoryName = "Philosophy",
+                            Description = "Classical and modern philosophical thoughts"
+                        },
+                        new
+                        {
+                            CategoryID = 6,
+                            CategoryName = "Psychology",
+                            Description = "Human behavior, mental health, and social psychology"
+                        },
+                        new
+                        {
+                            CategoryID = 7,
                             CategoryName = "Fiction",
-                            Description = "Novels and stories"
+                            Description = "Novels, short stories, and literary works"
+                        },
+                        new
+                        {
+                            CategoryID = 8,
+                            CategoryName = "Science Fiction",
+                            Description = "Space exploration, time travel, and futuristic tech"
+                        },
+                        new
+                        {
+                            CategoryID = 9,
+                            CategoryName = "Poetry",
+                            Description = "Classical and contemporary poetic collections"
+                        },
+                        new
+                        {
+                            CategoryID = 10,
+                            CategoryName = "Astronomy & Physics",
+                            Description = "Space, cosmos, quantum mechanics, and astrophysics"
+                        },
+                        new
+                        {
+                            CategoryID = 11,
+                            CategoryName = "Mathematics",
+                            Description = "Pure and applied mathematics, statistics, and logic"
+                        },
+                        new
+                        {
+                            CategoryID = 12,
+                            CategoryName = "Business & Finance",
+                            Description = "Economy, management, and personal finance"
+                        },
+                        new
+                        {
+                            CategoryID = 13,
+                            CategoryName = "Self-Help",
+                            Description = "Personal development, productivity, and leadership"
                         });
                 });
 
@@ -615,6 +372,9 @@ namespace LibraryManagement.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("TenantID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("WaiveReason")
                         .HasMaxLength(200)
                         .IsUnicode(true)
@@ -627,16 +387,18 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.HasIndex("MemberID");
 
+                    b.HasIndex("TenantID");
+
                     b.ToTable("Fines", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.GlobalSettings", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("SettingsID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SettingsID"));
 
                     b.Property<int>("DefaultBorrowingDays")
                         .ValueGeneratedOnAdd()
@@ -666,26 +428,51 @@ namespace LibraryManagement.DAL.Migrations
                         .HasColumnType("decimal(18.2)")
                         .HasDefaultValue(100.0m);
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TenantID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasMaxLength(100)
                         .IsUnicode(false)
                         .HasColumnType("varchar(100)");
 
-                    b.HasKey("ID");
+                    b.HasKey("SettingsID");
+
+                    b.HasIndex("TenantID")
+                        .IsUnique();
 
                     b.ToTable("GlobalSettings", (string)null);
 
                     b.HasData(
                         new
                         {
-                            ID = 1,
+                            SettingsID = 1,
                             DefaultBorrowingDays = 14,
                             DefaultFinePerDay = 10.0m,
                             IsLibraryOpen = true,
-                            LastUpdated = new DateTime(2026, 4, 24, 21, 3, 54, 252, DateTimeKind.Utc).AddTicks(7396),
+                            LastUpdated = new DateTime(2026, 5, 12, 0, 0, 35, 687, DateTimeKind.Utc).AddTicks(454),
                             MaxBooksPerMember = 5,
                             MaxFineLimit = 100.0m,
+                            Name = "LibCore",
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"),
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            SettingsID = 2,
+                            DefaultBorrowingDays = 14,
+                            DefaultFinePerDay = 15.0m,
+                            IsLibraryOpen = true,
+                            LastUpdated = new DateTime(2026, 5, 12, 0, 0, 35, 687, DateTimeKind.Utc).AddTicks(459),
+                            MaxBooksPerMember = 10,
+                            MaxFineLimit = 200.0m,
+                            Name = "LibCore",
+                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"),
                             UpdatedBy = "System"
                         });
                 });
@@ -707,10 +494,15 @@ namespace LibraryManagement.DAL.Migrations
                     b.Property<int>("PersonID")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("TenantID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("MemberID");
 
                     b.HasIndex("PersonID")
                         .IsUnique();
+
+                    b.HasIndex("TenantID");
 
                     b.ToTable("Members", (string)null);
 
@@ -719,50 +511,57 @@ namespace LibraryManagement.DAL.Migrations
                         {
                             MemberID = 1,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4409),
-                            PersonID = 2
+                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7261),
+                            PersonID = 2,
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         },
                         new
                         {
                             MemberID = 2,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4413),
-                            PersonID = 1
+                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7266),
+                            PersonID = 1,
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         },
                         new
                         {
                             MemberID = 3,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4415),
-                            PersonID = 4
+                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7268),
+                            PersonID = 4,
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         },
                         new
                         {
                             MemberID = 4,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4416),
-                            PersonID = 3
+                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7270),
+                            PersonID = 3,
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         },
                         new
                         {
                             MemberID = 5,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4418),
-                            PersonID = 6
+                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7271),
+                            PersonID = 6,
+                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
                         },
                         new
                         {
                             MemberID = 6,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4419),
-                            PersonID = 5
+                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7273),
+                            PersonID = 5,
+                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
                         },
                         new
                         {
                             MemberID = 7,
                             IsActive = true,
-                            JoinDate = new DateTime(2026, 4, 24, 21, 3, 54, 250, DateTimeKind.Utc).AddTicks(4421),
-                            PersonID = 7
+                            JoinDate = new DateTime(2026, 5, 12, 0, 0, 35, 682, DateTimeKind.Utc).AddTicks(7275),
+                            PersonID = 7,
+                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
                         });
                 });
 
@@ -822,6 +621,9 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<Guid>("TenantID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("PersonID");
 
                     b.HasIndex("Email")
@@ -832,6 +634,8 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.HasIndex("Phone")
                         .IsUnique();
+
+                    b.HasIndex("TenantID");
 
                     b.ToTable("People", (string)null);
 
@@ -847,7 +651,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Alami",
                             NationalNumber = "IC122065",
-                            Phone = "0612345678"
+                            Phone = "0612345678",
+                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
                         },
                         new
                         {
@@ -860,7 +665,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Zahra",
                             NationalNumber = "IC122068",
-                            Phone = "0623456789"
+                            Phone = "0623456789",
+                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
                         },
                         new
                         {
@@ -873,7 +679,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Idrissi",
                             NationalNumber = "IC922065",
-                            Phone = "0634567890"
+                            Phone = "0634567890",
+                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
                         },
                         new
                         {
@@ -886,7 +693,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Bennani",
                             NationalNumber = "IC922965",
-                            Phone = "0645678901"
+                            Phone = "0645678901",
+                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e")
                         },
                         new
                         {
@@ -899,7 +707,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Mansouri",
                             NationalNumber = "IC128493",
-                            Phone = "0656789012"
+                            Phone = "0656789012",
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         },
                         new
                         {
@@ -912,7 +721,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Tazi",
                             NationalNumber = "I907065",
-                            Phone = "0667890123"
+                            Phone = "0667890123",
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         },
                         new
                         {
@@ -925,7 +735,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Sabbahi",
                             NationalNumber = "IC87409",
-                            Phone = "0678901234"
+                            Phone = "0678901234",
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         },
                         new
                         {
@@ -938,7 +749,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Fassi",
                             NationalNumber = "IC008571",
-                            Phone = "0689012345"
+                            Phone = "0689012345",
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         },
                         new
                         {
@@ -951,7 +763,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Radi",
                             NationalNumber = "IC124598",
-                            Phone = "0690123456"
+                            Phone = "0690123456",
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         },
                         new
                         {
@@ -964,7 +777,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Amrani",
                             NationalNumber = "IC248382",
-                            Phone = "0601234567"
+                            Phone = "0601234567",
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         },
                         new
                         {
@@ -977,7 +791,8 @@ namespace LibraryManagement.DAL.Migrations
                             IsActive = true,
                             LastName = "Khaldi",
                             NationalNumber = "IC188555",
-                            Phone = "0644353219"
+                            Phone = "0644353219",
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d")
                         });
                 });
 
@@ -1003,6 +818,9 @@ namespace LibraryManagement.DAL.Migrations
                     b.Property<DateTime?>("Revoked")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("TenantID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -1012,6 +830,8 @@ namespace LibraryManagement.DAL.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("TenantID");
 
                     b.HasIndex("Token")
                         .IsUnique();
@@ -1056,6 +876,79 @@ namespace LibraryManagement.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Tenants.Tenant", b =>
+                {
+                    b.Property<Guid>("TenantID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("DefaultLanguage")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(10)")
+                        .HasDefaultValue("ar");
+
+                    b.Property<string>("Identifier")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("TimeZone")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("UTC");
+
+                    b.HasKey("TenantID");
+
+                    b.HasIndex("Identifier")
+                        .IsUnique();
+
+                    b.ToTable("Tenants", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultLanguage = "ar",
+                            Identifier = "casablanca-main",
+                            IsActive = true,
+                            Name = "مكتبة الدار البيضاء المركزية",
+                            TimeZone = "W. Central Africa Standard Time"
+                        },
+                        new
+                        {
+                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DefaultLanguage = "en",
+                            Identifier = "rabat-digital",
+                            IsActive = true,
+                            Name = "Rabat International Library",
+                            TimeZone = "UTC"
+                        });
+                });
+
             modelBuilder.Entity("LibraryManagement.Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -1085,6 +978,9 @@ namespace LibraryManagement.DAL.Migrations
                     b.Property<int>("RoleID")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("TenantID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -1098,6 +994,8 @@ namespace LibraryManagement.DAL.Migrations
 
                     b.HasIndex("RoleID");
 
+                    b.HasIndex("TenantID");
+
                     b.HasIndex("Username")
                         .IsUnique();
 
@@ -1106,6 +1004,12 @@ namespace LibraryManagement.DAL.Migrations
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Activity", b =>
                 {
+                    b.HasOne("LibraryManagement.Domain.Entities.Tenants.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("LibraryManagement.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserID")
@@ -1123,6 +1027,12 @@ namespace LibraryManagement.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("LibraryManagement.Domain.Entities.Tenants.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Category");
                 });
 
@@ -1131,6 +1041,12 @@ namespace LibraryManagement.DAL.Migrations
                     b.HasOne("LibraryManagement.Domain.Entities.Book", "Book")
                         .WithMany("BookCopies")
                         .HasForeignKey("BookID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LibraryManagement.Domain.Entities.Tenants.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1148,6 +1064,12 @@ namespace LibraryManagement.DAL.Migrations
                     b.HasOne("LibraryManagement.Domain.Entities.Member", "Member")
                         .WithMany()
                         .HasForeignKey("MemberID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LibraryManagement.Domain.Entities.Tenants.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1170,9 +1092,24 @@ namespace LibraryManagement.DAL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("LibraryManagement.Domain.Entities.Tenants.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Borrowing");
 
                     b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.GlobalSettings", b =>
+                {
+                    b.HasOne("LibraryManagement.Domain.Entities.Tenants.Tenant", null)
+                        .WithOne("GlobalSettings")
+                        .HasForeignKey("LibraryManagement.Domain.Entities.GlobalSettings", "TenantID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Member", b =>
@@ -1183,11 +1120,32 @@ namespace LibraryManagement.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("LibraryManagement.Domain.Entities.Tenants.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Person", b =>
+                {
+                    b.HasOne("LibraryManagement.Domain.Entities.Tenants.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.RefreshToken", b =>
                 {
+                    b.HasOne("LibraryManagement.Domain.Entities.Tenants.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("LibraryManagement.Domain.Entities.User", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserID")
@@ -1208,6 +1166,12 @@ namespace LibraryManagement.DAL.Migrations
                     b.HasOne("LibraryManagement.Domain.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LibraryManagement.Domain.Entities.Tenants.Tenant", null)
+                        .WithMany("Users")
+                        .HasForeignKey("TenantID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1234,6 +1198,14 @@ namespace LibraryManagement.DAL.Migrations
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Member", b =>
                 {
                     b.Navigation("Fines");
+                });
+
+            modelBuilder.Entity("LibraryManagement.Domain.Entities.Tenants.Tenant", b =>
+                {
+                    b.Navigation("GlobalSettings")
+                        .IsRequired();
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.User", b =>

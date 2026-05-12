@@ -19,7 +19,7 @@ namespace LibraryManagement.DAL
             _context = context;
         }
 
-        // this is a generic method to get member by ID and NationalNumber
+        // this is a generic method to get member by SettingsID and NationalNumber
         public async Task<Member?> GetMemberAsync(Expression<Func<Member,bool>> predicate, bool isTracked=false)
         {
             IQueryable<Member> query = _context.Members;

@@ -108,11 +108,11 @@ namespace LibraryManagement.BLL
             var borrowing = await _unitOfWork.BorrowingRepository.GetBorrowingForReadOnlyAsync(id);
             if (borrowing == null)
             {
-                return OperationResult<BorrowingForDisplayDTO>.Failure(OperationStatus.NotFound, $"The borrowing with ID:{borrowing?.BorrowingID} was not found .");
+                return OperationResult<BorrowingForDisplayDTO>.Failure(OperationStatus.NotFound, $"The borrowing with SettingsID:{borrowing?.BorrowingID} was not found .");
             }
             if (borrowing.IsCanceled)
             {
-                return OperationResult<BorrowingForDisplayDTO>.Failure(OperationStatus.NotFound, $"The borrowing with ID:{borrowing.BorrowingID} was cancelled .");
+                return OperationResult<BorrowingForDisplayDTO>.Failure(OperationStatus.NotFound, $"The borrowing with SettingsID:{borrowing.BorrowingID} was cancelled .");
             }
 
             var borrowingDTO = _mapper.Map<BorrowingForDisplayDTO>(borrowing);
@@ -126,7 +126,7 @@ namespace LibraryManagement.BLL
             
             if (borrowingEntity == null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound,$"Borrowing record with ID:{id} was not found .");
+                return OperationResult.Failure(OperationStatus.NotFound,$"Borrowing record with SettingsID:{id} was not found .");
             }
             if (borrowingEntity.IsCanceled) {
                 return OperationResult.Failure(OperationStatus.Cancelled, "Cannot process return operation for cancelled Borrowing .");
@@ -187,7 +187,7 @@ namespace LibraryManagement.BLL
             var borrowingEntity = await _unitOfWork.BorrowingRepository.GetBorrowingForUpdateAsync(id);
             if (borrowingEntity == null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound, $"Borrowing record with ID:{id} was not found .");
+                return OperationResult.Failure(OperationStatus.NotFound, $"Borrowing record with SettingsID:{id} was not found .");
             }
 
             if (borrowingEntity.IsCanceled)

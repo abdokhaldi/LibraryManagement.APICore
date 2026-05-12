@@ -1,4 +1,5 @@
-﻿using LibraryManagement.Domain.Entities.Tenants;
+﻿using LibraryManagement.DAL.Configurations.Seed_Data_Constants;
+using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -42,6 +43,29 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
                .WithOne()
                .HasForeignKey(u => u.TenantID)
                .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasData(
+            new Tenant
+            {
+                TenantID = SeedDataConstants.CasaTenantId,
+                Name = "مكتبة الدار البيضاء المركزية",
+                Identifier = "casablanca-main",
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 1, 1),
+                DefaultLanguage = "ar",
+                TimeZone = "W. Central Africa Standard Time" 
+            },
+        new Tenant
+        {
+            TenantID = SeedDataConstants.RabatTenantId,
+            Name = "Rabat International Library",
+            Identifier = "rabat-digital",
+            IsActive = true,
+            CreatedAt = new DateTime(2026, 1, 1),
+            DefaultLanguage = "en",
+            TimeZone = "UTC"
+        }
+            );
         
     }
 }

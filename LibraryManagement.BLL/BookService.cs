@@ -73,7 +73,7 @@ namespace LibraryManagement.BLL
            
              if (bookToUpdate == null)
              {
-                return OperationResult.Failure(OperationStatus.NotFound, $"The book with ID:{id} was not found for update .");
+                return OperationResult.Failure(OperationStatus.NotFound, $"The book with SettingsID:{id} was not found for update .");
              }
 
             string savedImagePath = "images/covers/default.jpg";
@@ -130,7 +130,7 @@ namespace LibraryManagement.BLL
             var bookToActivate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(bookID);
             if (bookToActivate == null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound,$"The book with ID:{bookID} not found for activate");
+                return OperationResult.Failure(OperationStatus.NotFound,$"The book with SettingsID:{bookID} not found for activate");
             }
             if (bookToActivate.IsActive)
             {
@@ -147,7 +147,7 @@ namespace LibraryManagement.BLL
             var bookToActivate = await _unitOfWork.BookRepository.GetBookForUpdateAsync(bookID);
             if (bookToActivate == null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound, $"The book with ID:{bookID} not found for deactivate");
+                return OperationResult.Failure(OperationStatus.NotFound, $"The book with SettingsID:{bookID} not found for deactivate");
 
             }
             if (!bookToActivate.IsActive)
@@ -175,7 +175,7 @@ namespace LibraryManagement.BLL
             var bookEntity = await _unitOfWork.BookRepository.GetBookForReadOnlyAsync(bookID);
             if (bookEntity == null)
             {
-                return OperationResult<BookForDisplayDTO>.Failure(OperationStatus.NotFound, $"The book with ID:{bookID} not found ");
+                return OperationResult<BookForDisplayDTO>.Failure(OperationStatus.NotFound, $"The book with SettingsID:{bookID} not found ");
 
             }
             var bookDTO = _mapper.Map<BookForDisplayDTO>(bookEntity);

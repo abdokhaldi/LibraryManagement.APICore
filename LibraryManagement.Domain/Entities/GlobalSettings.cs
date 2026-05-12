@@ -5,7 +5,7 @@ namespace LibraryManagement.Domain.Entities
 {
     public class GlobalSettings : IMustHaveTenant
     {
-            public int ID { get; set; } = 1;
+            public int SettingsID { get; set; } = 1;
             public Guid TenantID { get; set; }
             public string Name { get; set; } = "LibCore";
             public decimal DefaultFinePerDay { get; set; } = 0.5m;

@@ -7,6 +7,8 @@ using LibraryManagement.DAL.Context;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.Domain.Repositories;
 using LibraryManagement.Domain.Settings;
+using LibraryManagement.Shared.Tenant.TenantContract;
+using LibraryManagement.Shared.Tenant.TenantService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -66,6 +68,9 @@ builder.Services.AddDbContext<LibraryDbContext>(options =>
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("jwt"));
 // Dependency Injection
 builder.Services.AddMemoryCache();
+builder.Services.AddScoped<TenantService>();
+builder.Services.AddScoped<ITenantSetter, TenantService>();
+builder.Services.AddScoped<ITenantGetter, TenantService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
@@ -159,6 +164,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
+app.UseMiddleware<TenantMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 

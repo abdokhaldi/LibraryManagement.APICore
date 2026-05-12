@@ -34,7 +34,7 @@ namespace LibraryManagement.BLL
             var role = await _unitOfWork.RoleRepository.GetRoleForReadOnlyAsync(id);
             if (role == null)
             {
-                return OperationResult<RoleForDisplayDTO>.Failure(OperationStatus.NotFound, $"Role with ID:{id} was not found.");
+                return OperationResult<RoleForDisplayDTO>.Failure(OperationStatus.NotFound, $"Role with SettingsID:{id} was not found.");
 
             }
             var roleDTO = _mapper.Map<RoleForDisplayDTO>(role);

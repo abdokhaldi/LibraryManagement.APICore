@@ -63,7 +63,7 @@ namespace LibraryManagement.BLL
             var personStatus = await _unitOfWork.PersonRepository.CheckPersonStatus(userDTO.PersonID);
             if (personStatus.isNotFound)
             {
-                return OperationResult<int>.Failure(OperationStatus.Conflict, $"The person with ID: {userDTO.PersonID} is not exists .");
+                return OperationResult<int>.Failure(OperationStatus.Conflict, $"The person with SettingsID: {userDTO.PersonID} is not exists .");
             }
             if (personStatus.isNotActive)
             {
@@ -74,7 +74,7 @@ namespace LibraryManagement.BLL
             var personAsUser = await _unitOfWork.UserRepository.GetUserAsPersonAsync(userDTO.PersonID);
             if (personAsUser!= null)
             {
-                return OperationResult<int>.Failure(OperationStatus.Conflict,$"The person with ID:{personAsUser.PersonID} is already created as a user .");
+                return OperationResult<int>.Failure(OperationStatus.Conflict,$"The person with SettingsID:{personAsUser.PersonID} is already created as a user .");
             }
             bool isUserExists = await _unitOfWork.UserRepository. IsUsernameExistsAsync(userDTO.Username);
             if (isUserExists)
@@ -100,7 +100,7 @@ namespace LibraryManagement.BLL
             var user = await _unitOfWork.UserRepository.GetUserForReadOnlyAsync(id);
             if (user == null)
             {
-                return OperationResult<UserForDisplayDTO>.Failure(OperationStatus.NotFound, $"The user with ID: {id} is not found");
+                return OperationResult<UserForDisplayDTO>.Failure(OperationStatus.NotFound, $"The user with SettingsID: {id} is not found");
             }
             var userDTO = _mapper.Map<UserForDisplayDTO>(user);
             
@@ -112,7 +112,7 @@ namespace LibraryManagement.BLL
             var user = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (user ==null )
             {
-                    return OperationResult.Failure(OperationStatus.NotFound, $"The user with ID:{id} was not found for update.");
+                    return OperationResult.Failure(OperationStatus.NotFound, $"The user with SettingsID:{id} was not found for update.");
             }
 
             if (userDTO.PersonID.HasValue && userDTO.PersonID.Value!= user.PersonID)
@@ -120,7 +120,7 @@ namespace LibraryManagement.BLL
                 var personStatus = await _unitOfWork.PersonRepository.CheckPersonStatus(userDTO.PersonID.Value);
                 if (personStatus.isNotFound)
                 {
-                    return OperationResult.Failure(OperationStatus.Conflict, $"The person with ID: {userDTO.PersonID} is not exists .");
+                    return OperationResult.Failure(OperationStatus.Conflict, $"The person with SettingsID: {userDTO.PersonID} is not exists .");
                 }
                 if (personStatus.isNotActive)
                 {
@@ -134,7 +134,7 @@ namespace LibraryManagement.BLL
                 var personAsUser = await _unitOfWork.UserRepository.GetUserAsPersonAsync(userDTO.PersonID.Value);
                 if (personAsUser != null && personAsUser.PersonID != user.PersonID)
                 {
-                    return OperationResult<int>.Failure(OperationStatus.Conflict, $"The person with ID:{personAsUser.PersonID} is already is another user in the system .");
+                    return OperationResult<int>.Failure(OperationStatus.Conflict, $"The person with SettingsID:{personAsUser.PersonID} is already is another user in the system .");
           
                 }
             }
@@ -156,7 +156,7 @@ namespace LibraryManagement.BLL
             var userForDeactivate = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForDeactivate==null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound,$"User with ID:{id} not found .");
+                return OperationResult.Failure(OperationStatus.NotFound,$"User with SettingsID:{id} not found .");
             }
             if (userForDeactivate.IsBlocked)
             {
@@ -175,7 +175,7 @@ namespace LibraryManagement.BLL
             var userForActivate = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForActivate == null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound,$"user with ID:{id} not found .");
+                return OperationResult.Failure(OperationStatus.NotFound,$"user with SettingsID:{id} not found .");
             }
             if (userForActivate.IsBlocked)
             {
@@ -195,7 +195,7 @@ namespace LibraryManagement.BLL
             var userForBlock = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForBlock==null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound,$"User with ID:{id} not found .");
+                return OperationResult.Failure(OperationStatus.NotFound,$"User with SettingsID:{id} not found .");
             }
             if (userForBlock.IsBlocked && !userForBlock.IsActive)
             {
@@ -211,7 +211,7 @@ namespace LibraryManagement.BLL
             var userForUnBlock = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForUnBlock == null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound,$"User with ID:{id} not found .");
+                return OperationResult.Failure(OperationStatus.NotFound,$"User with SettingsID:{id} not found .");
             }
             if (!userForUnBlock.IsBlocked)
             {

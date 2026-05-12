@@ -42,7 +42,7 @@ namespace LibraryManagement.DAL.Configurations
                 .HasMaxLength(200)
                 .IsUnicode();
 
-            builder.HasQueryFilter(f => f.Borrowing.BookCopy.IsActive);
+            
             builder.HasOne<Tenant>()
                 .WithMany()
                 .HasForeignKey(f => f.TenantID)

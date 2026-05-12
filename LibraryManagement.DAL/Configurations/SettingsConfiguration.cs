@@ -1,4 +1,5 @@
-﻿using LibraryManagement.Domain.Entities;
+﻿using LibraryManagement.DAL.Configurations.Seed_Data_Constants;
+using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -12,7 +13,7 @@ namespace LibraryManagement.DAL.Configurations
         {
             builder.ToTable("GlobalSettings");
 
-            builder.HasKey(s => s.ID);
+            builder.HasKey(s => s.SettingsID);
 
             builder.Property(s => s.DefaultFinePerDay)
                   .IsRequired()
@@ -44,14 +45,16 @@ namespace LibraryManagement.DAL.Configurations
                    .IsUnicode(false);
 
             builder.HasOne<Tenant>()
-                .WithMany()
-                .HasForeignKey(g => g.TenantID)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithOne(t => t.GlobalSettings)
+                .HasForeignKey<GlobalSettings>(g=>g.TenantID)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
-            builder.HasData(new GlobalSettings
-            {
-                ID = 1,
+            builder.HasData(
+                new GlobalSettings
+               {
+                SettingsID = 1,
+                TenantID = SeedDataConstants.CasaTenantId,
                 DefaultFinePerDay = 10.0m,
                 MaxFineLimit = 100.0m,
                 DefaultBorrowingDays = 14,
@@ -59,7 +62,21 @@ namespace LibraryManagement.DAL.Configurations
                 IsLibraryOpen = true,
                 LastUpdated = DateTime.UtcNow,
                 UpdatedBy = "System"
-            });
+            },
+                new GlobalSettings
+                {
+                    SettingsID = 2,
+                    TenantID = SeedDataConstants.RabatTenantId,
+                    DefaultFinePerDay = 15.0m,
+                    MaxFineLimit = 200.0m,
+                    DefaultBorrowingDays = 14,
+                    MaxBooksPerMember = 10,
+                    IsLibraryOpen = true,
+                    LastUpdated = DateTime.UtcNow,
+                    UpdatedBy = "System"
+                }
+
+                );
         }
     }
 }

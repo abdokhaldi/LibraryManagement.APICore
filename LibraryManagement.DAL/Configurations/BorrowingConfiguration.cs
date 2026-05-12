@@ -1,4 +1,5 @@
-﻿using LibraryManagement.Domain.Entities;
+﻿using LibraryManagement.DAL.Configurations.Seed_Data_Constants;
+using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -54,81 +55,7 @@ namespace LibraryManagement.DAL.Configurations
                 .HasForeignKey(b => b.TenantID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasData(
-            new Borrowing()
-            {
-                BorrowingID = 1,
-                BookCopyID = 2,
-                MemberID = 1,
-                BorrowingDate = DateTime.UtcNow,
-                DueDate = DateTime.UtcNow.AddDays(4),
-                InitialFees = 15.0m,
-        
-                ReturnDate = null,
-                Status = "Borrowed",
-                IsCanceled = false
-            },
-            new Borrowing()
-            {
-                BorrowingID = 2,
-                BookCopyID = 7,
-                MemberID = 2,
-                BorrowingDate = DateTime.UtcNow,
-                DueDate = DateTime.UtcNow.AddDays(5),
-                InitialFees = 15.0m,
-                ReturnDate = null,
-                Status = "Borrowed",
-                IsCanceled = false
-            },
-            new Borrowing()
-            {
-                BorrowingID = 3,
-                BookCopyID = 8, 
-                MemberID = 3,
-                BorrowingDate = DateTime.UtcNow,
-                DueDate = DateTime.UtcNow.AddDays(2),
-                InitialFees = 15.0m,
-                ReturnDate = null,
-                Status = "Borrowed",
-                IsCanceled = false
-            },
-            new Borrowing()
-            {
-                BorrowingID = 4,
-                BookCopyID = 17, 
-                MemberID = 3,
-                BorrowingDate = DateTime.UtcNow,
-                DueDate = DateTime.UtcNow.AddDays(4),
-                InitialFees = 15.0m,
-                ReturnDate = null,
-                Status = "Borrowed",
-                IsCanceled = false
-            },
-            new Borrowing()
-            {
-                BorrowingID = 5,
-                BookCopyID = 2, 
-                MemberID = 7,
-                BorrowingDate = DateTime.UtcNow.AddMonths(-1),
-                DueDate = DateTime.UtcNow.AddMonths(-1).AddDays(7),
-                InitialFees = 15.0m,
-                ReturnDate = DateTime.UtcNow.AddMonths(-1).AddDays(5),
-                Status = "Returned", 
-                IsCanceled = false
-            },
-            new Borrowing()
-            {
-                BorrowingID = 6,
-                BookCopyID = 12,
-                MemberID = 7,
-                BorrowingDate = DateTime.UtcNow,
-                DueDate = DateTime.UtcNow.AddDays(6),
-                InitialFees = 15.0m,
-                ReturnDate = null,
-                Status = "Borrowed",
-                IsCanceled = false
-            }
-        );
+           
 
 
         }

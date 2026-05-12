@@ -1,4 +1,5 @@
-﻿using LibraryManagement.Domain.Entities;
+﻿using LibraryManagement.DAL.Configurations.Seed_Data_Constants;
+using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -76,6 +77,7 @@ namespace LibraryManagement.DAL.Configurations
                 new Person
                 {
                     PersonID = 1,
+                    TenantID = SeedDataConstants.RabatTenantId,
                     FirstName = "Ahmed",
                     LastName = "Alami",
                     NationalNumber = "IC122065",
@@ -89,6 +91,7 @@ namespace LibraryManagement.DAL.Configurations
 new Person
 {
     PersonID = 2,
+    TenantID = SeedDataConstants.RabatTenantId,
     FirstName = "Fatima",
     LastName = "Zahra",
     NationalNumber = "IC122068",
@@ -102,6 +105,7 @@ new Person
 new Person
 {
     PersonID = 3,
+    TenantID = SeedDataConstants.RabatTenantId,
     FirstName = "Youssef",
     LastName = "Idrissi",
     Email = "youssef.idrissi@yahoo.com",
@@ -115,6 +119,7 @@ new Person
 new Person
 {
     PersonID = 4,
+    TenantID = SeedDataConstants.RabatTenantId,
     FirstName = "Sanaa",
     LastName = "Bennani",
     NationalNumber = "IC922965",
@@ -128,6 +133,7 @@ new Person
 new Person
 {
     PersonID = 5,
+    TenantID = SeedDataConstants.CasaTenantId,
     FirstName = "Omar",
     LastName = "Mansouri",
     NationalNumber = "IC128493",
@@ -141,6 +147,7 @@ new Person
 new Person
 {
     PersonID = 6,
+    TenantID = SeedDataConstants.CasaTenantId,
     FirstName = "Laila",
     LastName = "Tazi",
     NationalNumber = "I907065",
@@ -154,6 +161,7 @@ new Person
 new Person
 {
     PersonID = 7,
+    TenantID = SeedDataConstants.CasaTenantId,
     FirstName = "Karim",
     LastName = "Sabbahi",
     NationalNumber = "IC87409",
@@ -167,6 +175,7 @@ new Person
 new Person
 {
     PersonID = 8,
+    TenantID = SeedDataConstants.CasaTenantId,
     FirstName = "Meryem",
     LastName = "Fassi",
     NationalNumber = "IC008571",
@@ -180,6 +189,7 @@ new Person
 new Person
 {
     PersonID = 9,
+    TenantID = SeedDataConstants.CasaTenantId,
     FirstName = "Hamza",
     LastName = "Radi",
     NationalNumber = "IC124598",
@@ -193,6 +203,7 @@ new Person
 new Person
 {
     PersonID = 10,
+    TenantID = SeedDataConstants.CasaTenantId,
     FirstName = "Salma",
     LastName = "Amrani",
     NationalNumber = "IC248382",
@@ -206,6 +217,7 @@ new Person
                  new Person
                  {
                      PersonID = 11,
+                     TenantID = SeedDataConstants.CasaTenantId,
                      FirstName = "Abdenabi",
                      LastName = "Khaldi",
                      NationalNumber = "IC188555",
@@ -216,7 +228,7 @@ new Person
                      Gender = 'M',
                      IsActive = true
                  }
-                  
+
                 );
         }
 

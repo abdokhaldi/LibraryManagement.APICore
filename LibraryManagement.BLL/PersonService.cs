@@ -58,7 +58,7 @@ namespace LibraryManagement.BLL
             var person = await _unitOfWork.PersonRepository.GetPersonForReadOnlyAsync(id);
             if (person == null)
             {
-                return OperationResult<PersonForDisplayDTO>.Failure(OperationStatus.NotFound, $"The person with ID: {id} was not found.");
+                return OperationResult<PersonForDisplayDTO>.Failure(OperationStatus.NotFound, $"The person with SettingsID: {id} was not found.");
             }
 
             var personDTO = _mapper.Map<PersonForDisplayDTO>(person);
@@ -71,7 +71,7 @@ namespace LibraryManagement.BLL
 
             if (personForUpdate == null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound, $"The person with ID: {id} was not found for update.");
+                return OperationResult.Failure(OperationStatus.NotFound, $"The person with SettingsID: {id} was not found for update.");
             }
 
             if (!personForUpdate.IsActive)
@@ -90,7 +90,7 @@ namespace LibraryManagement.BLL
             var person = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(id);
             if (person == null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound, $"Person with ID: {id} not found.");
+                return OperationResult.Failure(OperationStatus.NotFound, $"Person with SettingsID: {id} not found.");
             }
 
             if (person.IsActive) return OperationResult.Success();
@@ -105,7 +105,7 @@ namespace LibraryManagement.BLL
             var person = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(id);
             if (person == null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound, $"Person with ID: {id} not found.");
+                return OperationResult.Failure(OperationStatus.NotFound, $"Person with SettingsID: {id} not found.");
             }
 
             if (!person.IsActive) return OperationResult.Success();
