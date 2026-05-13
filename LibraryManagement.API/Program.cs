@@ -68,9 +68,10 @@ builder.Services.AddDbContext<LibraryDbContext>(options =>
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("jwt"));
 // Dependency Injection
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<TenantService>();
-builder.Services.AddScoped<ITenantSetter, TenantService>();
-builder.Services.AddScoped<ITenantGetter, TenantService>();
+builder.Services.AddScoped<TenantProvider>();
+builder.Services.AddScoped<ITenantSetter, TenantProvider>();
+builder.Services.AddScoped<ITenantGetter, TenantProvider>();
+builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();

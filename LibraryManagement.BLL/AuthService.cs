@@ -1,9 +1,12 @@
-﻿using LibraryManagement.BLL.Interfaces;
+﻿using AutoMapper;
+using LibraryManagement.BLL.Interfaces;
 using LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.AuthDTOs;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.LoginResult;
+using LibraryManagement.DTO.Owner;
 using LibraryManagement.DTO.RefreshTokenDTOs;
 
 
@@ -12,15 +15,17 @@ namespace LibraryManagement.BLL
 
     public class AuthService : IAuthService
     {
-       
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
         private readonly ISecurityService _securityService;
-        public AuthService(IUnitOfWork unitOfWork, ITokenService tokenService, ISecurityService securityService)
+        private readonly IMapper _mapper;
+        public AuthService(IUnitOfWork unitOfWork, ITokenService tokenService, ISecurityService securityService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             _securityService = securityService;
+            _mapper = mapper;
         }
 
         public async Task<LoginResult> LoginAsync(string identifier, string password)
@@ -30,21 +35,21 @@ namespace LibraryManagement.BLL
             {
                 return LoginResult.Failure(LoginStatus.InvalidCredentials);
             }
-            bool isPasswordCorrect = _securityService.Verify(password,userForLogin.Password);
+            bool isPasswordCorrect = _securityService.Verify(password, userForLogin.Password);
             if (!isPasswordCorrect)
             {
-                return LoginResult.Failure(LoginStatus.InvalidCredentials) ;
+                return LoginResult.Failure(LoginStatus.InvalidCredentials);
             }
 
             if (userForLogin.IsBlocked == true)
-                    {
+            {
                 return LoginResult.Failure(LoginStatus.Blocked);
-                    }
+            }
 
-                    if (userForLogin.IsActive == false)
-                    {
-                        return LoginResult.Failure(LoginStatus.Deactivated);
-                    }
+            if (userForLogin.IsActive == false)
+            {
+                return LoginResult.Failure(LoginStatus.Deactivated);
+            }
 
             string token = _tokenService.GenerateToken(userForLogin);
             string refreshTokenString = _tokenService.GenerateRefreshToken();
@@ -65,9 +70,9 @@ namespace LibraryManagement.BLL
                     ExpiresAt = DateTime.UtcNow.AddMinutes(15)
                 }
                 );
-            }
+        }
 
-       public async Task<LoginResult> RefreshTokenAsync(RefreshTokenRequestDTO request)
+        public async Task<LoginResult> RefreshTokenAsync(RefreshTokenRequestDTO request)
         {
             var user = await _unitOfWork.UserRepository.GetUserByRefreshTokenAsync(request.RefreshToken);
 
@@ -76,9 +81,9 @@ namespace LibraryManagement.BLL
                 return LoginResult.Failure(LoginStatus.InvalidCredentials);
             }
 
-            var storedToken = user.RefreshTokens.SingleOrDefault(t=>t.Token == request.RefreshToken);
-            
-            if (storedToken==null || !storedToken!.IsActive)
+            var storedToken = user.RefreshTokens.SingleOrDefault(t => t.Token == request.RefreshToken);
+
+            if (storedToken == null || !storedToken!.IsActive)
             {
                 return LoginResult.Failure(LoginStatus.InvalidCredentials);
             }
@@ -119,8 +124,8 @@ namespace LibraryManagement.BLL
                 }
               );
         }
-       
-       public async Task<LoginResult> LogoutAsync(LogoutRequestDTO requestDTO)
+
+        public async Task<LoginResult> LogoutAsync(LogoutRequestDTO requestDTO)
 
         {
             var user = await _unitOfWork.UserRepository.GetUserByRefreshTokenAsync(requestDTO.RefreshToken);
@@ -137,6 +142,8 @@ namespace LibraryManagement.BLL
             await _unitOfWork.SaveChangesAsync();
             return LoginResult.Success();
         }
+
+       
     }
 
     }

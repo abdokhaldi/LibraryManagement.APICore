@@ -2,7 +2,6 @@
 using LibraryManagement.DAL.Context;
 using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Repositories;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace LibraryManagement.DAL
 {

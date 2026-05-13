@@ -13,6 +13,8 @@ namespace LibraryManagement.Domain.Entities.Tenants
             public string TimeZone { get; set; } = "UTC";
             public GlobalSettings GlobalSettings { get; set; } = null!;
             public ICollection<User> Users { get; set; } = new List<User>();
-        }
+      
+        
+    }
     }
 

@@ -17,6 +17,7 @@ namespace LibraryManagement.Domain.Interfaces
         IUserRepository UserRepository { get; }
         IFineRepository FineRepository { get; }
         IGlobalSettingsRepository GlobalSettingsRepository { get; }
+        ITenantRepository TenantRepository { get; }
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();
         Task CommitAsync();

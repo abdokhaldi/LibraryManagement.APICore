@@ -1,5 +1,6 @@
 ﻿using LibraryManagement.DAL.Configurations.Seed_Data_Constants;
 using  LibraryManagement.Domain.Entities;
+using LibraryManagement.Domain.Entities.Tenants;
 using LibraryManagement.Domain.TenantContract;
 using LibraryManagement.Shared.Tenant.TenantContract;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ namespace LibraryManagement.DAL.Context
         public DbSet<BookCopy> BookCopies { get; set; }
         public DbSet<Fine> Fines { get; set; }
         public DbSet<GlobalSettings> GlobalSettings { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             

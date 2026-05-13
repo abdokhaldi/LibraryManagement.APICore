@@ -3,8 +3,7 @@ using LibraryManagement.DAL.Context;
 using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.Domain.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
+
 
 namespace LibraryManagement.DAL
 {
@@ -23,6 +22,7 @@ namespace LibraryManagement.DAL
         public IUserRepository UserRepository { get; }
         public IFineRepository FineRepository { get; }
         public IGlobalSettingsRepository GlobalSettingsRepository { get; }
+        public ITenantRepository TenantRepository { get; }
 
         private readonly LibraryDbContext _context;
         private IDbContextTransaction? _currentTransaction;
@@ -42,6 +42,7 @@ namespace LibraryManagement.DAL
             UserRepository = new UserRepository(_context);
             FineRepository = new FineRepository(_context);
             GlobalSettingsRepository = new GlobalSettingsRepository(_context);
+            TenantRepository = new TenantRepository(_context);
         }
 
 
