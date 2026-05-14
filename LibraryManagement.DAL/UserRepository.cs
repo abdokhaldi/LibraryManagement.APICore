@@ -26,7 +26,6 @@ namespace LibraryManagement.DAL
                                          .FirstOrDefaultAsync(u=>u.UserID==userID);
                 return user;
             }
-
         public async Task<User?> GetUserForReadOnlyAsync(Guid userID)
         {
 
@@ -36,7 +35,6 @@ namespace LibraryManagement.DAL
                                          .FirstOrDefaultAsync(u => u.UserID == userID);
             return user;
         }
-
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
             var user = await _context.Users.AsNoTracking()
@@ -45,10 +43,7 @@ namespace LibraryManagement.DAL
                                .FirstOrDefaultAsync(u =>u.Username==username);
                 return user;
          }
-
-      
-
-      public async Task<User?> GetUserForLoginAsync(string identifier)
+        public async Task<User?> GetUserForLoginAsync(string identifier)
         {
             var user = await _context.Users
                 .Include(u => u.Person)
@@ -59,7 +54,6 @@ namespace LibraryManagement.DAL
 
             return user;
         }
-
         public async Task<PagedList<User>> GetActiveUsersAsync(UserParameters parameters)
         {
            
@@ -98,15 +92,12 @@ namespace LibraryManagement.DAL
             
             return await query.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
         }
-
-
         public async Task<bool>  IsUsernameExistsAsync(string username)
         {
 
            return await _context.Users.AnyAsync(u=>u.Username == username);
            
         }
-
         public async Task<bool> IsUsernameExistsForUpdateAsync(Guid id, string username)
 
         {
@@ -122,15 +113,12 @@ namespace LibraryManagement.DAL
                _context.Users.Add(userEntity);
                 return Task.CompletedTask;
         }
-            
-
         public Task UpdateUserAsync(User userEntity)
         {
             
                 _context.Users.Update(userEntity);
                return Task.CompletedTask;
         }
-
         public async Task<User?> GetUserAsPersonAsync(Guid personID)
         {
             return await _context.Users.AsNoTracking()
@@ -138,7 +126,7 @@ namespace LibraryManagement.DAL
                                            .FirstOrDefaultAsync();
            
         }
-    public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+        public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
         {
            return await _context.Users
                                 .Include(u=>u.Person)
