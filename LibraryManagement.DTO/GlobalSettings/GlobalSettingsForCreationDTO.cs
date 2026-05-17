@@ -2,9 +2,8 @@
 
 namespace LibraryManagement.DTO.GlobalSettings
 {
-    public class GlobalSettingsForUpdateDTO
+    public class GlobalSettingsForCreationDTO
     {
-        
         public decimal? DefaultFinePerDay { get; set; }
         public decimal? MaxFineLimit { get; set; }
         public int? DefaultBorrowingDays { get; set; }
@@ -13,6 +12,6 @@ namespace LibraryManagement.DTO.GlobalSettings
         public DateTime? LastUpdated { get; set; } = DateTime.UtcNow;
         public string? DefaultLanguage { get; set; }
         public string? TimeZone { get; set; }
-        public string? UpdatedBy { get; set; }
+        
     }
 }

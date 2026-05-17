@@ -1,6 +1,7 @@
 ﻿
 
 
+using LibraryManagement.Domain.Entities.Tenants;
 using LibraryManagement.Domain.TenantContract;
 
 namespace LibraryManagement.Domain.Entities
@@ -26,7 +27,7 @@ namespace LibraryManagement.Domain.Entities
         public DateTime CreatedAt { get; set; }
         
         public bool IsBlocked { get; set; }
-
+        
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

@@ -56,7 +56,7 @@ namespace LibraryManagement.DAL
             _currentTransaction =  await _context.Database.BeginTransactionAsync();
         }
         
-        public  async Task CommitAsync()
+        public async Task CommitAsync()
         {
             try
             {

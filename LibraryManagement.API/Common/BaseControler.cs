@@ -12,7 +12,7 @@ namespace LibraryManagement.API.Common
     {
        
         protected string CurrentUserID => User.FindFirstValue(ClaimTypes.NameIdentifier)
-           ?? throw new InvalidOperationException("User SettingsID not found in claims. Ensure [Authorize] is used.");
+           ?? throw new InvalidOperationException("AdminUser SettingsID not found in claims. Ensure [Authorize] is used.");
        
         protected bool IsAdmin => User.IsInRole("Admin");
         protected string CurrentUserRole => User.FindFirstValue(ClaimTypes.Role)??"Member";

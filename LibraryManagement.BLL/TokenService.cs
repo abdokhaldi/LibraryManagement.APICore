@@ -25,7 +25,7 @@ namespace LibraryManagement.BLL
                 new Claim(ClaimTypes.NameIdentifier,user.UserID.ToString()),
                 new Claim(ClaimTypes.Name , user.Username),
                 new Claim(ClaimTypes.Email,user.Person.Email),
-                new Claim(ClaimTypes.Role, user.Role.RoleName??"User"),
+                new Claim(ClaimTypes.Role, user.Role.RoleName??"Member"),
                 new Claim("tenantID", user.TenantID.ToString())
             };
 

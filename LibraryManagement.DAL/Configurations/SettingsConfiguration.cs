@@ -1,5 +1,4 @@
-﻿using LibraryManagement.DAL.Configurations.Seed_Data_Constants;
-using LibraryManagement.Domain.Entities;
+﻿using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Entities.Tenants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -14,6 +13,8 @@ namespace LibraryManagement.DAL.Configurations
             builder.ToTable("GlobalSettings");
 
             builder.HasKey(s => s.SettingsID);
+            builder.Property(s => s.SettingsID)
+                .ValueGeneratedNever();
 
             builder.Property(s => s.DefaultFinePerDay)
                   .IsRequired()
@@ -39,6 +40,19 @@ namespace LibraryManagement.DAL.Configurations
                   .IsRequired()
                   .HasDefaultValueSql("GETUTCDATE()");
 
+            builder.Property(s => s.DefaultLanguage)
+                .IsRequired()
+                .HasDefaultValue("en")
+                .HasMaxLength(10);
+
+            builder.Property(s => s.TimeZone)
+                .IsRequired()
+                .HasDefaultValue("UTC")
+                .IsUnicode(false)
+                .HasMaxLength(50);
+
+           
+
              builder.Property(s => s.UpdatedBy)
                    .IsRequired()
                    .HasMaxLength(100)
@@ -46,37 +60,11 @@ namespace LibraryManagement.DAL.Configurations
 
             builder.HasOne<Tenant>()
                 .WithOne(t => t.GlobalSettings)
-                .HasForeignKey<GlobalSettings>(g=>g.TenantID)
+                .HasForeignKey<GlobalSettings>(g => g.TenantID)
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            builder.HasData(
-                new GlobalSettings
-               {
-                SettingsID = 1,
-                TenantID = SeedDataConstants.CasaTenantId,
-                DefaultFinePerDay = 10.0m,
-                MaxFineLimit = 100.0m,
-                DefaultBorrowingDays = 14,
-                MaxBooksPerMember = 5,
-                IsLibraryOpen = true,
-                LastUpdated = DateTime.UtcNow,
-                UpdatedBy = "System"
-            },
-                new GlobalSettings
-                {
-                    SettingsID = 2,
-                    TenantID = SeedDataConstants.RabatTenantId,
-                    DefaultFinePerDay = 15.0m,
-                    MaxFineLimit = 200.0m,
-                    DefaultBorrowingDays = 14,
-                    MaxBooksPerMember = 10,
-                    IsLibraryOpen = true,
-                    LastUpdated = DateTime.UtcNow,
-                    UpdatedBy = "System"
-                }
-
-                );
+              
         }
     }
 }

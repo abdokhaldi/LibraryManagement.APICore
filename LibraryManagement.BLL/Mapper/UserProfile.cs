@@ -10,6 +10,7 @@ namespace LibraryManagement.BLL.Mapper
        public UserProfile()
         {
             CreateMap<UserForCreationDTO, User>();
+            CreateMap<UserForAdminCreationDTO, User>();
 
             var mappingUserForDisplay = CreateMap<User, UserForDisplayDTO>();
 

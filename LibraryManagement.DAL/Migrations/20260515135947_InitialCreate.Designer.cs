@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagement.DAL.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20260512213320_InitialCreate")]
+    [Migration("20260515135947_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -397,11 +397,8 @@ namespace LibraryManagement.DAL.Migrations
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.GlobalSettings", b =>
                 {
-                    b.Property<int>("SettingsID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SettingsID"));
+                    b.Property<Guid>("SettingsID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("DefaultBorrowingDays")
                         .ValueGeneratedOnAdd()
@@ -412,6 +409,13 @@ namespace LibraryManagement.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(18.2)")
                         .HasDefaultValue(10.0m);
+
+                    b.Property<string>("DefaultLanguage")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasDefaultValue("en");
 
                     b.Property<bool>("IsLibraryOpen")
                         .HasColumnType("bit");
@@ -431,12 +435,16 @@ namespace LibraryManagement.DAL.Migrations
                         .HasColumnType("decimal(18.2)")
                         .HasDefaultValue(100.0m);
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("TenantID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TimeZone")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasDefaultValue("UTC");
 
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
@@ -450,34 +458,6 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("GlobalSettings", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            SettingsID = 1,
-                            DefaultBorrowingDays = 14,
-                            DefaultFinePerDay = 10.0m,
-                            IsLibraryOpen = true,
-                            LastUpdated = new DateTime(2026, 5, 12, 21, 33, 19, 253, DateTimeKind.Utc).AddTicks(2258),
-                            MaxBooksPerMember = 5,
-                            MaxFineLimit = 100.0m,
-                            Name = "LibCore",
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"),
-                            UpdatedBy = "System"
-                        },
-                        new
-                        {
-                            SettingsID = 2,
-                            DefaultBorrowingDays = 14,
-                            DefaultFinePerDay = 15.0m,
-                            IsLibraryOpen = true,
-                            LastUpdated = new DateTime(2026, 5, 12, 21, 33, 19, 253, DateTimeKind.Utc).AddTicks(2264),
-                            MaxBooksPerMember = 10,
-                            MaxFineLimit = 200.0m,
-                            Name = "LibCore",
-                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"),
-                            UpdatedBy = "System"
-                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.Member", b =>
@@ -673,14 +653,6 @@ namespace LibraryManagement.DAL.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<string>("DefaultLanguage")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(10)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(10)")
-                        .HasDefaultValue("ar");
-
                     b.Property<string>("Identifier")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -698,41 +670,12 @@ namespace LibraryManagement.DAL.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("TimeZone")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasDefaultValue("UTC");
-
                     b.HasKey("TenantID");
 
                     b.HasIndex("Identifier")
                         .IsUnique();
 
                     b.ToTable("Tenants", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            TenantID = new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"),
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultLanguage = "ar",
-                            Identifier = "casablanca-main",
-                            IsActive = true,
-                            Name = "مكتبة الدار البيضاء المركزية",
-                            TimeZone = "W. Central Africa Standard Time"
-                        },
-                        new
-                        {
-                            TenantID = new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"),
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DefaultLanguage = "en",
-                            Identifier = "rabat-digital",
-                            IsActive = true,
-                            Name = "Rabat International Library",
-                            TimeZone = "UTC"
-                        });
                 });
 
             modelBuilder.Entity("LibraryManagement.Domain.Entities.User", b =>

@@ -8,9 +8,7 @@ namespace LibraryManagement.Domain.Entities.Tenants
             public string Name { get; set; } = null!;
             public string Identifier { get; set; } = null!;
             public bool IsActive { get; set; }
-            public DateTime CreatedAt { get; set; }
-            public string DefaultLanguage { get; set; } = "en";
-            public string TimeZone { get; set; } = "UTC";
+            public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
             public GlobalSettings GlobalSettings { get; set; } = null!;
             public ICollection<User> Users { get; set; } = new List<User>();
       

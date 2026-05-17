@@ -6,6 +6,7 @@ using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.AuthDTOs;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.LoginResult;
+using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Owner;
 using LibraryManagement.DTO.RefreshTokenDTOs;
 
@@ -143,7 +144,86 @@ namespace LibraryManagement.BLL
             return LoginResult.Success();
         }
 
-       
+        public async Task<OperationResult<LoginResult>> AdminRegistrationAsync(OwnerRegistrationDTO ownerDTO)
+        {
+            Guid newTenantId = Guid.NewGuid();
+            Guid newPersonId = Guid.NewGuid();
+            Guid newUserId = Guid.NewGuid();
+            Guid newSettingId = Guid.NewGuid();
+
+            var tenantDTO = ownerDTO.Tenant;
+            var personDTO = ownerDTO.Person;
+            var userDTO = ownerDTO.AdminUser;
+            var settingDTO = ownerDTO.Settings;
+
+            bool identifierExists = await _unitOfWork.TenantRepository.IsTenantIdentitierExistAsync(tenantDTO.Identifier);
+            var (emailExists,phoneExists) = await _unitOfWork.PersonRepository.IsEmailOrPhoneExistsAsync(personDTO.Email, personDTO.Phone);
+            bool usernameExists = await _unitOfWork.UserRepository.IsUsernameExistsAsync(userDTO.Username);
+
+            if (identifierExists)
+                return OperationResult <LoginResult>.Failure(OperationStatus.Conflict, "The tenant identifier is already exists");
+           
+            if(emailExists)
+                return OperationResult<LoginResult>.Failure(OperationStatus.Conflict, "The email is already exists");
+           
+            if(phoneExists)
+                return OperationResult<LoginResult>.Failure(OperationStatus.Conflict, "The phone number is already exists");
+            
+            if(usernameExists)
+                return OperationResult<LoginResult>.Failure(OperationStatus.Conflict, "The username is already exists");
+
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+                var tenantEntity = _mapper.Map<Tenant>(tenantDTO);
+                tenantEntity.TenantID = newTenantId;
+                tenantEntity.IsActive = true;
+                tenantEntity.CreatedAt = DateTime.UtcNow;
+                
+          var settingEntity = _mapper.Map<GlobalSettings>(settingDTO);
+                settingEntity.SettingsID = newSettingId;
+                settingEntity.TenantID = newTenantId;
+                
+           var personEntity = _mapper.Map<Person>(personDTO);
+                personEntity.PersonID = newPersonId;
+                personEntity.TenantID = newTenantId;
+                personEntity.IsActive = true;
+                
+                string hashedPassword = _securityService.HashPassword(userDTO.Password);
+                var userEntity = _mapper.Map<User>(userDTO);
+                userEntity.UserID = newUserId;
+                userEntity.PersonID = newPersonId;
+                userEntity.Password = hashedPassword;
+                userEntity.TenantID = newTenantId;
+                userEntity.IsActive = true;
+                userEntity.CreatedAt = DateTime.UtcNow;
+                userEntity.IsBlocked = false;
+
+
+                await _unitOfWork.TenantRepository.CreateTenantAsync(tenantEntity);
+                await _unitOfWork.PersonRepository.AddNewPersonAsync(personEntity);
+                await _unitOfWork.UserRepository.AddNewUserAsync(userEntity);
+
+                await _unitOfWork.CommitAsync();
+
+                LoginResult login = await LoginAsync(userDTO.Username, userDTO.Password);
+                
+                if(login.status == LoginStatus.Success)
+                return OperationResult<LoginResult>.Success(login);
+                return OperationResult<LoginResult>.Failure(OperationStatus.loginFailed, "Admin registration succeeded but login failed, please try to login with your credentials");
+            }
+            catch(Exception ex)
+
+            {
+                await _unitOfWork.RollbackAsync();
+
+                throw;
+            }
+
+           
+
+        }
+
     }
 
     }

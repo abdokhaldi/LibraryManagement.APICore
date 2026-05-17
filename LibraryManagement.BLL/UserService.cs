@@ -157,7 +157,7 @@ namespace LibraryManagement.BLL
             var userForDeactivate = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForDeactivate==null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound,$"User with SettingsID:{id} not found .");
+                return OperationResult.Failure(OperationStatus.NotFound,$"AdminUser with SettingsID:{id} not found .");
             }
             if (userForDeactivate.IsBlocked)
             {
@@ -196,7 +196,7 @@ namespace LibraryManagement.BLL
             var userForBlock = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForBlock==null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound,$"User with SettingsID:{id} not found .");
+                return OperationResult.Failure(OperationStatus.NotFound,$"AdminUser with SettingsID:{id} not found .");
             }
             if (userForBlock.IsBlocked && !userForBlock.IsActive)
             {
@@ -212,7 +212,7 @@ namespace LibraryManagement.BLL
             var userForUnBlock = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
             if (userForUnBlock == null)
             {
-                return OperationResult.Failure(OperationStatus.NotFound,$"User with SettingsID:{id} not found .");
+                return OperationResult.Failure(OperationStatus.NotFound,$"AdminUser with SettingsID:{id} not found .");
             }
             if (!userForUnBlock.IsBlocked)
             {

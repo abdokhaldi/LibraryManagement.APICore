@@ -1,5 +1,4 @@
-﻿using LibraryManagement.DAL.Configurations.Seed_Data_Constants;
-using  LibraryManagement.Domain.Entities;
+﻿using  LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Entities.Tenants;
 using LibraryManagement.Domain.TenantContract;
 using LibraryManagement.Shared.Tenant.TenantContract;
@@ -71,7 +70,21 @@ namespace LibraryManagement.DAL.Context
             {
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.TenantID = currentTenantId;
+                    if (currentTenantId != Guid.Empty )
+                    {
+                        entry.Entity.TenantID = currentTenantId;
+                    }
+                    else {
+                        if (entry.Entity is Tenant 
+                            || entry.Entity is GlobalSettings 
+                            || entry.Entity is Person 
+                            || entry.Entity is User)
+                        {
+                            continue;
+                        }
+
+                       throw new InvalidOperationException($"Cannot save {entry.Entity.GetType().Name} because Tenant ID is missing from the current context.");
+                    }
                 }
             }
 

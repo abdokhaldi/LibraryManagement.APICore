@@ -15,6 +15,8 @@ namespace LibraryManagement.DTO.Common
         Conflict,
         ValidationError,
         NotFound,
-        Forbidden
+        Forbidden,
+        Error,
+        loginFailed,
     }
 }

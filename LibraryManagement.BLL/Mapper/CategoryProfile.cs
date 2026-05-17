@@ -4,9 +4,9 @@ using LibraryManagement.DTO.CategoryDTOs;
 
 namespace LibraryManagement.BLL.Mapper
 {
-    public class CategoryDTO : Profile
+    public class CategoryProfile : Profile
     {
-        public CategoryDTO()
+        public CategoryProfile()
         {
             CreateMap<CategoryForCreationDTO, Category>();
             CreateMap<CategoryForUpdateDTO, Category>()

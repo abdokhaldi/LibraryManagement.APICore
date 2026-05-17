@@ -73,8 +73,17 @@ namespace LibraryManagement.BLL.Mapper
                 }
                 );
 
-            
-           }
+          var mappingForCreation = CreateMap<GlobalSettingsForCreationDTO, GlobalSettings>();
+            mappingForCreation.ForAllMembers(
+                opt => opt.Condition(
+                    (src,dest,srcMember) =>
+                    {
+                      return  srcMember != null;
+                    }
+                    )
+                );
+
         }
+    }
     }
 

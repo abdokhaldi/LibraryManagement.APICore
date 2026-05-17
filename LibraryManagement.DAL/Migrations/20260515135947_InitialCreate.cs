@@ -48,9 +48,7 @@ namespace LibraryManagement.DAL.Migrations
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Identifier = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    DefaultLanguage = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false, defaultValue: "ar"),
-                    TimeZone = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "UTC")
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },
                 constraints: table =>
                 {
@@ -96,15 +94,15 @@ namespace LibraryManagement.DAL.Migrations
                 name: "GlobalSettings",
                 columns: table => new
                 {
-                    SettingsID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SettingsID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TenantID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DefaultFinePerDay = table.Column<decimal>(type: "decimal(18,0)", nullable: false, defaultValue: 10.0m),
                     MaxFineLimit = table.Column<decimal>(type: "decimal(18,0)", nullable: false, defaultValue: 100.0m),
                     DefaultBorrowingDays = table.Column<int>(type: "int", nullable: false, defaultValue: 14),
                     MaxBooksPerMember = table.Column<int>(type: "int", nullable: false, defaultValue: 5),
                     IsLibraryOpen = table.Column<bool>(type: "bit", nullable: false),
+                    DefaultLanguage = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false, defaultValue: "en"),
+                    TimeZone = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false, defaultValue: "UTC"),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     UpdatedBy = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false)
                 },
@@ -409,24 +407,6 @@ namespace LibraryManagement.DAL.Migrations
                     { 1, "Admin" },
                     { 2, "Librarian" },
                     { 3, "Member" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Tenants",
-                columns: new[] { "TenantID", "CreatedAt", "DefaultLanguage", "Identifier", "IsActive", "Name", "TimeZone" },
-                values: new object[,]
-                {
-                    { new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"), new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "ar", "casablanca-main", true, "مكتبة الدار البيضاء المركزية", "W. Central Africa Standard Time" },
-                    { new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"), new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "en", "rabat-digital", true, "Rabat International Library", "UTC" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "GlobalSettings",
-                columns: new[] { "SettingsID", "DefaultBorrowingDays", "DefaultFinePerDay", "IsLibraryOpen", "LastUpdated", "MaxBooksPerMember", "MaxFineLimit", "Name", "TenantID", "UpdatedBy" },
-                values: new object[,]
-                {
-                    { 1, 14, 10.0m, true, new DateTime(2026, 5, 12, 21, 33, 19, 253, DateTimeKind.Utc).AddTicks(2258), 5, 100.0m, "LibCore", new Guid("a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"), "System" },
-                    { 2, 14, 15.0m, true, new DateTime(2026, 5, 12, 21, 33, 19, 253, DateTimeKind.Utc).AddTicks(2264), 10, 200.0m, "LibCore", new Guid("b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"), "System" }
                 });
 
             migrationBuilder.CreateIndex(

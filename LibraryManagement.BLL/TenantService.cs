@@ -3,6 +3,7 @@ using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Common;
 using LibraryManagement.DTO.TenantDTOs;
+using LibraryManagement.BLL.Interfaces;
 
 
 namespace LibraryManagement.BLL

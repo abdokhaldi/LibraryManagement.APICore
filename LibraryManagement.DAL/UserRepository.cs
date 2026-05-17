@@ -6,7 +6,7 @@ using LibraryManagement.Domain.Interfaces;
 using LibraryManagement.Shared.Parameters;
 using LibraryManagement.DAL.Base;
 using LibraryManagement.Shared.Helpers;
-using System.Linq.Expressions;
+
 namespace LibraryManagement.DAL
 {
     public class UserRepository : IUserRepository
@@ -46,10 +46,30 @@ namespace LibraryManagement.DAL
         public async Task<User?> GetUserForLoginAsync(string identifier)
         {
             var user = await _context.Users
+                .IgnoreQueryFilters()
                 .Include(u => u.Person)
                 .Include(u=>u.Role)
                 .Where(u => u.Username == identifier
                 || u.Person.Email == identifier)
+                .Select(
+                  u => new User
+                    {
+                        UserID = u.UserID,
+                        TenantID = u.TenantID,
+                        Username = u.Username,
+                        Password = u.Password,
+                        IsActive = u.IsActive,
+                        IsBlocked = u.IsBlocked,
+                        Person = new Person
+                        {
+                            Email = u.Person.Email
+                        },
+                        Role = new Role
+                        {
+                            RoleName = u.Role.RoleName
+                        }
+                  }
+                )
                 .FirstOrDefaultAsync();
 
             return user;

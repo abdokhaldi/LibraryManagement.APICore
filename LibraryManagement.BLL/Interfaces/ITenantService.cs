@@ -1,12 +1,7 @@
 ﻿using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.TenantDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LibraryManagement.BLL
+namespace LibraryManagement.BLL.Interfaces
 {
     public interface ITenantService
     {
