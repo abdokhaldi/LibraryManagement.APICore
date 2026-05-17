@@ -1,21 +1,25 @@
-﻿using  LibraryManagement.Domain.Entities;
+﻿using LibraryManagement.Domain.Entities;
 using LibraryManagement.Domain.Entities.Tenants;
 using LibraryManagement.Domain.TenantContract;
 using LibraryManagement.Shared.Tenant.TenantContract;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+
 namespace LibraryManagement.DAL.Context
 {
     public class LibraryDbContext : DbContext
     {
         private readonly ITenantGetter _tenantGetter;
+
         public LibraryDbContext(DbContextOptions<LibraryDbContext> options, ITenantGetter tenant)
                                : base(options)
         {
             _tenantGetter = tenant;
         }
 
-       
+        // 1. إضافة خاصية عامة (Public Property) تقرأ المعرف حيّاً من الـ Getter مع كل استدعاء
+        public Guid CurrentTenantId => _tenantGetter.GetTenantId();
+
         public DbSet<Person> People { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Borrowing> Borrowings { get; set; }
@@ -29,72 +33,65 @@ namespace LibraryManagement.DAL.Context
         public DbSet<Fine> Fines { get; set; }
         public DbSet<GlobalSettings> GlobalSettings { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
             base.OnModelCreating(modelBuilder);
 
-            
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(LibraryDbContext).Assembly);
-
-            
-            var currentTenantId = _tenantGetter.GetTenantId();
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-               
                 if (typeof(IMustHaveTenant).IsAssignableFrom(entityType.ClrType))
                 {
                     modelBuilder.Entity(entityType.ClrType)
-                        .HasQueryFilter(CreateTenantFilterExpression(entityType.ClrType, currentTenantId));
+                        .HasQueryFilter(CreateTenantFilterExpression(entityType.ClrType));
                 }
             }
         }
 
-        private LambdaExpression CreateTenantFilterExpression(Type type , Guid tenantId)
+        private LambdaExpression CreateTenantFilterExpression(Type type)
         {
-            var parameter = Expression.Parameter(type , "x");
+            var parameter = Expression.Parameter(type, "x");
             var property = Expression.Property(parameter, nameof(IMustHaveTenant.TenantID));
-            var condition = Expression.Equal(property, Expression.Constant(tenantId));
+
+            var contextExpression = Expression.Constant(this);
+            var tenantPropertyExpression = Expression.Property(contextExpression, nameof(CurrentTenantId));
+
+            var condition = Expression.Equal(property, tenantPropertyExpression);
 
             return Expression.Lambda(condition, parameter);
         }
 
-
-       
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var currentTenantId = _tenantGetter.GetTenantId();
+            
+            var currentTenantId = CurrentTenantId;
 
             foreach (var entry in ChangeTracker.Entries<IMustHaveTenant>())
             {
                 if (entry.State == EntityState.Added)
                 {
-                    if (currentTenantId != Guid.Empty )
+                    if (currentTenantId != Guid.Empty)
                     {
                         entry.Entity.TenantID = currentTenantId;
                     }
-                    else {
-                        if (entry.Entity is Tenant 
-                            || entry.Entity is GlobalSettings 
-                            || entry.Entity is Person 
+                    else
+                    {
+                        if (entry.Entity is Tenant
+                            || entry.Entity is GlobalSettings
+                            || entry.Entity is Person
                             || entry.Entity is User)
                         {
                             continue;
                         }
 
-                       throw new InvalidOperationException($"Cannot save {entry.Entity.GetType().Name} because Tenant ID is missing from the current context.");
+                        throw new InvalidOperationException($"Cannot save {entry.Entity.GetType().Name} because Tenant ID is missing from the current context.");
                     }
                 }
             }
 
             return base.SaveChangesAsync(cancellationToken);
         }
-
-        //  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //  {
-        //     // optionsBuilder.AddInterceptors();
-        //  }
-
     }
 }

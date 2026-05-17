@@ -8,7 +8,7 @@ namespace LibraryManagement.DTO.GlobalSettings
 {
     public class GlobalSettingsForReadOnlyDTO
     {
-        public int SettingsID { get; set; }
+        public Guid SettingsID { get; set; }
         public decimal DefaultFinePerDay { get; set; }
         public decimal MaxFineLimit { get; set; }
         public int DefaultBorrowingDays { get; set; }

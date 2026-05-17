@@ -5,7 +5,7 @@ using LibraryManagement.Domain.TenantContract;
 namespace LibraryManagement.Domain.Entities
 {
    
-    public class Person :IMustHaveTenant
+    public class Person : IMustHaveTenant
     {
        
         public Guid PersonID { get; set; }

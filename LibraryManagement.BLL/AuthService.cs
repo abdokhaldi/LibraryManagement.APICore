@@ -195,6 +195,7 @@ namespace LibraryManagement.BLL
                 userEntity.PersonID = newPersonId;
                 userEntity.Password = hashedPassword;
                 userEntity.TenantID = newTenantId;
+                userEntity.RoleID = 1; // Assuming 1 is the RoleID for Admin
                 userEntity.IsActive = true;
                 userEntity.CreatedAt = DateTime.UtcNow;
                 userEntity.IsBlocked = false;

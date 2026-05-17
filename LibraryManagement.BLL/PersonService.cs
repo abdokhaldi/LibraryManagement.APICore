@@ -59,7 +59,7 @@ namespace LibraryManagement.BLL
             var person = await _unitOfWork.PersonRepository.GetPersonForReadOnlyAsync(id);
             if (person == null)
             {
-                return OperationResult<PersonForDisplayDTO>.Failure(OperationStatus.NotFound, $"The person with SettingsID: {id} was not found.");
+                return OperationResult<PersonForDisplayDTO>.Failure(OperationStatus.NotFound, $"The person with personID: {id} was not found.");
             }
 
             var personDTO = _mapper.Map<PersonForDisplayDTO>(person);

@@ -175,7 +175,7 @@ namespace LibraryManagement.BLL
             var bookEntity = await _unitOfWork.BookRepository.GetBookForReadOnlyAsync(bookID);
             if (bookEntity == null)
             {
-                return OperationResult<BookForDisplayDTO>.Failure(OperationStatus.NotFound, $"The book with SettingsID:{bookID} not found ");
+                return OperationResult<BookForDisplayDTO>.Failure(OperationStatus.NotFound, $"The book with bookID:{bookID} not found ");
 
             }
             var bookDTO = _mapper.Map<BookForDisplayDTO>(bookEntity);

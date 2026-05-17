@@ -69,8 +69,8 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("jwt"))
 // Dependency Injection
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<TenantProvider>();
-builder.Services.AddScoped<ITenantSetter, TenantProvider>();
-builder.Services.AddScoped<ITenantGetter, TenantProvider>();
+builder.Services.AddScoped<ITenantSetter>(provider => provider.GetRequiredService<TenantProvider>());
+builder.Services.AddScoped<ITenantGetter>(provider => provider.GetRequiredService<TenantProvider>());
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
