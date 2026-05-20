@@ -6,14 +6,14 @@ namespace LibraryManagement.Shared.Tenant.TenantService
 {
     public class TenantProvider : ITenantGetter, ITenantSetter
     {
-        public Guid TenantID { get; private set; }
+        private Guid _TenantID { get; set; }
         public void SetTenantId(Guid tenantId)
         {
-            TenantID = tenantId;
+            _TenantID = tenantId;
         }
         public Guid GetTenantId()
         {
-           return TenantID ;
+           return _TenantID ;
         }
     }
 }
