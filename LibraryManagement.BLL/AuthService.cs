@@ -183,6 +183,7 @@ namespace LibraryManagement.BLL
           var settingEntity = _mapper.Map<GlobalSettings>(settingDTO);
                 settingEntity.SettingsID = newSettingId;
                 settingEntity.TenantID = newTenantId;
+
                 
            var personEntity = _mapper.Map<Person>(personDTO);
                 personEntity.PersonID = newPersonId;
