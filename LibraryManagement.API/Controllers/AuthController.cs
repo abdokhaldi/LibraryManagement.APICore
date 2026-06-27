@@ -20,6 +20,7 @@ namespace LibraryManagement.API.Controllers
         {
             _authService = authService;
         }
+
         [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -33,8 +34,8 @@ namespace LibraryManagement.API.Controllers
 
             return result.status switch
             {
-                LoginStatus.Success => Ok(result),
-                LoginStatus.InvalidCredentials => Unauthorized("Invalid username or password ."),
+                LoginStatus.Success => Ok(result.Data),
+                LoginStatus.InvalidCredentials => Unauthorized(new { Message = "Invalid username or password ." }),
                 LoginStatus.Blocked => StatusCode(StatusCodes.Status403Forbidden, new { Message = "You was blocked, contact the admin" }),
                 LoginStatus.Deactivated => StatusCode(StatusCodes.Status403Forbidden, new { Message = "You was inactivated, contact the admin" }),
                 _ => BadRequest()
@@ -101,9 +102,9 @@ namespace LibraryManagement.API.Controllers
                 switch (result.Data?.status)
                 {
                     case LoginStatus.Success:
-                        return Ok(result.Data.Data);
+                        return Ok(result.Data);
                     case LoginStatus.InvalidCredentials:
-                        return BadRequest(new { Message=result.Data.Message });
+                        return BadRequest(new { Message = result.Data.Message });
                     case LoginStatus.Blocked:
                         return StatusCode(StatusCodes.Status403Forbidden, new { Message = result.Data.Message });
                     case LoginStatus.Deactivated:
