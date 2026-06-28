@@ -38,6 +38,7 @@ namespace LibraryManagement.DAL
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
             var user = await _context.Users.AsNoTracking()
+                              
                                .Include(p=>p.Person)
                                .Include(r=>r.Role)
                                .FirstOrDefaultAsync(u =>u.Username==username);
@@ -47,32 +48,12 @@ namespace LibraryManagement.DAL
         {
             var user = await _context.Users
                 .IgnoreQueryFilters()
-                .Include(u => u.Person)
-                .Include(u=>u.Role)
-                .Where(u => u.Username == identifier
-                || u.Person.Email == identifier)
-                .Select(
-                  u => new User
-                    {
-                        UserID = u.UserID,
-                        TenantID = u.TenantID,
-                        Username = u.Username,
-                        Password = u.Password,
-                        IsActive = u.IsActive,
-                        IsBlocked = u.IsBlocked,
-                        Person = new Person
-                        {
-                            Email = u.Person.Email
-                        },
-                        Role = new Role
-                        {
-                            RoleName = u.Role.RoleName
-                        }
-                  }
-                )
-                .FirstOrDefaultAsync();
-
-            return user;
+               .Include(u => u.Person)
+               .Include(u => u.Role)
+               .Include(u => u.RefreshTokens)
+               .FirstOrDefaultAsync(u => u.Username == identifier
+               || u.Person.Email == identifier);
+             return user;
         }
         public async Task<PagedList<User>> GetActiveUsersAsync(UserParameters parameters)
         {
@@ -149,6 +130,7 @@ namespace LibraryManagement.DAL
         public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
         {
            return await _context.Users
+                                .IgnoreQueryFilters()
                                 .Include(u=>u.Person)
                                 .Include(u => u.Role)
                                 .Include(u => u.RefreshTokens)

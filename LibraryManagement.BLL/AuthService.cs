@@ -9,6 +9,8 @@ using LibraryManagement.DTO.LoginResult;
 using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.Owner;
 using LibraryManagement.DTO.RefreshTokenDTOs;
+using LibraryManagement.Shared.Tenant;
+using LibraryManagement.Shared.Tenant.TenantContract;
 
 
 namespace LibraryManagement.BLL
@@ -21,12 +23,14 @@ namespace LibraryManagement.BLL
         private readonly ITokenService _tokenService;
         private readonly ISecurityService _securityService;
         private readonly IMapper _mapper;
-        public AuthService(IUnitOfWork unitOfWork, ITokenService tokenService, ISecurityService securityService, IMapper mapper)
+        private readonly ITenantSetter _tenantSetter;
+        public AuthService(IUnitOfWork unitOfWork, ITokenService tokenService, ISecurityService securityService, IMapper mapper, ITenantSetter tenantSetter)
         {
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             _securityService = securityService;
             _mapper = mapper;
+            _tenantSetter = tenantSetter; 
         }
 
         public async Task<LoginResult> LoginAsync(string identifier, string password)
@@ -51,6 +55,8 @@ namespace LibraryManagement.BLL
             {
                 return LoginResult.Failure(LoginStatus.Deactivated);
             }
+            // Set Tenant context for multi-tenancy to inject it in SaveChanges 
+             _tenantSetter.SetTenantId(userForLogin.TenantID);
 
             string token = _tokenService.GenerateToken(userForLogin);
             string refreshTokenString = _tokenService.GenerateRefreshToken();
@@ -59,7 +65,8 @@ namespace LibraryManagement.BLL
                 Token = refreshTokenString,
                 Expires = DateTime.UtcNow.AddDays(7),
                 Created = DateTime.UtcNow,
-                UserID = userForLogin.UserID
+                UserID = userForLogin.UserID,
+                
             };
             userForLogin.RefreshTokens.Add(newRefreshTokenEntity);
             await _unitOfWork.SaveChangesAsync();
@@ -101,6 +108,9 @@ namespace LibraryManagement.BLL
 
             storedToken.Revoked = DateTime.UtcNow;
             storedToken.IsUsed = true;
+
+            //Set Tenant context for multi-tenancy to inject it in SaveChanges
+            _tenantSetter.SetTenantId(user.TenantID);
 
             var newAccessToken = _tokenService.GenerateToken(user);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
