@@ -60,7 +60,7 @@ builder.Services.AddAuthentication(
   });
 
 builder.Services.AddAuthorization();
-
+builder.Services.AddHttpContextAccessor();
 // setup database (SQL Server)
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

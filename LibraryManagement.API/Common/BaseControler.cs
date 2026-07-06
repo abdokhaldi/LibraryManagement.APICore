@@ -11,11 +11,11 @@ namespace LibraryManagement.API.Common
     public abstract class BaseController : ControllerBase
     {
        
-        protected string CurrentUserID => User.FindFirstValue(ClaimTypes.NameIdentifier)
-           ?? throw new InvalidOperationException("AdminUser SettingsID not found in claims. Ensure [Authorize] is used.");
-       
+         protected string CurrentUserID => User.FindFirstValue(ClaimTypes.NameIdentifier)
+     ?? throw new InvalidOperationException("User ID (NameIdentifier) not found in claims. Ensure [Authorize] is used on the endpoint.");
         protected bool IsAdmin => User.IsInRole("Admin");
         protected string CurrentUserRole => User.FindFirstValue(ClaimTypes.Role)??"Member";
+        
         protected IActionResult HandleErrorResult<T>(T result) where T : IOperationResult
         {
             return result.Status switch

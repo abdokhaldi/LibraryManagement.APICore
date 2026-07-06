@@ -7,6 +7,8 @@ using LibraryManagement.DTO.OperationResults;
 using LibraryManagement.DTO.UserDTOs;
 using LibraryManagement.Shared.Helpers;
 using LibraryManagement.Shared.Parameters;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 
 
@@ -17,13 +19,15 @@ namespace LibraryManagement.BLL
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISecurityService _securityService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
        
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, ISecurityService securityService)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, ISecurityService securityService, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _securityService = securityService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
        public async Task<PagedList<UserForDisplayDTO>> GetActiveUsersAsync(UserParameters parameters)
@@ -33,69 +37,106 @@ namespace LibraryManagement.BLL
             var usersDTO = _mapper.Map<List<UserForDisplayDTO>>(pagedUsers.Items);
 
             return pagedUsers.MapTo(usersDTO);
+            
         }
 
-        public async Task<OperationResult<Guid>> RegisterUserAsync(UserForCreationDTO userDTO, string creator)
-
+    
+   public async Task<OperationResult<Guid>> RegisterUserAsync(UserForCreationDTO userDTO,string creator)
         {
-            var role = _unitOfWork.RoleRepository.GetRoleForReadOnlyAsync(userDTO.RoleID);
-            if (role == null )
-            {
-                return OperationResult<Guid>.Failure(OperationStatus.Conflict, "The role not existing");
-
-            }
-
-           if (creator != "Admin" && creator != "Librarian")
-           {
-               return OperationResult<Guid>.Failure(OperationStatus.Forbidden, "You are not allowed  to create users accounts.");
-          
-           }
-          
-           if (creator == "Librarian" && userDTO.RoleName != "Member")
-           {
-               return OperationResult<Guid>.Failure(
-                   OperationStatus.Forbidden,
-                   "Access Denied: Librarians are only authorized to create Member accounts."
-                   );
-            }
-
+            var role = await _unitOfWork.RoleRepository.GetRoleForReadOnlyAsync(userDTO.RoleID);
             
-            var personStatus = await _unitOfWork.PersonRepository.CheckPersonStatus(userDTO.PersonID);
-            if (personStatus.isNotFound)
+            if (role == null)
             {
-                return OperationResult<Guid>.Failure(OperationStatus.Conflict, $"The person with SettingsID: {userDTO.PersonID} is not exists .");
-            }
-            if (personStatus.isNotActive)
-            {
-                return OperationResult<Guid>.Failure(OperationStatus.Conflict, "Cannot create a user for an inactive person .");
-
+                return OperationResult<Guid>.Failure(OperationStatus.Conflict, "The role does not exist");
             }
 
-            var personAsUser = await _unitOfWork.UserRepository.GetUserAsPersonAsync(userDTO.PersonID);
-            if (personAsUser!= null)
+            if (string.IsNullOrEmpty(creator))
             {
-                return OperationResult<Guid>.Failure(OperationStatus.Conflict,$"The person with SettingsID:{personAsUser.PersonID} is already created as a user .");
+                return OperationResult<Guid>.Failure(OperationStatus.Forbidden, "You haven't a token with a valid role");
+
             }
-            bool isUserExists = await _unitOfWork.UserRepository. IsUsernameExistsAsync(userDTO.Username);
+            if (creator == "Member")
+            {
+                return OperationResult<Guid>.Failure(OperationStatus.Forbidden, "You do not have the necessary permissions to create new accounts.");
+            }
+
+            if (creator != "Admin" && creator != "Librarian")
+            {
+                return OperationResult<Guid>.Failure(OperationStatus.Forbidden, "You are not allowed to create user accounts.");
+           
+            }
+            
+           
+            if (creator == "Librarian" && role.RoleName != "Member")
+            {
+                return OperationResult<Guid>.Failure(
+                    OperationStatus.Forbidden,
+                    "Access Denied: Librarians are only authorized to create Member accounts."
+                    );
+            }
+
+            // Check if username already exists
+            bool isUserExists = await _unitOfWork.UserRepository.IsUsernameExistsAsync(userDTO.Username);
             if (isUserExists)
             {
-                return OperationResult<Guid>.Failure(OperationStatus.Conflict, "This username is already Used , try another one ."); 
+                return OperationResult<Guid>.Failure(OperationStatus.Conflict, "This username is already used, try another one."); 
             }
-            
 
-            var userEntity = _mapper.Map<User>(userDTO);
-            string passwordHashed = _securityService.HashPassword(userEntity.Password);
-            userEntity.UserID = Guid.NewGuid();
-            userEntity.Password = passwordHashed;
-            userEntity.CreatedAt = DateTime.UtcNow;
-            userEntity.IsBlocked = false;
-            userEntity.IsActive = true;
-            
-        await _unitOfWork.UserRepository.AddNewUserAsync(userEntity);
-            await _unitOfWork.SaveChangesAsync();
+            Guid personId;
 
-            return OperationResult<Guid>.Success(userEntity.UserID);
+            // Start transaction
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                
+                    // Create new Person + User in transaction
+                    // Check if email or phone already exists
+                    var emailExists = await _unitOfWork.PersonRepository.IsEmailExists(userDTO.Person!.Email);
+                    if (emailExists)
+                    {
+                        await _unitOfWork.RollbackAsync();
+                        return OperationResult<Guid>.Failure(OperationStatus.Conflict, "Email already exists.");
+                    }
+                    var phoneExists = await _unitOfWork.PersonRepository.IsPhoneExists(userDTO.Person.Phone);
+                    if (phoneExists)
+                    {
+                        await _unitOfWork.RollbackAsync();
+                        return OperationResult<Guid>.Failure(OperationStatus.Conflict, "Phone number already exists.");
+                    }
+
+                    var personEntity = _mapper.Map<Person>(userDTO.Person);
+                    personEntity.PersonID = Guid.NewGuid();
+                    personEntity.IsActive = true;
+                    
+                    await _unitOfWork.PersonRepository.AddNewPersonAsync(personEntity);
+                    personId = personEntity.PersonID;
+                
+                
+                // Create User
+                var userEntity = _mapper.Map<User>(userDTO);
+                string passwordHashed = _securityService.HashPassword(userEntity.Password);
+                userEntity.UserID = Guid.NewGuid();
+                userEntity.Password = passwordHashed;
+                userEntity.CreatedAt = DateTime.UtcNow;
+                userEntity.IsBlocked = false;
+                userEntity.IsActive = true;
+                userEntity.PersonID = personId;
+                
+                
+                await _unitOfWork.UserRepository.AddNewUserAsync(userEntity);
+               
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+
+                return OperationResult<Guid>.Success(userEntity.UserID);
+            }
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
         }
+
         public async Task<OperationResult<UserForDisplayDTO>> GetUserDetailsAsync(Guid id)
         {
             var user = await _unitOfWork.UserRepository.GetUserForReadOnlyAsync(id);

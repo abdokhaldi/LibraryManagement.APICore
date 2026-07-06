@@ -224,7 +224,7 @@ namespace LibraryManagement.BLL
                 return OperationResult<LoginResult>.Success(login);
                 return OperationResult<LoginResult>.Failure(OperationStatus.loginFailed, "Admin registration succeeded but login failed, please try to login with your credentials");
             }
-            catch(Exception ex)
+            catch(Exception)
 
             {
                 await _unitOfWork.RollbackAsync();
