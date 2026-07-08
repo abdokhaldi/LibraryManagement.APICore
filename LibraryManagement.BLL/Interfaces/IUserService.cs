@@ -11,7 +11,7 @@ namespace LibraryManagement.BLL.Interfaces
         Task<PagedList<UserForDisplayDTO>> GetActiveUsersAsync(UserParameters parameters);
         Task<OperationResult<Guid>> RegisterUserAsync(UserForCreationDTO userDTO , string creator);
         Task<OperationResult<UserForDisplayDTO>> GetUserDetailsAsync(Guid id);
-        Task<OperationResult> UpdateUserAsync(Guid id, UserForUpdateDTO userDTO);
+        Task<OperationResult> UpdateUserAsync(string creator,Guid id, UserForUpdateDTO userDTO);
         Task<OperationResult> DeactivateUserAsync(Guid id);
         Task<OperationResult> ActivateUserAsync(Guid id);
         Task<OperationResult> BlockUserAsync(Guid id);

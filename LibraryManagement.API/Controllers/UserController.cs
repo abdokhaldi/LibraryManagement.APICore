@@ -49,14 +49,14 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
             
         }
-        [Authorize(Roles = "Admin")]
+        
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserForUpdateDTO userDTO)
         {
-            var result = await _userService.UpdateUserAsync(id, userDTO);
+            var result = await _userService.UpdateUserAsync(CurrentUserRole, id, userDTO);
 
             if (result.IsSuccess)
                 return NoContent();

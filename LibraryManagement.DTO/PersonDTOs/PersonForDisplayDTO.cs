@@ -13,6 +13,7 @@ namespace LibraryManagement.DTO.PersonDTOs
         public required string Phone { get; set; }
         public string? Email { get; set; }
         public required string Address { get; set; }
+        public string NationalNumber { get; set; } = null!;
         public required string City { get; set; }
         public required string Gender { get; set; }
         public required bool IsActive { get; set; }

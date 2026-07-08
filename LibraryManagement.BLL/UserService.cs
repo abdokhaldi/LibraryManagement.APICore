@@ -41,7 +41,7 @@ namespace LibraryManagement.BLL
         }
 
     
-   public async Task<OperationResult<Guid>> RegisterUserAsync(UserForCreationDTO userDTO,string creator)
+        public async Task<OperationResult<Guid>> RegisterUserAsync(UserForCreationDTO userDTO,string creator)
         {
             var role = await _unitOfWork.RoleRepository.GetRoleForReadOnlyAsync(userDTO.RoleID);
             
@@ -148,13 +148,40 @@ namespace LibraryManagement.BLL
             
             return OperationResult<UserForDisplayDTO>.Success(userDTO);
         }
-        public async Task<OperationResult> UpdateUserAsync(Guid id, UserForUpdateDTO userDTO)
+
+        public async Task<OperationResult> UpdateUserAsync(string creator, Guid id, UserForUpdateDTO userDTO)
         {
-            
-            var user = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
-            if (user ==null )
+            var role = await _unitOfWork.RoleRepository.GetRoleForReadOnlyAsync(userDTO.RoleID!.Value);
+
+            if (role == null)
             {
-                    return OperationResult.Failure(OperationStatus.NotFound, $"The user with SettingsID:{id} was not found for update.");
+
+                return OperationResult.Failure(OperationStatus.Forbidden, "The used role are not existing in the system .");
+
+            }
+
+            var user = await _unitOfWork.UserRepository.GetUserForUpdateAsync(id);
+            if (user == null)
+            {
+                return OperationResult.Failure(OperationStatus.NotFound, $"The user with userID:{id} was not found for update.");
+            }
+
+
+            if (creator != "Admin" && creator != "Librarian")
+            {
+                return OperationResult.Failure(OperationStatus.Forbidden, $"You are not allowed to to update .");
+
+            }
+            if (creator == "Librarian" && (user.RoleID == 1 || user.RoleID==2 ))
+            {
+                return OperationResult.Failure(OperationStatus.Forbidden, $"Librarians are allowed to update only member accounts");
+
+            }
+
+            if (creator == "Librarian" && (userDTO.RoleID == 1 || userDTO.RoleID == 2))
+            {
+                return OperationResult.Failure(OperationStatus.Forbidden, $"Librarians are not allowed to update members to higher roles .");
+
             }
 
             if (userDTO.PersonID.HasValue && userDTO.PersonID.Value != user.PersonID)
@@ -162,13 +189,15 @@ namespace LibraryManagement.BLL
                 var personStatus = await _unitOfWork.PersonRepository.CheckPersonStatus(userDTO.PersonID.Value);
                 if (personStatus.isNotFound)
                 {
-                    return OperationResult.Failure(OperationStatus.Conflict, $"The person with SettingsID: {userDTO.PersonID} is not exists .");
+                    return OperationResult.Failure(OperationStatus.Conflict, $"The person with personID: {userDTO.PersonID} is not exists .");
                 }
                 if (personStatus.isNotActive)
                 {
-                    return OperationResult.Failure(OperationStatus.Conflict, "Cannot create a user for an inactive person .");
+                    return OperationResult.Failure(OperationStatus.Conflict, "Cannot update a user for an inactive person .");
 
                 }
+                return OperationResult.Failure(OperationStatus.Conflict, "Updating failed , you are trying to update a user account for incorrect person");
+
             }
 
             if (userDTO.PersonID.HasValue)
@@ -176,7 +205,7 @@ namespace LibraryManagement.BLL
                 var personAsUser = await _unitOfWork.UserRepository.GetUserAsPersonAsync(userDTO.PersonID.Value);
                 if (personAsUser != null && personAsUser.PersonID != user.PersonID)
                 {
-                    return OperationResult<int>.Failure(OperationStatus.Conflict, $"The person with SettingsID:{personAsUser.PersonID} is already is another user in the system .");
+                    return OperationResult<int>.Failure(OperationStatus.Conflict, $"The person with personID:{personAsUser.PersonID} is already is another user in the system .");
           
                 }
             }
@@ -188,6 +217,20 @@ namespace LibraryManagement.BLL
                     return OperationResult.Failure(OperationStatus.Conflict, $"The username: {userDTO.Username} is already taken by another user.");
                 }
               }
+
+            var person = await _unitOfWork.PersonRepository.GetPersonForUpdateAsync(user.PersonID);
+            if (person is null)
+            {
+                return OperationResult.Failure(OperationStatus.NotFound, $"no person found belongs to this user .");
+
+            }
+            if (!person.IsActive)
+            {
+                return OperationResult.Failure(OperationStatus.Deactivated, $"this person is inactivated .");
+
+            }
+
+            _mapper.Map(userDTO.Person, person);
             _mapper.Map(userDTO, user);
 
             await _unitOfWork.SaveChangesAsync();

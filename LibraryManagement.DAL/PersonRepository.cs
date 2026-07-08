@@ -55,6 +55,7 @@ namespace LibraryManagement.DAL
                     || p.Email.Contains(parameters.SearchTerm)
                     || p.Address.Contains(parameters.SearchTerm)
                     || p.City.Contains(parameters.SearchTerm)
+                    || p.NationalNumber.Contains(parameters.SearchTerm)
                     );
             }
 

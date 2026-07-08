@@ -15,7 +15,7 @@ namespace LibraryManagement.DTO.PersonDTOs
         public string? Address { get; set; }
         public string? City { get; set; }
         public char? Gender { get; set; }
-        public bool? IsActive { get; set; }
+        
 
     }
 }

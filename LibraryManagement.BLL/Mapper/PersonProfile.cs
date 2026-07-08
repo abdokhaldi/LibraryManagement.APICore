@@ -16,10 +16,12 @@ namespace LibraryManagement.BLL.Mapper
             opt => opt.MapFrom(src => src.FirstName + " " + src.LastName)
             );
 
+            
+
             personMappingForDisplay.ForMember(dest => dest.Gender,
                 opt => opt.MapFrom(src => src.Gender == 'M' ? "Male" : "Female")
                 );
-
+            
             var mappingPersonForUpdate = CreateMap<PersonForUpdateDTO, Person>();
             mappingPersonForUpdate.ForAllMembers(
                 opts => opts.Condition(
@@ -28,13 +30,7 @@ namespace LibraryManagement.BLL.Mapper
                         return srcMember != null;
                     })
                 );
-            mappingPersonForUpdate.ForMember(dst => dst.IsActive,
-                  opt => {
-                      opt.PreCondition(
-                          s => s.IsActive.HasValue);
-                      opt.MapFrom(s => s.IsActive!.Value);
-                      opt.UseDestinationValue();
-                  });
+            
         }
     }
 }

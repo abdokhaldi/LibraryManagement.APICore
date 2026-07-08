@@ -1,4 +1,4 @@
-﻿
+﻿using LibraryManagement.DTO.PersonDTOs;
 
 namespace LibraryManagement.DTO.UserDTOs
 {
@@ -7,7 +7,7 @@ namespace LibraryManagement.DTO.UserDTOs
         public Guid? PersonID { get; set; }
         public string? Username { get; set; }
         public  int? RoleID { get; set; }
-        public  bool? IsActive { get; set; }
-        public bool? IsBlocked { get; set; }
+        public PersonForUpdateDTO? Person { get; set; } = null;
+
     }
 }

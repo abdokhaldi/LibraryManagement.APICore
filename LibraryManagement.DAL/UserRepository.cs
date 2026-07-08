@@ -86,6 +86,7 @@ namespace LibraryManagement.DAL
                 || u.Person.Email.Contains(searchTerm)
                 || u.Person.Address.Contains(searchTerm)
                 || u.Person.City.Contains(searchTerm)
+                || u.Person.NationalNumber.Contains(searchTerm)
                 );
             }
 
