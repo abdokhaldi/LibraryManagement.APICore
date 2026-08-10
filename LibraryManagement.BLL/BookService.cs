@@ -61,7 +61,8 @@ namespace LibraryManagement.BLL
             bookToCreate.ImagePath = uniqueFileName;
 
             await _unitOfWork.BookRepository.AddNewBookAsync(bookToCreate);
-                await _unitOfWork.SaveChangesAsync();
+               
+            await _unitOfWork.SaveChangesAsync();
            
             return OperationResult<int>.Success(bookToCreate.BookID);
         }
