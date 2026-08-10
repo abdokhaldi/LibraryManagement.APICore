@@ -97,7 +97,7 @@ namespace LibraryManagement.API.Controllers
             return HandleErrorResult(result);
         }
 
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/DeactivatePerson")]
         [ProducesResponseType((int)StatusCodes.Status404NotFound)]
         [ProducesResponseType((int)StatusCodes.Status204NoContent)]
