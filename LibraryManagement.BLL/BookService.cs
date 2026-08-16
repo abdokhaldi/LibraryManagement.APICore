@@ -26,7 +26,7 @@ namespace LibraryManagement.BLL
 
        public async Task<OperationResult<int>> CreateNewBookAsync(BookForCreationDTO bookDTO)
         {
-            
+                
               var exists = await _unitOfWork.BookRepository.IsTitleExistsAsync(bookDTO.Title);
               if (exists)
               {
@@ -59,9 +59,10 @@ namespace LibraryManagement.BLL
             var bookToCreate = _mapper.Map<Book>(bookDTO);
             bookToCreate.IsActive = true;
             bookToCreate.ImagePath = uniqueFileName;
+          
 
-            await _unitOfWork.BookRepository.AddNewBookAsync(bookToCreate);
-               
+           await _unitOfWork.BookRepository.AddNewBookAsync(bookToCreate);
+
             await _unitOfWork.SaveChangesAsync();
            
             return OperationResult<int>.Success(bookToCreate.BookID);

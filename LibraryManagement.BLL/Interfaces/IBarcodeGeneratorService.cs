@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace LibraryManagement.BLL.Interfaces
 {
-    internal interface IBarcodeGeneratorService
+    public interface IBarcodeGeneratorService
     {
+        string GenerateShortBarcode(string prefix = "BC");
     }
 }

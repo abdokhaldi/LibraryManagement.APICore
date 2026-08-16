@@ -70,7 +70,7 @@ namespace LibraryManagement.API.Controllers
             var result = await _bookCopyService.CreateCopyAsync(copyDTO);
 
             if (result.IsSuccess)
-                return CreatedAtAction(nameof(GetBookCopy), new {id=result.Data }, result.Data);
+                return CreatedAtAction(nameof(GetBookCopy), new {id=result.Data!.BookCopyID }, result.Data);
             return HandleErrorResult(result);
 
         }

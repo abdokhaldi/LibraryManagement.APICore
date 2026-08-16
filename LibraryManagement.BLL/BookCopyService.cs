@@ -15,30 +15,59 @@ namespace LibraryManagement.BLL
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public BookCopyService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly BarcodeGeneratorService _barcodeGeneratorService;
+        
+        public BookCopyService(IUnitOfWork unitOfWork, IMapper mapper, BarcodeGeneratorService barcodeGeneratorService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _barcodeGeneratorService = barcodeGeneratorService;
         }
 
-      public async  Task<OperationResult<int>> CreateCopyAsync(BookCopyForCreationDTO bookCopyDTO) 
+      public async  Task<OperationResult<BookCopyForDisplayDTO>> CreateCopyAsync(BookCopyForCreationDTO bookCopyDTO) 
         {
-            var copy = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(cb => cb.Barcode==bookCopyDTO.Barcode);
+            int quantity = bookCopyDTO.Quantity > 0 ? bookCopyDTO.Quantity : 1;
+            BookCopyForDisplayDTO firstCopyDTO = null;
 
-            if (copy != null)
+            for (int i = 0; i < quantity; i++)
             {
-                return OperationResult<int>.Failure(OperationStatus.Conflict, $"The copy with barcode : {bookCopyDTO.Barcode} is already existing");
+                // Auto-generate barcode for each copy
+                string barcode = _barcodeGeneratorService.GenerateShortBarcode();
+                
+                // Check if barcode already exists and regenerate if needed (max 3 attempts)
+                var existingCopy = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(cb => cb.Barcode == barcode);
+                int attempts = 0;
+                while (existingCopy != null && attempts < 3)
+                {
+                    barcode = _barcodeGeneratorService.GenerateShortBarcode();
+                    existingCopy = await _unitOfWork.BookCopyRepository.GetBookCopyAsync(cb => cb.Barcode == barcode);
+                    attempts++;
+                }
+
+                if (existingCopy != null)
+                {
+                    return OperationResult<BookCopyForDisplayDTO>.Failure(OperationStatus.Conflict, $"Failed to generate unique barcode after 3 attempts for copy {i + 1}");
+                }
+
+                var copyToCreate = _mapper.Map<BookCopy>(bookCopyDTO);
+                copyToCreate.Barcode = barcode;
+                copyToCreate.IsActive = true;
+
+                await _unitOfWork.BookCopyRepository.AddNewBookCopyAsync(copyToCreate);
+                
+                // Save after each copy to ensure barcode uniqueness checks work properly
+                await _unitOfWork.SaveChangesAsync();
+
+                // Return the first created copy with full details
+                if (i == 0)
+                {
+                    firstCopyDTO = _mapper.Map<BookCopyForDisplayDTO>(copyToCreate);
+                }
             }
 
-            var copyToCreate = _mapper.Map<BookCopy>(bookCopyDTO);
-            
-            copyToCreate.IsActive = true;
-
-            await _unitOfWork.BookCopyRepository.AddNewBookCopyAsync(copyToCreate);
-            await _unitOfWork.SaveChangesAsync();
-
-            return OperationResult<int>.Success(copyToCreate.BookCopyID);
+            return OperationResult<BookCopyForDisplayDTO>.Success(firstCopyDTO!);
         }
+
       public async  Task<PagedList<BookCopyForDisplayDTO>> GetCopiesAsync(BookCopyParameters parameters)
         {
             var pagedCopies = await _unitOfWork.BookCopyRepository.GetActiveBookCopiesAsync(parameters);

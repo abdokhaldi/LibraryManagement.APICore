@@ -77,6 +77,7 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
 builder.Services.AddScoped<IBookCopyService, BookCopyService>();
+builder.Services.AddScoped<BarcodeGeneratorService>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();

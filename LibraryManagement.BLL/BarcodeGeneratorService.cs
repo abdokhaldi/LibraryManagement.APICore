@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.BLL
 {
-    internal class BarcodeGeneratorService
+    public class BarcodeGeneratorService
     {
+        public string GenerateShortBarcode(string prefix = "BC")
+        {
+            
+            string uniqueHash = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+
+            return $"{prefix}-{uniqueHash}";
+           
+        }
     }
 }
