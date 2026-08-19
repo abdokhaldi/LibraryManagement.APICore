@@ -33,7 +33,12 @@ namespace LibraryManagement.BLL
             {
                 return OperationResult<int>.Failure(OperationStatus.NotFound, $"The book with Barcode:{borrowingDTO.Barcode} was not found for borrowing");
             }
-            
+
+            if (bookCopyEntity.Status is not CopyStatus.Available)
+            {
+                return OperationResult<int>.Failure(OperationStatus.NotFound, $"The book with Barcode:{borrowingDTO.Barcode} is unavailable");
+            }
+
             int availableQuantity = await _unitOfWork.BookCopyRepository.GetAvailableBookCopiesQuantityAsync(bookCopyEntity.BookID);
            
             if ( availableQuantity <= 0 )
